@@ -58,14 +58,14 @@ public class Utils
 
         if (type instanceof Class<?>)
         {
-            // Type is a normal class.
+            // TYPE is a normal class.
             return (Class<?>) type;
         }
         if (type instanceof ParameterizedType)
         {
             ParameterizedType parameterizedType = (ParameterizedType) type;
 
-            // I'm not exactly sure why getRawType() returns Type instead of Class. Neal isn't either but
+            // I'm not exactly sure why getRawType() returns TYPE instead of Class. Neal isn't either but
             // suspects some pathological case related to nested classes exists.
             Type rawType = parameterizedType.getRawType();
             if (!(rawType instanceof Class))

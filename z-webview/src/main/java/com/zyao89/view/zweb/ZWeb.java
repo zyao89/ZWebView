@@ -2,6 +2,8 @@ package com.zyao89.view.zweb;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zyao89.view.zweb.constants.InternalConstantName;
@@ -23,11 +25,11 @@ import java.util.UUID;
  */
 public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorListener
 {
-    private final UUID       mFrameworkUUID;
-    private final IZWebView  mZWebView;
+    private final UUID mFrameworkUUID;
+    private final IZWebView mZWebView;
     private final ZWebConfig mZWebConfig;
 
-    public ZWeb(Context context, ZWebConfig config)
+    public ZWeb (Context context, ZWebConfig config)
     {
         mFrameworkUUID = UUID.randomUUID();
         mZWebConfig = config;
@@ -39,24 +41,31 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     @Override
-    public String getFrameworkUUID()
+    public String getFrameworkUUID ()
     {
         return mFrameworkUUID.toString();
     }
 
     @Override
-    public boolean execJS(String function, JSONObject json)
+    public boolean callJS (String js)
+    {
+        loadJS(js);
+        return true;
+    }
+
+    @Override
+    public boolean execJS (String function, JSONObject json)
     {
         return execJS(function, null, json);
     }
 
     @Override
-    public boolean callReceiver(String method, JSONObject json)
+    public boolean callReceiver (String method, JSONObject json)
     {
         return execJS(InternalFunctionName.CALL_RECEIVER, method, json);
     }
 
-    private boolean execJS(String function, String method, JSONObject json)
+    private boolean execJS (String function, String method, JSONObject json)
     {
         final String js;
         if (method == null && json == null)
@@ -76,13 +85,22 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
             js = String.format("javascript:%s.%s(\"%s\",\"%s\",%s);", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), method, json);
         }
         ZLog.with(this).d(js);
+        loadJS(js);
+        return true;
+    }
 
+    private void loadJS (final String js)
+    {
+        if (TextUtils.isEmpty(js))
+        {
+            return;
+        }
         if (getWebView() != null)
         {
             getWebView().post(new Runnable()
             {
                 @Override
-                public void run()
+                public void run ()
                 {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                     {
@@ -95,29 +113,28 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
                 }
             });
         }
-        return true;
     }
 
     @Override
-    public void onReceivedTitle(String title)
+    public void onReceivedTitle (String title)
     {
 
     }
 
     @Override
-    public void onPageStart(String url)
+    public void onPageStart (String url)
     {
 
     }
 
     @Override
-    public void onPageFinish(String url, boolean canGoBack, boolean canGoForward)
+    public void onPageFinish (String url, boolean canGoBack, boolean canGoForward)
     {
         initFramework();
     }
 
     @Override
-    public void onError(String type, Object message)
+    public void onError (String type, Object message)
     {
         ZLog.with(this).w("onError: type = " + type + ", message = " + message);
     }
@@ -125,7 +142,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     /**
      * 初始化JS框架
      */
-    private void initFramework()
+    private void initFramework ()
     {
         try
         {
@@ -142,42 +159,42 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         }
     }
 
-    /*package*/ IZWebView getZWebView()
+    /*package*/ IZWebView getZWebView ()
     {
         return mZWebView;
     }
 
-    /*package*/ View getWebView()
+    /*package*/ View getWebView ()
     {
         return mZWebView.getView();
     }
 
-    /*package*/ void onActivityStart()
+    /*package*/ void onActivityStart ()
     {
 
     }
 
-    /*package*/ void onActivityPause()
+    /*package*/ void onActivityPause ()
     {
         mZWebView.onPause();
     }
 
-    /*package*/ void onActivityResume()
+    /*package*/ void onActivityResume ()
     {
         mZWebView.onResume();
     }
 
-    /*package*/ void onActivityStop()
+    /*package*/ void onActivityStop ()
     {
 
     }
 
-    /*package*/ void onActivityDestroy()
+    /*package*/ void onActivityDestroy ()
     {
         mZWebView.destroy();
     }
 
-    /*package*/ boolean onActivityBack()
+    /*package*/ boolean onActivityBack ()
     {
         if (mZWebView.canGoBack())
         {

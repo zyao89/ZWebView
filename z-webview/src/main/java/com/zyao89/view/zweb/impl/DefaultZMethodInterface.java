@@ -2,7 +2,7 @@ package com.zyao89.view.zweb.impl;
 
 import com.zyao89.view.zweb.constants.ZMethodName;
 import com.zyao89.view.zweb.inter.IZMethodInterface;
-import com.zyao89.view.zweb.inter.IZWeb;
+import com.zyao89.view.zweb.inter.IZWebHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,70 +14,70 @@ import org.json.JSONObject;
 public class DefaultZMethodInterface implements IZMethodInterface
 {
     @Override
-    public void onZWebCreated(IZWeb zWeb, int width, int height)
+    public void onZWebCreated(IZWebHandler zWebHandler, int width, int height)
     {
         JSONObject jsonObject = new JSONObject();
         try
         {
-            jsonObject.put("Data", "未实现任何接口，无法产生互动操作...");
+            jsonObject.put("DATA", "未实现任何接口，无法产生互动操作...");
         }
         catch (JSONException e)
         {
             e.printStackTrace();
         }
-        zWeb.callReceiver(ZMethodName.ON_READY, jsonObject);
+        zWebHandler.callReceiver(ZMethodName.ON_READY, jsonObject);
     }
 
     @Override
-    public void onZWebException(IZWeb zWeb, long errorCode, String message)
+    public void onZWebException(IZWebHandler zWebHandler, long errorCode, String message)
     {
 
     }
 
     @Override
-    public void onZWebRequire(IZWeb zWeb, String url, String method, String data, String type, IZRequireController controller)
+    public void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller)
     {
         controller.result(false);
     }
 
     @Override
-    public void onZWebMessage(IZWeb zWeb, String oJson)
+    public void onZWebMessage (IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
+    {
+        controller.result(true);
+    }
+
+    @Override
+    public void onZWebDestroy(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void onZWebDestroy(IZWeb zWeb)
+    public void saveData(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void saveData(IZWeb zWeb)
+    public void loadData(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void loadData(IZWeb zWeb)
+    public void showLoading(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void showLoading(IZWeb zWeb)
+    public void hideLoading(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void hideLoading(IZWeb zWeb)
-    {
-
-    }
-
-    @Override
-    public void tip(IZWeb zWeb, String msg)
+    public void tip(IZWebHandler zWebHandler, String msg)
     {
 
     }

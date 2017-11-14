@@ -6,5 +6,7 @@ package com.zyao89.view.zweb.inter;
  */
 public interface IZWebHandler extends IZWeb
 {
+    void quickCallJs (String method, String... params);
 
+    void quickCallJs (String method);
 }

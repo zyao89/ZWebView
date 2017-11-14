@@ -3,7 +3,7 @@ package com.zyao89.view.zweb.javascript;
 import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
-import com.zyao89.view.zweb.inter.IZWeb;
+import com.zyao89.view.zweb.inter.IZWebHandler;
 
 /**
  * 扩展暴露接口
@@ -13,7 +13,7 @@ import com.zyao89.view.zweb.inter.IZWeb;
  */
 public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
 {
-    public ZJavaScriptEx(@NonNull IZWeb web)
+    public ZJavaScriptEx(@NonNull IZWebHandler web)
     {
         super(web);
     }
@@ -22,34 +22,34 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
     @JavascriptInterface
     public void saveData(String frameworkID)
     {
-        getZMethodInterface().saveData(getZWeb());
+        getZMethodInterface().saveData(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
     public void loadData(String frameworkID)
     {
-        getZMethodInterface().loadData(getZWeb());
+        getZMethodInterface().loadData(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
     public void showLoading(String frameworkID)
     {
-        getZMethodInterface().showLoading(getZWeb());
+        getZMethodInterface().showLoading(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
     public void hideLoading(String frameworkID)
     {
-        getZMethodInterface().hideLoading(getZWeb());
+        getZMethodInterface().hideLoading(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
     public void tip(String frameworkID, String msg)
     {
-        getZMethodInterface().tip(getZWeb(), msg);
+        getZMethodInterface().tip(getZWebHandler(), msg);
     }
 }

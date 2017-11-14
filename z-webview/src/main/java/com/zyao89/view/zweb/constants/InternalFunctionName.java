@@ -13,6 +13,7 @@ public interface InternalFunctionName
 
     String INIT_FRAMEWORK   = "initFramework";
     String REQUIRE_CALLBACK = "requireCallback";
+    String MESSAGE_CALLBACK = "messageCallback";
     /**
      * 通用方法
      */

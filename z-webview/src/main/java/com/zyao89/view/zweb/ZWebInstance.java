@@ -108,7 +108,7 @@ public class ZWebInstance implements IZActivityStateListener
 
     private void initMainHtml(String mainHtml)
     {
-        mZJavaScript = new ZJavaScriptEx(mZWeb);
+        mZJavaScript = new ZJavaScriptEx(mZWebHandler);
         mZWebView.addJavascriptInterface(mZJavaScript, getZConfig().getInterName());
         mZWebView.loadUrl(mainHtml);
     }

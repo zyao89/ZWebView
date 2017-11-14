@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.zyao89.view.zweb.ZWebInstance;
 import com.zyao89.view.zweb.inter.IZMethodInterface;
-import com.zyao89.view.zweb.inter.IZWeb;
+import com.zyao89.view.zweb.inter.IZWebHandler;
 
 import java.io.IOException;
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements IZMethodInterface
     }
 
     @Override
-    public void onZWebCreated(IZWeb zWeb, int width, int height)
+    public void onZWebCreated(IZWebHandler zWebHandler, int width, int height)
     {
         boolean a = mRequireService.a("2b", "9999", 66);
         System.out.println("结果打印： " + a);
@@ -141,13 +141,13 @@ public class MainActivity extends AppCompatActivity implements IZMethodInterface
     }
 
     @Override
-    public void onZWebException(IZWeb zWeb, long errorCode, String message)
+    public void onZWebException(IZWebHandler zWebHandler, long errorCode, String message)
     {
 
     }
 
     @Override
-    public void onZWebRequire(IZWeb zWeb, String url, String method, String data, String type, final IZRequireController controller)
+    public void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, final IZRequireController controller)
     {
         Request request = new Request.Builder()
                 .url(url)
@@ -170,43 +170,43 @@ public class MainActivity extends AppCompatActivity implements IZMethodInterface
     }
 
     @Override
-    public void onZWebMessage(IZWeb zWeb, String oJson)
+    public void onZWebMessage (IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
     {
 
     }
 
     @Override
-    public void onZWebDestroy(IZWeb zWeb)
+    public void onZWebDestroy(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void saveData(IZWeb zWeb)
+    public void saveData(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void loadData(IZWeb zWeb)
+    public void loadData(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void showLoading(IZWeb zWeb)
+    public void showLoading(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void hideLoading(IZWeb zWeb)
+    public void hideLoading(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void tip(IZWeb zWeb, String msg)
+    public void tip(IZWebHandler zWebHandler, String msg)
     {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }

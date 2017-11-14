@@ -4,11 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.JavascriptInterface;
 
+import com.zyao89.view.zweb.constants.InternalConstantName;
 import com.zyao89.view.zweb.constants.InternalFunctionName;
 import com.zyao89.view.zweb.exceptions.ZWebException;
 import com.zyao89.view.zweb.impl.DefaultZMethodInterface;
 import com.zyao89.view.zweb.inter.IZMethodInterface;
-import com.zyao89.view.zweb.inter.IZWeb;
+import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.utils.Utils;
 import com.zyao89.view.zweb.utils.ZLog;
 
@@ -24,24 +25,24 @@ import org.json.JSONObject;
 /* package */ class ZJavaScript implements IZRenderListener
 {
     @NonNull
-    private final IZWeb             mZWeb;
+    private final IZWebHandler mZWebHandler;
     @NonNull
     private final IZMethodInterface mDefaultZMethodInterface;
-    private       IZMethodInterface mZMethodInterface;
+    private IZMethodInterface mZMethodInterface;
 
-    /* package */ ZJavaScript(@NonNull IZWeb zWeb)
+    /* package */ ZJavaScript (@NonNull IZWebHandler zWeb)
     {
-        mZWeb = zWeb;
+        mZWebHandler = zWeb;
         mDefaultZMethodInterface = new DefaultZMethodInterface();
     }
 
-    public void setOnMethodImplement(@NonNull IZMethodInterface interfaceObj)
+    public void setOnMethodImplement (@NonNull IZMethodInterface interfaceObj)
     {
         mZMethodInterface = interfaceObj;
     }
 
     @NonNull
-    protected final IZMethodInterface getZMethodInterface()
+    protected final IZMethodInterface getZMethodInterface ()
     {
         if (mZMethodInterface == null)
         {
@@ -52,113 +53,129 @@ import org.json.JSONObject;
     }
 
     @NonNull
-    public IZWeb getZWeb()
+    protected final IZWebHandler getZWebHandler ()
     {
-        return mZWeb;
+        return mZWebHandler;
     }
 
-    protected final String getFrameworkID()
+    protected final String getFrameworkID ()
     {
-        return getZWeb().getFrameworkUUID();
+        return getZWebHandler().getFrameworkUUID();
     }
 
-    protected final boolean execJS(String function, JSONObject json)
+    protected final boolean execJS (String function, JSONObject json)
     {
-        return mZWeb.execJS(function, json);
+        return mZWebHandler.execJS(function, json);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebCreated(String frameworkID, String size)
+    public void onZWebCreated (String frameworkID, String size)
     {
         JSONObject jsonObject = Utils.json2Obj(size);
         String width = jsonObject.optString("width");
         String height = jsonObject.optString("height");
 
-        getZMethodInterface().onZWebCreated(getZWeb(), Integer.parseInt(width, 10), Integer.parseInt(height, 10));
+        getZMethodInterface().onZWebCreated(getZWebHandler(), Integer.parseInt(width, 10), Integer.parseInt(height, 10));
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebException(String frameworkID, long errCode, String msg)
+    public void onZWebException (String frameworkID, long errCode, String msg)
     {
         ZLog.with(this).d("zzzzz  onZWebException errCode： " + errCode + "， msg： " + msg);
 
-        getZMethodInterface().onZWebException(getZWeb(), errCode, msg);
+        getZMethodInterface().onZWebException(getZWebHandler(), errCode, msg);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebRequire(String frameworkID, String oJson)
+    public void onZWebRequire (String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  onZWebRequire： " + frameworkID + "， oJson：" + oJson);
 
         JSONObject jsonObject = Utils.json2Obj(oJson);
-        final String sequence = jsonObject.optString("Sequence");
-        final String url = jsonObject.optString("Url");
-        final String method = jsonObject.optString("ZMethod");
-        final String data = jsonObject.optString("Data");
-        final String type = jsonObject.optString("Type");
+        final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
+        final String url = jsonObject.optString(InternalConstantName.URL);
+        final String method = jsonObject.optString(InternalConstantName.METHOD);
+        final String data = jsonObject.optString(InternalConstantName.DATA);
+        final String type = jsonObject.optString(InternalConstantName.TYPE);
 
-        getZMethodInterface().onZWebRequire(getZWeb(), url, method, data, type, new IZMethodInterface.IZRequireController()
-        {
-            @Override
-            public void result(boolean isSuccess)
-            {
-                JSONObject json = convert(sequence, isSuccess, null);
-                ZJavaScript.this.execJS(InternalFunctionName.REQUIRE_CALLBACK, json);
-            }
-
-            @Override
-            public void result(boolean isSuccess, String data)
-            {
-                JSONObject json = convert(sequence, isSuccess, data);
-                ZJavaScript.this.execJS(InternalFunctionName.REQUIRE_CALLBACK, json);
-            }
-
-            @Override
-            public void result(boolean isSuccess, JSONObject data)
-            {
-                JSONObject json = convert(sequence, isSuccess, data.toString());
-                ZJavaScript.this.execJS(InternalFunctionName.REQUIRE_CALLBACK, json);
-            }
-
-            private JSONObject convert(@NonNull String sequence, boolean isSuccess, @Nullable String data)
-            {
-                try
-                {
-                    JSONObject json = new JSONObject();
-                    json.put("Sequence", sequence);
-                    json.put("Result", isSuccess ? "success" : "error");
-                    if (data != null)
-                    {
-                        json.put("Data", data);
-                    }
-                    return json;
-                }
-                catch (JSONException e)
-                {
-                    throw new ZWebException("onZWebRequire is Failed... ", e);
-                }
-            }
-        });
+        getZMethodInterface().onZWebRequire(getZWebHandler(), url, method, data, type, new ZController(InternalFunctionName.REQUIRE_CALLBACK, sequence));
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebMessage(String frameworkID, String oJson)
+    public void onZWebMessage (String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  postMessage： " + frameworkID + "， oJson：" + oJson);
 
-        getZMethodInterface().onZWebMessage(getZWeb(), oJson);
+        JSONObject jsonObject = Utils.json2Obj(oJson);
+        final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
+        final String cmd = jsonObject.optString(InternalConstantName.CMD);
+        final String data = jsonObject.optString(InternalConstantName.DATA);
+
+        getZMethodInterface().onZWebMessage(getZWebHandler(), cmd, data, new ZController(InternalFunctionName.MESSAGE_CALLBACK, sequence));
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebDestroy(String frameworkID)
+    public void onZWebDestroy (String frameworkID)
     {
         ZLog.with(this).d("zzzzz  onZWebDestroy： " + frameworkID);
 
-        getZMethodInterface().onZWebDestroy(getZWeb());
+        getZMethodInterface().onZWebDestroy(getZWebHandler());
+    }
+
+    class ZController implements IZMethodInterface.IZMessageController, IZMethodInterface.IZRequireController
+    {
+        private final String mFunctionName;
+        private final String mSequence;
+
+        public ZController (String function, String sequence)
+        {
+            mFunctionName = function;
+            mSequence = sequence;
+        }
+
+        @Override
+        public void result (boolean isSuccess)
+        {
+            JSONObject json = convert(mSequence, isSuccess, null);
+            ZJavaScript.this.execJS(mFunctionName, json);
+        }
+
+        @Override
+        public void result (boolean isSuccess, String data)
+        {
+            JSONObject json = convert(mSequence, isSuccess, data);
+            ZJavaScript.this.execJS(mFunctionName, json);
+        }
+
+        @Override
+        public void result (boolean isSuccess, JSONObject data)
+        {
+            JSONObject json = convert(mSequence, isSuccess, data.toString());
+            ZJavaScript.this.execJS(mFunctionName, json);
+        }
+
+        private JSONObject convert (@NonNull String sequence, boolean isSuccess, @Nullable String data)
+        {
+            try
+            {
+                JSONObject json = new JSONObject();
+                json.put(InternalConstantName.SEQUENCE, sequence);
+                json.put(InternalConstantName.RESULT, isSuccess ? InternalConstantName.SUCCESS : InternalConstantName.ERROR);
+                if (data != null)
+                {
+                    json.put(InternalConstantName.DATA, data);
+                }
+                return json;
+            }
+            catch (JSONException e)
+            {
+                throw new ZWebException("ZController convert is Failed... ", e);
+            }
+        }
     }
 }

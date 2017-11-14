@@ -194,6 +194,7 @@
 
 	var ZWebSDK = function(szFrameworkUUID, oParams) {
 		this.mapRequireQueue = {}; // 请求队列
+		this.mapMessageQueue = {}; // 消息队列
 		this.szFrameworkUUID = szFrameworkUUID;
 		this.OS = oParams.OS; // 平台
 		this.Version = oParams.Version; // 版本
@@ -243,7 +244,6 @@
 				Data: oData,
 				Type: szType || "json"
 			};
-			// this.showLoading();
 			var promise = new ExportsMethod.Promise();
 			this.mapRequireQueue[oRequireParam.Sequence] = promise;
 			this.callInterOS(INTER_NAME.onZWebRequire, oRequireParam);
@@ -259,7 +259,6 @@
          * }
          */
 		requireCallback: function(oResultParam) {
-			// this.hideLoading();
 			var sequence = oResultParam.Sequence;
 			var promise = this.mapRequireQueue[sequence];
 			delete this.mapRequireQueue[sequence];
@@ -274,8 +273,43 @@
 			}
 		},
 
-		message: function(oMsg) {
-			this.callInterOS(INTER_NAME.onZWebMessage, oMsg);
+		/**
+         * @ szCmd 命令
+         * @ oData 数据
+         */
+		message: function(szCmd, oData) {
+		    var oRequireParam = {
+                Sequence: this.createUUID(),
+                Cmd: szCmd,
+                Data: oData
+            };
+            var promise = new ExportsMethod.Promise();
+            this.mapMessageQueue[oRequireParam.Sequence] = promise;
+            this.callInterOS(INTER_NAME.onZWebMessage, oRequireParam);
+            return promise;
+		},
+
+        /**
+         * 消息请求返回方法
+         * {
+         *  Sequence："",
+         *  Result: "success" or "error",
+         *  Data: {}
+         * }
+         */
+		messageCallback: function(oResultParam) {
+			var sequence = oResultParam.Sequence;
+			var promise = this.mapMessageQueue[sequence];
+			delete this.mapMessageQueue[sequence];
+			// 请求结果回调出去
+			var result = oResultParam.Result;
+			if (result === "success") {
+				// 成功
+				promise.resolve(oResultParam.Data);
+			} else {
+				// 失败
+				promise.reject(oResultParam.Data);
+			}
 		},
 
 		// 销毁或退出

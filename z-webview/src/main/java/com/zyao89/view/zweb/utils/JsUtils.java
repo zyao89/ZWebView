@@ -1,5 +1,11 @@
 package com.zyao89.view.zweb.utils;
 
+import android.text.TextUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * @author Zyao89
  * @date 2017/11/13.
@@ -12,9 +18,10 @@ public class JsUtils
      *
      * @param key
      * @param js
+     *
      * @return
      */
-    public static String buildNotRepeatInjectJS(String key, String js)
+    public static String buildNotRepeatInjectJS (String key, String js)
     {
         String obj = String.format("__injectFlag_%1$s__", key);
         final StringBuilder sb = new StringBuilder();
@@ -34,9 +41,10 @@ public class JsUtils
      * 构建一个“带try catch”的js脚本；
      *
      * @param js
+     *
      * @return
      */
-    public static String buildTryCatchInjectJS(String js)
+    public static String buildTryCatchInjectJS (String js)
     {
         StringBuilder sb = new StringBuilder();
         sb.append("javascript:try{");
@@ -45,14 +53,41 @@ public class JsUtils
         return sb.toString();
     }
 
+    public static boolean isJson (String target)
+    {
+        if (TextUtils.isEmpty(target))
+        {
+            return false;
+        }
+        boolean tag = false;
+        try
+        {
+            if (target.startsWith("["))
+            {
+                new JSONArray(target);
+            }
+            else
+            {
+                new JSONObject(target);
+            }
+
+            tag = true;
+        }
+        catch (JSONException ignore)
+        {
+            tag = false;
+        }
+        return tag;
+    }
+
     /**
      * 不支持版本
      *
      * @return
      */
-    public static boolean notSupportInterface()
+    public static boolean notSupportInterface ()
     {
-//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1;
+        //        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1;
         return true;
     }
 }

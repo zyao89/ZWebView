@@ -2,11 +2,27 @@
 	document.getElementById("print").onclick = function() {
 		console.log("click" + window.ZWebSDK);
 
-		var prom = window.ZWebSDK.require(
-			"https://zyao89.cn",
-			"get",
-			"HAHA",
-			"Json"
+//		var prom = window.ZWebSDK.require(
+//			"https://zyao89.cn",
+//			"get",
+//			"HAHA",
+//			"Json"
+//		);
+//		prom.then(
+//			function(data) {
+//				console.log("success..." + data);
+//				window.ZWebSDK.print('print', data);
+//				ZWebSDK.tip("success...");
+//			},
+//			function(error) {
+//				console.log("error...");
+//				ZWebSDK.tip("error...");
+//			}
+//		);
+
+		var prom = window.ZWebSDK.message(
+			"CMD",
+			"get"
 		);
 		prom.then(
 			function(data) {
