@@ -20,9 +20,9 @@
 //			}
 //		);
 
-		var prom = window.ZWebSDK.message(
+		var prom = ZWebSDK.message(
 			"CMD",
-			"get"
+			ZWebSDK
 		);
 		prom.then(
 			function(data) {
@@ -47,7 +47,5 @@
 	__ZWeb__.init = function(szFrameworkUUID, oData) {
 		console.log(JSON.stringify(oData));
 		ZWebSDK.exceptionOS(1007, "密码错误");
-		ZWebSDK.message("未知消息提示。。。");
-		ZWebSDK.message(oData);
 	};
 })();

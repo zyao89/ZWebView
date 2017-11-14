@@ -550,18 +550,23 @@
 			this.ZWebSDK.requireCallback(oResultParam);
         },
 
+        // 消息回调
+        messageCallback: function(szFrameworkUUID, oResultParam) {
+            this.ZWebSDK.messageCallback(oResultParam);
+        },
+
         callReceiver: function (szFrameworkUUID, szMethod, oData) {
-          this.ZWebSDK.dispatchCall(szMethod, oData);
+            this.ZWebSDK.dispatchCall(szMethod, oData);
         },
 
         goBack: function (szFrameworkUUID) {
-          console.info('goBack 被调用了...');
-          global.history.go(-1);
+            console.info('goBack 被调用了...');
+            global.history.go(-1);
         },
 
         goForward: function (szFrameworkUUID) {
-          console.info('goForward 被调用了...');
-          global.history.go(1);
+            console.info('goForward 被调用了...');
+            global.history.go(1);
         },
 
         refresh: function (szFrameworkUUID) {

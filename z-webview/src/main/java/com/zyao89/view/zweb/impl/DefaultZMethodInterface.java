@@ -41,7 +41,7 @@ public class DefaultZMethodInterface implements IZMethodInterface
     }
 
     @Override
-    public void onZWebMessage (IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
+    public void onZWebMessage(IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
     {
         controller.result(true);
     }

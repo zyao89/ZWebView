@@ -19,13 +19,13 @@ public class ZWebHandler implements IZWebHandler
 {
     private IZWeb mZWeb;
 
-    /*package*/ void setZWeb (IZWeb zWeb)
+    /*package*/ void setZWeb(IZWeb zWeb)
     {
         mZWeb = zWeb;
     }
 
     @Override
-    public String getFrameworkUUID ()
+    public String getFrameworkUUID()
     {
         if (mZWeb == null)
         {
@@ -35,7 +35,7 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
-    public boolean callJS (String js)
+    public boolean callJS(String js)
     {
         if (mZWeb == null)
         {
@@ -45,7 +45,7 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
-    public final boolean execJS (@NonNull String function, JSONObject jsonObject)
+    public final boolean execJS(@NonNull String function, JSONObject jsonObject)
     {
         if (mZWeb == null)
         {
@@ -55,7 +55,7 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
-    public final boolean callReceiver (@NonNull String method, JSONObject jsonObject)
+    public final boolean callReceiver(@NonNull String method, JSONObject jsonObject)
     {
         if (mZWeb == null)
         {
@@ -65,7 +65,7 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
-    public void quickCallJs (String method, String... params)
+    public void quickCallJs(String method, String... params)
     {
         StringBuilder sb = new StringBuilder();
         sb.append("javascript:").append(method);
@@ -81,12 +81,12 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
-    public void quickCallJs (String method)
+    public void quickCallJs(String method)
     {
         this.quickCallJs(method, (String[]) null);
     }
 
-    private String concat (String... params)
+    private String concat(String... params)
     {
         StringBuilder mStringBuilder = new StringBuilder();
         for (int i = 0; i < params.length; i++)

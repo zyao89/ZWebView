@@ -13,34 +13,31 @@ public interface IZWeb
      *
      * @return
      */
-    String getFrameworkUUID ();
+    String getFrameworkUUID();
 
     /**
      * 调用JS
      *
      * @param js
-     *
      * @return
      */
-    boolean callJS (String js);
+    boolean callJS(String js);
 
     /**
      * 执行JS
      *
      * @param function function string name
      * @param json     Object
-     *
      * @return
      */
-    boolean execJS (String function, JSONObject json);
+    boolean execJS(String function, JSONObject json);
 
     /**
      * 通知接收人
      *
      * @param method method string name
      * @param json   Object
-     *
      * @return
      */
-    boolean callReceiver (String method, JSONObject json);
+    boolean callReceiver(String method, JSONObject json);
 }

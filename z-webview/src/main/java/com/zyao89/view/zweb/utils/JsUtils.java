@@ -18,10 +18,9 @@ public class JsUtils
      *
      * @param key
      * @param js
-     *
      * @return
      */
-    public static String buildNotRepeatInjectJS (String key, String js)
+    public static String buildNotRepeatInjectJS(String key, String js)
     {
         String obj = String.format("__injectFlag_%1$s__", key);
         final StringBuilder sb = new StringBuilder();
@@ -41,10 +40,9 @@ public class JsUtils
      * 构建一个“带try catch”的js脚本；
      *
      * @param js
-     *
      * @return
      */
-    public static String buildTryCatchInjectJS (String js)
+    public static String buildTryCatchInjectJS(String js)
     {
         StringBuilder sb = new StringBuilder();
         sb.append("javascript:try{");
@@ -53,7 +51,7 @@ public class JsUtils
         return sb.toString();
     }
 
-    public static boolean isJson (String target)
+    public static boolean isJson(String target)
     {
         if (TextUtils.isEmpty(target))
         {
@@ -85,7 +83,7 @@ public class JsUtils
      *
      * @return
      */
-    public static boolean notSupportInterface ()
+    public static boolean notSupportInterface()
     {
         //        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1;
         return true;

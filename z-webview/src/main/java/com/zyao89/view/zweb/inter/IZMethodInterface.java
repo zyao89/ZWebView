@@ -1,5 +1,7 @@
 package com.zyao89.view.zweb.inter;
 
+import android.support.annotation.NonNull;
+
 import org.json.JSONObject;
 
 /**
@@ -41,70 +43,12 @@ public interface IZMethodInterface
     void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller);
 
     /**
-     * 请求结果控制协议
-     */
-    interface IZRequireController
-    {
-        /**
-         * 请求结果处理
-         *
-         * @param isSuccess 成功 or 失败
-         */
-        void result(boolean isSuccess);
-
-        /**
-         * 请求结果处理
-         *
-         * @param isSuccess 成功 or 失败
-         * @param data      请求结果数据
-         */
-        void result(boolean isSuccess, String data);
-
-        /**
-         * 请求结果处理
-         *
-         * @param isSuccess 成功 or 失败
-         * @param data      请求结果数据
-         */
-        void result(boolean isSuccess, JSONObject data);
-    }
-
-    /**
      * 异步消息请求
      *
      * @param zWebHandler
-     * @param oJson
+     * @param data
      */
-    void onZWebMessage(IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller);
-
-    /**
-     * 请求结果控制协议
-     */
-    interface IZMessageController
-    {
-        /**
-         * 请求结果处理
-         *
-         * @param isSuccess 成功 or 失败
-         */
-        void result(boolean isSuccess);
-
-        /**
-         * 请求结果处理
-         *
-         * @param isSuccess 成功 or 失败
-         * @param data      请求结果数据
-         */
-        void result(boolean isSuccess, String data);
-
-        /**
-         * 请求结果处理
-         *
-         * @param isSuccess 成功 or 失败
-         * @param data      请求结果数据
-         */
-        void result(boolean isSuccess, JSONObject data);
-    }
+    void onZWebMessage(IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
 
     /**
      * 销毁
@@ -148,4 +92,70 @@ public interface IZMethodInterface
      * @param msg
      */
     void tip(IZWebHandler zWebHandler, String msg);
+
+    /**
+     * 请求结果控制协议
+     */
+    interface IZRequireController
+    {
+        /**
+         * 请求结果处理
+         *
+         * @param isSuccess 成功 or 失败
+         */
+        void result(boolean isSuccess);
+
+        /**
+         * 请求结果处理
+         *
+         * @param isSuccess 成功 or 失败
+         * @param data      请求结果数据
+         */
+        void result(boolean isSuccess, String data);
+
+        /**
+         * 请求结果处理
+         *
+         * @param isSuccess 成功 or 失败
+         * @param data      请求结果数据
+         */
+        void result(boolean isSuccess, @NonNull JSONObject data);
+    }
+
+    /**
+     * 消息结果控制协议
+     */
+    interface IZMessageController
+    {
+        /**
+         * 消息结果处理
+         *
+         * @param isSuccess 成功 or 失败
+         */
+        void result(boolean isSuccess);
+
+        /**
+         * 消息结果处理
+         *
+         * @param isSuccess 成功 or 失败
+         * @param data      消息结果数据
+         */
+        void result(boolean isSuccess, String data);
+
+        /**
+         * 消息结果处理
+         *
+         * @param isSuccess 成功 or 失败
+         * @param data      消息结果数据
+         */
+        void result(boolean isSuccess, @NonNull JSONObject data);
+
+        /**
+         * 自动解析为对象中相应方法
+         *
+         * @param object 对象
+         * @param <T>
+         */
+        <T> void parseMessage(@NonNull T object);
+    }
 }

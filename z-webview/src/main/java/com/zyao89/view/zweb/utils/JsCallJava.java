@@ -80,6 +80,50 @@ public class JsCallJava
         }
     }
 
+    private static String promptMsgFormat(String object, String method, String types, String args)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append(KEY_OBJ).append(":").append(object).append(",");
+        sb.append(KEY_METHOD).append(":").append(method).append(",");
+        sb.append(KEY_TYPES).append(":").append(types).append(",");
+        sb.append(KEY_ARGS).append(":").append(args);
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * 是否是“Java接口类中方法调用”的内部消息；
+     *
+     * @param message
+     * @return
+     */
+    public static boolean isSafeWebViewCallMsg(String message)
+    {
+        return message.startsWith(MSG_PROMPT_HEADER);
+    }
+
+    public static JSONObject getMsgJSONObject(String message)
+    {
+        message = message.substring(MSG_PROMPT_HEADER.length());
+        JSONObject jsonObject;
+        try
+        {
+            jsonObject = new JSONObject(message);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+            jsonObject = new JSONObject();
+        }
+        return jsonObject;
+    }
+
+    public static String getInterfacedName(JSONObject jsonObject)
+    {
+        return jsonObject.optString(KEY_OBJ);
+    }
+
     private String genJavaMethodSign(Method method)
     {
         StringBuilder sign = new StringBuilder(method.getName());
@@ -253,51 +297,7 @@ public class JsCallJava
             // insertRes = "\"".concat(String.valueOf(result)).concat("\"");
         }
         String resStr = String.format(Locale.getDefault(), RETURN_RESULT_FORMAT, stateCode, insertRes);
-        ZLog.with(this).d("call time: " + (android.os.SystemClock.uptimeMillis() - time) + ", request: " + reqJson + ", result:" + resStr);
+        ZLog.with(this).z("call time: " + (android.os.SystemClock.uptimeMillis() - time) + ", request: " + reqJson + ", result:" + resStr);
         return resStr;
-    }
-
-    private static String promptMsgFormat(String object, String method, String types, String args)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append(KEY_OBJ).append(":").append(object).append(",");
-        sb.append(KEY_METHOD).append(":").append(method).append(",");
-        sb.append(KEY_TYPES).append(":").append(types).append(",");
-        sb.append(KEY_ARGS).append(":").append(args);
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * 是否是“Java接口类中方法调用”的内部消息；
-     *
-     * @param message
-     * @return
-     */
-    public static boolean isSafeWebViewCallMsg(String message)
-    {
-        return message.startsWith(MSG_PROMPT_HEADER);
-    }
-
-    public static JSONObject getMsgJSONObject(String message)
-    {
-        message = message.substring(MSG_PROMPT_HEADER.length());
-        JSONObject jsonObject;
-        try
-        {
-            jsonObject = new JSONObject(message);
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-            jsonObject = new JSONObject();
-        }
-        return jsonObject;
-    }
-
-    public static String getInterfacedName(JSONObject jsonObject)
-    {
-        return jsonObject.optString(KEY_OBJ);
     }
 }

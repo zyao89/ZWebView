@@ -26,7 +26,7 @@ public class WebChromeClientEx extends WebChromeClient
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)
     {
-        ZLog.with(this).d("onJsPrompt:" + url + "  message:" + message + "  d:" + defaultValue + "  ");
+        ZLog.with(this).z("onJsPrompt:" + url + "  message:" + message + "  d:" + defaultValue + "  ");
         if (JsUtils.notSupportInterface())
         {
             if (view instanceof WebViewEx)

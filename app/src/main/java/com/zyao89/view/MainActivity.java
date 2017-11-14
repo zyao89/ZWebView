@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements IZMethodInterface
     private ZWebInstance   mZWebInstance;
     private OkHttpClient   mOkHttpClient;
     private RequireService mRequireService;
+    private ParseMessage   mParseMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -120,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements IZMethodInterface
         initOkHttpClient();
 
         initRequireService();
+
+        mParseMessage = new ParseMessage();
     }
 
     private void initOkHttpClient()
@@ -172,7 +175,9 @@ public class MainActivity extends AppCompatActivity implements IZMethodInterface
     @Override
     public void onZWebMessage (IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
     {
+//      controller.result(true, "我是你想要的消息");
 
+        controller.parseMessage(this.mParseMessage);
     }
 
     @Override

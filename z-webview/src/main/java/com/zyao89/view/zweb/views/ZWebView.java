@@ -29,23 +29,23 @@ import com.zyao89.view.zweb.utils.ZLog;
  */
 public class ZWebView implements IZWebView
 {
-    private Context mContext;
+    private Context     mContext;
     private FrameLayout mRootView;
-    private WebViewEx mWebView;
+    private WebViewEx   mWebView;
     private ProgressBar mProgressBar;
 
     private boolean mShowLoading = true;
 
     private OnErrorListener mOnErrorListener;
-    private OnPageListener mOnPageListener;
+    private OnPageListener  mOnPageListener;
 
-    public ZWebView (Context context)
+    public ZWebView(Context context)
     {
         mContext = context;
     }
 
     @Override
-    public View getView ()
+    public View getView()
     {
         if (mRootView == null)
         {
@@ -72,7 +72,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void onPause ()
+    public void onPause()
     {
         if (getWebView() == null)
         {
@@ -83,7 +83,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void onResume ()
+    public void onResume()
     {
         if (getWebView() == null)
         {
@@ -94,7 +94,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void destroy ()
+    public void destroy()
     {
         if (getWebView() != null)
         {
@@ -123,7 +123,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void loadUrl (String url)
+    public void loadUrl(String url)
     {
         if (getWebView() == null)
         {
@@ -134,7 +134,7 @@ public class ZWebView implements IZWebView
 
     @Override
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public void evaluateJavascript (String script)
+    public void evaluateJavascript(String script)
     {
         if (getWebView() == null)
         {
@@ -144,7 +144,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void reload ()
+    public void reload()
     {
         if (getWebView() == null)
         {
@@ -154,7 +154,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public boolean canGoBack ()
+    public boolean canGoBack()
     {
         if (getWebView() == null)
         {
@@ -164,7 +164,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void goBack ()
+    public void goBack()
     {
         if (getWebView() == null)
         {
@@ -174,7 +174,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void goForward ()
+    public void goForward()
     {
         if (getWebView() == null)
         {
@@ -184,14 +184,14 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void setShowLoading (boolean shown)
+    public void setShowLoading(boolean shown)
     {
         mShowLoading = shown;
     }
 
     @Override
     @SuppressLint({"JavascriptInterface", "AddJavascriptInterface"})
-    public void addJavascriptInterface (Object object, String name)
+    public void addJavascriptInterface(Object object, String name)
     {
         if (getWebView() == null)
         {
@@ -201,18 +201,18 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void setOnErrorListener (OnErrorListener listener)
+    public void setOnErrorListener(OnErrorListener listener)
     {
         mOnErrorListener = listener;
     }
 
     @Override
-    public void setOnPageListener (OnPageListener listener)
+    public void setOnPageListener(OnPageListener listener)
     {
         mOnPageListener = listener;
     }
 
-    private void showProgressBar (boolean shown)
+    private void showProgressBar(boolean shown)
     {
         if (mShowLoading)
         {
@@ -220,26 +220,26 @@ public class ZWebView implements IZWebView
         }
     }
 
-    private void showWebView (boolean shown)
+    private void showWebView(boolean shown)
     {
         mWebView.setVisibility(shown ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Nullable
-    private WebViewEx getWebView ()
+    private WebViewEx getWebView()
     {
         //TODO: remove this, duplicate with getView semantically.
         return mWebView;
     }
 
     @Nullable
-    private FrameLayout getRootView ()
+    private FrameLayout getRootView()
     {
         return mRootView;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void initWebView (WebViewEx wv)
+    private void initWebView(WebViewEx wv)
     {
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -298,7 +298,7 @@ public class ZWebView implements IZWebView
         {
 
             @Override
-            public boolean shouldOverrideUrlLoading (WebView view, String url)
+            public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
                 view.loadUrl(url);
                 ZLog.with(this).z("onPageOverride " + url);
@@ -306,7 +306,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onPageStarted (WebView view, String url, Bitmap favicon)
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
                 super.onPageStarted(view, url, favicon);
                 ZLog.with(this).z("onPageStarted " + url);
@@ -317,7 +317,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onPageFinished (WebView view, String url)
+            public void onPageFinished(WebView view, String url)
             {
                 super.onPageFinished(view, url);
                 ZLog.with(this).z("onPageFinished " + url);
@@ -328,7 +328,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onReceivedError (WebView view, WebResourceRequest request, WebResourceError error)
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
             {
                 super.onReceivedError(view, request, error);
                 if (mOnErrorListener != null)
@@ -338,7 +338,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onReceivedHttpError (WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
             {
                 super.onReceivedHttpError(view, request, errorResponse);
                 if (mOnErrorListener != null)
@@ -348,7 +348,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error)
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
             {
                 super.onReceivedSslError(view, handler, error);
                 if (mOnErrorListener != null)
@@ -362,7 +362,7 @@ public class ZWebView implements IZWebView
         wv.setWebChromeClient(new WebChromeClientEx()
         {
             @Override
-            public void onProgressChanged (WebView view, int newProgress)
+            public void onProgressChanged(WebView view, int newProgress)
             {
                 super.onProgressChanged(view, newProgress);
                 showWebView(newProgress == 100);
@@ -371,7 +371,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onReceivedTitle (WebView view, String title)
+            public void onReceivedTitle(WebView view, String title)
             {
                 super.onReceivedTitle(view, title);
                 if (mOnPageListener != null)

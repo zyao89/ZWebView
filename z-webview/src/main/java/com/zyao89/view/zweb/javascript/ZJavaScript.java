@@ -16,6 +16,8 @@ import com.zyao89.view.zweb.utils.ZLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
+
 /**
  * 基本暴露接口
  *
@@ -25,24 +27,24 @@ import org.json.JSONObject;
 /* package */ class ZJavaScript implements IZRenderListener
 {
     @NonNull
-    private final IZWebHandler mZWebHandler;
+    private final IZWebHandler      mZWebHandler;
     @NonNull
     private final IZMethodInterface mDefaultZMethodInterface;
-    private IZMethodInterface mZMethodInterface;
+    private       IZMethodInterface mZMethodInterface;
 
-    /* package */ ZJavaScript (@NonNull IZWebHandler zWeb)
+    /* package */ ZJavaScript(@NonNull IZWebHandler zWeb)
     {
         mZWebHandler = zWeb;
         mDefaultZMethodInterface = new DefaultZMethodInterface();
     }
 
-    public void setOnMethodImplement (@NonNull IZMethodInterface interfaceObj)
+    public void setOnMethodImplement(@NonNull IZMethodInterface interfaceObj)
     {
         mZMethodInterface = interfaceObj;
     }
 
     @NonNull
-    protected final IZMethodInterface getZMethodInterface ()
+    protected final IZMethodInterface getZMethodInterface()
     {
         if (mZMethodInterface == null)
         {
@@ -53,24 +55,24 @@ import org.json.JSONObject;
     }
 
     @NonNull
-    protected final IZWebHandler getZWebHandler ()
+    protected final IZWebHandler getZWebHandler()
     {
         return mZWebHandler;
     }
 
-    protected final String getFrameworkID ()
+    protected final String getFrameworkID()
     {
         return getZWebHandler().getFrameworkUUID();
     }
 
-    protected final boolean execJS (String function, JSONObject json)
+    protected final boolean execJS(String function, JSONObject json)
     {
         return mZWebHandler.execJS(function, json);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebCreated (String frameworkID, String size)
+    public void onZWebCreated(String frameworkID, String size)
     {
         JSONObject jsonObject = Utils.json2Obj(size);
         String width = jsonObject.optString("width");
@@ -81,7 +83,7 @@ import org.json.JSONObject;
 
     @Override
     @JavascriptInterface
-    public void onZWebException (String frameworkID, long errCode, String msg)
+    public void onZWebException(String frameworkID, long errCode, String msg)
     {
         ZLog.with(this).d("zzzzz  onZWebException errCode： " + errCode + "， msg： " + msg);
 
@@ -90,7 +92,7 @@ import org.json.JSONObject;
 
     @Override
     @JavascriptInterface
-    public void onZWebRequire (String frameworkID, String oJson)
+    public void onZWebRequire(String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  onZWebRequire： " + frameworkID + "， oJson：" + oJson);
 
@@ -101,12 +103,13 @@ import org.json.JSONObject;
         final String data = jsonObject.optString(InternalConstantName.DATA);
         final String type = jsonObject.optString(InternalConstantName.TYPE);
 
-        getZMethodInterface().onZWebRequire(getZWebHandler(), url, method, data, type, new ZController(InternalFunctionName.REQUIRE_CALLBACK, sequence));
+        final ZRequireController zController = new ZRequireController(InternalFunctionName.REQUIRE_CALLBACK, sequence);
+        getZMethodInterface().onZWebRequire(getZWebHandler(), url, method, data, type, zController);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebMessage (String frameworkID, String oJson)
+    public void onZWebMessage(String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  postMessage： " + frameworkID + "， oJson：" + oJson);
 
@@ -115,51 +118,52 @@ import org.json.JSONObject;
         final String cmd = jsonObject.optString(InternalConstantName.CMD);
         final String data = jsonObject.optString(InternalConstantName.DATA);
 
-        getZMethodInterface().onZWebMessage(getZWebHandler(), cmd, data, new ZController(InternalFunctionName.MESSAGE_CALLBACK, sequence));
+        final ZMessageController zController = new ZMessageController(InternalFunctionName.MESSAGE_CALLBACK, sequence, cmd, data);
+        getZMethodInterface().onZWebMessage(getZWebHandler(), cmd, data, zController);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebDestroy (String frameworkID)
+    public void onZWebDestroy(String frameworkID)
     {
         ZLog.with(this).d("zzzzz  onZWebDestroy： " + frameworkID);
 
         getZMethodInterface().onZWebDestroy(getZWebHandler());
     }
 
-    class ZController implements IZMethodInterface.IZMessageController, IZMethodInterface.IZRequireController
+    class ZRequireController implements IZMethodInterface.IZRequireController
     {
-        private final String mFunctionName;
-        private final String mSequence;
+        final String mFunctionName;
+        final String mSequence;
 
-        public ZController (String function, String sequence)
+        ZRequireController(String function, String sequence)
         {
-            mFunctionName = function;
-            mSequence = sequence;
+            this.mFunctionName = function;
+            this.mSequence = sequence;
         }
 
         @Override
-        public void result (boolean isSuccess)
+        public void result(boolean isSuccess)
         {
-            JSONObject json = convert(mSequence, isSuccess, null);
-            ZJavaScript.this.execJS(mFunctionName, json);
+            JSONObject json = convert(this.mSequence, isSuccess, null);
+            ZJavaScript.this.execJS(this.mFunctionName, json);
         }
 
         @Override
-        public void result (boolean isSuccess, String data)
+        public void result(boolean isSuccess, String data)
         {
-            JSONObject json = convert(mSequence, isSuccess, data);
-            ZJavaScript.this.execJS(mFunctionName, json);
+            JSONObject json = convert(this.mSequence, isSuccess, data);
+            ZJavaScript.this.execJS(this.mFunctionName, json);
         }
 
         @Override
-        public void result (boolean isSuccess, JSONObject data)
+        public void result(boolean isSuccess, @NonNull JSONObject data)
         {
-            JSONObject json = convert(mSequence, isSuccess, data.toString());
-            ZJavaScript.this.execJS(mFunctionName, json);
+            JSONObject json = convert(this.mSequence, isSuccess, data.toString());
+            ZJavaScript.this.execJS(this.mFunctionName, json);
         }
 
-        private JSONObject convert (@NonNull String sequence, boolean isSuccess, @Nullable String data)
+        private JSONObject convert(@NonNull String sequence, boolean isSuccess, @Nullable String data)
         {
             try
             {
@@ -174,7 +178,79 @@ import org.json.JSONObject;
             }
             catch (JSONException e)
             {
-                throw new ZWebException("ZController convert is Failed... ", e);
+                throw new ZWebException(this.mFunctionName + " --> ZRequireController convert is Failed... ", e);
+            }
+        }
+    }
+
+    class ZMessageController extends ZRequireController implements IZMethodInterface.IZMessageController
+    {
+
+        private final String mCmd;
+        private final String mData;
+
+        ZMessageController(String function, String sequence, String cmd, String data)
+        {
+            super(function, sequence);
+            this.mCmd = cmd;
+            this.mData = data;
+        }
+
+        @Override
+        public <T> void parseMessage(@NonNull T object)
+        {
+            //获取方法
+            Method method = null;
+            try
+            {
+                method = object.getClass().getDeclaredMethod(this.mCmd, String.class);
+                if (method.getDeclaringClass() == Object.class)
+                {
+                    throw new ZWebException("Not support CMD...");
+                }
+                method.setAccessible(true);
+                //调用方法
+                Object result = method.invoke(object, this.mData);
+                if (result == null || result instanceof Void)
+                {
+                    this.result(true);
+                }
+                else if (result instanceof String)
+                {
+                    this.result(true, (String) result);
+                }
+                else if (result instanceof JSONObject)
+                {
+                    this.result(true, (JSONObject) result);
+                }
+                else
+                {
+                    throw new ZWebException("Not support return type...");
+                }
+            }
+            catch (NoSuchMethodException e)
+            {
+                try
+                {
+                    method = object.getClass().getDeclaredMethod(this.mCmd, String.class, IZMethodInterface.IZMessageController.class);
+                    if (method.getDeclaringClass() == Object.class)
+                    {
+                        throw new ZWebException("Not support CMD...");
+                    }
+                    method.setAccessible(true);
+                    //调用方法
+                    method.invoke(object, this.mData, this);
+                }
+                catch (Exception e1)
+                {
+                    e1.printStackTrace();
+                    this.result(false, e1.getMessage());
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                this.result(false, e.getMessage());
             }
         }
     }

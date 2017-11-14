@@ -15,14 +15,14 @@ public interface InternalConstantName
 
     // 请求参数
     String SEQUENCE = "Sequence";
-    String URL = "Url";
-    String METHOD = "Method";
-    String DATA = "Data";
-    String TYPE = "type";
+    String URL      = "Url";
+    String METHOD   = "Method";
+    String DATA     = "Data";
+    String TYPE     = "type";
 
     String CMD = "Cmd";
 
-    String RESULT = "Result";
+    String RESULT  = "Result";
     String SUCCESS = "success";
-    String ERROR = "error";
+    String ERROR   = "error";
 }
