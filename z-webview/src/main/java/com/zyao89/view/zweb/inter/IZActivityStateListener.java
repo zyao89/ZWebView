@@ -8,7 +8,7 @@ import android.view.ViewGroup;
  */
 public interface IZActivityStateListener
 {
-    void onActivityCreate(ViewGroup rootView, String mainHtml);
+    void onActivityCreate(ViewGroup rootView);
 
     void onActivityStart();
 

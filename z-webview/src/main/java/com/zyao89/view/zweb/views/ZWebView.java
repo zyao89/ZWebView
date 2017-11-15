@@ -21,6 +21,7 @@ import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.zyao89.view.zweb.ZWebConfig;
 import com.zyao89.view.zweb.utils.ZLog;
 
 /**
@@ -29,7 +30,10 @@ import com.zyao89.view.zweb.utils.ZLog;
  */
 public class ZWebView implements IZWebView
 {
-    private Context mContext;
+    private final Context mContext;
+
+    private ZWebConfig mZWebConfig;
+
     private FrameLayout mRootView;
     private WebViewEx mWebView;
     private ProgressBar mProgressBar;
@@ -42,6 +46,11 @@ public class ZWebView implements IZWebView
     public ZWebView (Context context)
     {
         mContext = context;
+    }
+
+    public void setConfig(ZWebConfig config)
+    {
+        mZWebConfig = config;
     }
 
     @Override
@@ -273,15 +282,6 @@ public class ZWebView implements IZWebView
         settings.setSupportMultipleWindows(false);
         //是否阻塞加载网络图片  协议http or https
         settings.setBlockNetworkImage(false);
-        //允许加载本地文件html  file协议
-        settings.setAllowFileAccess(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        {
-            //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
-            settings.setAllowFileAccessFromFileURLs(true);
-            //允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
-            settings.setAllowUniversalAccessFromFileURLs(true);
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
             settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -293,6 +293,16 @@ public class ZWebView implements IZWebView
         settings.setLoadWithOverviewMode(true);
         settings.setNeedInitialFocus(true);
         settings.setGeolocationEnabled(true);
+
+        //允许加载本地文件html  file协议
+        settings.setAllowFileAccess(mZWebConfig == null || mZWebConfig.isFileAccess());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        {
+            //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
+            settings.setAllowFileAccessFromFileURLs(mZWebConfig == null || mZWebConfig.isFileAccess());
+            //允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
+            settings.setAllowUniversalAccessFromFileURLs(mZWebConfig == null || mZWebConfig.isFileAccess());
+        }
 
         wv.setWebViewClient(new WebViewClientEx()
         {

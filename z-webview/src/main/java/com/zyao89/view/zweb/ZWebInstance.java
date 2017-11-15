@@ -41,9 +41,9 @@ public class ZWebInstance implements IZActivityStateListener
         sApplication = application;
     }
 
-    public static ZWebInstance createInstance()
+    public static ZWebInstance createInstance(String url)
     {
-        return createInstance(new ZWebConfig.Builder().build());
+        return createInstance(new ZWebConfig.Builder(url).build());
     }
 
     public static ZWebInstance createInstance(ZWebConfig config)
@@ -80,11 +80,11 @@ public class ZWebInstance implements IZActivityStateListener
     }
 
     @Override
-    public void onActivityCreate(@Nullable ViewGroup rootView, String mainHtml)
+    public void onActivityCreate(@Nullable ViewGroup rootView)
     {
         initWebView(rootView);
         initJavaScript();
-        initMainHtml(mainHtml);
+        initMainHtml();
     }
 
     @Override
@@ -161,10 +161,11 @@ public class ZWebInstance implements IZActivityStateListener
         this.setNativeMethodImplement(mZWebConfig.getZWebMethodInterface());
     }
 
-    private void initMainHtml (String mainHtml)
+    private void initMainHtml()
     {
         mZWebView.addJavascriptInterface(mZJavaScript, getZConfig().getInterName());
-        mZWebView.loadUrl(mainHtml);
+        String mainUrl = mZWebConfig.url();
+        mZWebView.loadUrl(mainUrl);
     }
 
     private void setOnStateListener (@NonNull IZWebOnStateListener interfaceObj)

@@ -5,6 +5,9 @@ import com.zyao89.view.zweb.impl.DefaultZWebOnStateListener;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
 import com.zyao89.view.zweb.inter.IZWebOnStateListener;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 参数配置
  *
@@ -13,58 +16,65 @@ import com.zyao89.view.zweb.inter.IZWebOnStateListener;
  */
 public class ZWebConfig
 {
-    private final String mInterName;
-    private final String mExposedName;
-    private final boolean mIsShowLoading;
+    private final String               mInterName;
+    private final String               mExposedName;
+    private final String               mUrl;
+    private final boolean              mIsShowLoading;
     private final IZWebMethodInterface mZWebMethodInterface;
     private final IZWebOnStateListener mZWebOnStateListener;
-    private final String[] mInjectJS;
-    private final boolean mIsLocalFile;
+    private final List<String>         mInjectJSs;
+    private final boolean              mIsFileAccess;
 
-    ZWebConfig (Builder builder)
+    ZWebConfig(Builder builder)
     {
+        this.mUrl = builder.mUrl;
         this.mInterName = builder.mInterName;
         this.mExposedName = builder.mExposedName;
         this.mIsShowLoading = builder.mIsShowLoading;
         this.mZWebMethodInterface = builder.mZWebMethodInterface == null ? new DefaultZWebMethodInterface() : builder.mZWebMethodInterface;
         this.mZWebOnStateListener = builder.mZWebOnStateListener == null ? new DefaultZWebOnStateListener() : builder.mZWebOnStateListener;
-        this.mInjectJS = builder.mInjectJS;
-        this.mIsLocalFile = builder.mIsLocalFile;
+        this.mInjectJSs = builder.mInjectJSList;
+        this.mIsFileAccess = builder.mIsFileAccess;
     }
 
-    public String getInterName ()
+    public String url()
+    {
+        return mUrl;
+    }
+
+    public String getInterName()
     {
         return mInterName;
     }
 
-    public String getExposedName ()
+    public String getExposedName()
     {
         return mExposedName;
     }
 
-    public boolean isShowLoading ()
+    public boolean isShowLoading()
     {
         return mIsShowLoading;
     }
 
-    public IZWebMethodInterface getZWebMethodInterface ()
+    public IZWebMethodInterface getZWebMethodInterface()
     {
         return mZWebMethodInterface;
     }
 
-    public IZWebOnStateListener getZWebOnStateListener ()
+    public IZWebOnStateListener getZWebOnStateListener()
     {
         return mZWebOnStateListener;
     }
 
-    public String[] getInjectJS ()
+    public List<String> getInjectJSs()
     {
-        return mInjectJS;
+        return mInjectJSs;
     }
 
-    public boolean isLocalFile ()
+    public boolean isFileAccess()
     {
-        return mIsLocalFile;
+        return mIsFileAccess;
     }
 
     public static class Builder
@@ -72,69 +82,80 @@ public class ZWebConfig
         /**
          * 对内接口名称
          */
-        private final String mInterName = "ZWeb";
+        private final String               mInterName           = "ZWeb";
         /**
          * 对外暴露接口名称
          */
-        private String mExposedName = "ZWeb_Android_APP";
+        private       String               mExposedName         = "ZWeb_Android_APP";
+        /**
+         * 主页URL
+         */
+        private       String               mUrl                 = null;
         /**
          * 是否显示内部加载等待
          */
-        private boolean mIsShowLoading = true;
+        private       boolean              mIsShowLoading       = true;
         /**
          * Native UI 实现
          */
-        private IZWebMethodInterface mZWebMethodInterface = null;
+        private       IZWebMethodInterface mZWebMethodInterface = null;
         /**
          * 框架生命周期监听
          */
-        private IZWebOnStateListener mZWebOnStateListener = null;
+        private       IZWebOnStateListener mZWebOnStateListener = null;
         /**
          * 在加载完成后需要注入的JS
          */
-        private String[] mInjectJS = null;
+        private       List<String>         mInjectJSList        = null;
         /**
-         * 是否加载的是本地文件
+         * 是否加载的是本地文件，默认true
          */
-        private boolean mIsLocalFile = true;
+        private       boolean              mIsFileAccess        = true;
 
-        public Builder setExposedName (String exposedName)
+        public Builder(String url)
+        {
+            if (url == null) { throw new NullPointerException("url == null"); }
+            this.mUrl = url;
+            this.mInjectJSList = new LinkedList<>();
+        }
+
+        public Builder setExposedName(String exposedName)
         {
             this.mExposedName = exposedName;
             return this;
         }
 
-        public Builder setShowLoading (boolean showLoading)
+        public Builder setShowLoading(boolean showLoading)
         {
             this.mIsShowLoading = showLoading;
             return this;
         }
 
-        public Builder setNativeMethodImplement (IZWebMethodInterface webMethodInterface)
+        public Builder setNativeMethodImplement(IZWebMethodInterface webMethodInterface)
         {
-            mZWebMethodInterface = webMethodInterface;
+            this.mZWebMethodInterface = webMethodInterface;
             return this;
         }
 
-        public Builder setOnStateListener (IZWebOnStateListener webOnStateListener)
+        public Builder setOnStateListener(IZWebOnStateListener webOnStateListener)
         {
-            mZWebOnStateListener = webOnStateListener;
+            this.mZWebOnStateListener = webOnStateListener;
             return this;
         }
 
-        public Builder setInjectJS (String... injectJS)
+        public Builder addInjectJS(String injectJS)
         {
-            mInjectJS = injectJS;
+            this.mInjectJSList.add(injectJS);
             return this;
         }
 
-        public Builder setLoadAssetsFile (boolean isLocalFile)
+        public Builder closeFileAccess()
         {
-            mIsLocalFile = isLocalFile;
+            this.mIsFileAccess = false;
             return this;
         }
 
-        public ZWebConfig build ()
+        public ZWebConfig build()
         {
             return new ZWebConfig(this);
         }

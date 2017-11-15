@@ -2,7 +2,7 @@ package com.zyao89.view.zweb.constants;
 
 /**
  * @author Zyao89
- * @Create 2017/11/8.
+ * @date 2017/11/8.
  */
 
 public interface InternalConstantName
@@ -22,7 +22,14 @@ public interface InternalConstantName
 
     String CMD = "Cmd";
 
+    // 结果
     String RESULT  = "Result";
     String SUCCESS = "success";
     String ERROR   = "error";
+
+    // 参数
+    String PARAM_KEY    = "Key";
+    String PARAM_VALUE  = "Value";
+    String PARAM_WIDTH  = "Width";
+    String PARAM_HEIGHT = "Height";
 }

@@ -93,8 +93,8 @@ import java.lang.reflect.Method;
     public void onZWebCreated (String frameworkID, String size)
     {
         JSONObject jsonObject = Utils.json2Obj(size);
-        String width = jsonObject.optString("Width");
-        String height = jsonObject.optString("Height");
+        String width = jsonObject.optString(InternalConstantName.PARAM_WIDTH);
+        String height = jsonObject.optString(InternalConstantName.PARAM_HEIGHT);
 
         getZWebStateListener().onZWebCreated(getZWebHandler(), Integer.parseInt(width, 10), Integer.parseInt(height, 10));
     }

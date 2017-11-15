@@ -19,6 +19,7 @@ import com.zyao89.view.zweb.views.ZWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -38,7 +39,10 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     {
         mFrameworkUUID = UUID.randomUUID();
         mZWebConfig = config;
-        mZWebView = new ZWebView(context);
+
+        final ZWebView zWebView = new ZWebView(context);
+        zWebView.setConfig(config);
+        mZWebView = zWebView;
 
         mZWebView.setOnPageListener(this);
         mZWebView.setOnErrorListener(this);
@@ -162,16 +166,13 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
      */
     private void injectBridgeJS ()
     {
-        String[] injectJS = getZWebConfig().getInjectJS();
-        if (injectJS != null)
+        final List<String> injectJSs = getZWebConfig().getInjectJSs();
+        for (String path : injectJSs)
         {
-            for (String path : injectJS)
-            {
-                ZLog.with(this).z("injectBridgeJS: path = " + path);
-                String jsContent = Utils.assetFile2Str(getView().getContext(), path);
-                ZLog.with(this).z("injectBridgeJS: jsContent = " + jsContent);
-                getZWebView().loadUrl("javascript:" + jsContent);
-            }
+            ZLog.with(this).z("injectBridgeJS: path = " + path);
+            String jsContent = Utils.assetFile2Str(getView().getContext(), path);
+            ZLog.with(this).z("injectBridgeJS: jsContent = " + jsContent);
+            getZWebView().loadUrl("javascript:" + jsContent);
         }
     }
 

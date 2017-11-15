@@ -3,6 +3,7 @@ package com.zyao89.view.zweb.javascript;
 import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
+import com.zyao89.view.zweb.constants.InternalConstantName;
 import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.utils.Utils;
 
@@ -26,8 +27,8 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
     public void saveData (String frameworkID, String oData)
     {
         JSONObject jsonObject = Utils.json2Obj(oData);
-        String key = jsonObject.optString("Key");
-        String value = jsonObject.optString("Value");
+        String key = jsonObject.optString(InternalConstantName.PARAM_KEY);
+        String value = jsonObject.optString(InternalConstantName.PARAM_VALUE);
 
         getZWebMethodInterface().saveData(getZWebHandler(), key, value);
     }
