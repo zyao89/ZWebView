@@ -33,13 +33,11 @@ import com.zyao89.view.zweb.utils.JsUtils;
                 ((WebViewEx) view).fixedAccessibilityInjectorExceptionForOnPageFinished(url);
             }
         }
-        super.onPageStarted(view, url, favicon);
     }
 
     @Override
     public void onPageFinished(WebView view, String url)
     {
         mFixedOnReceivedTitle.onPageFinished(view);
-        super.onPageFinished(view, url);
     }
 }

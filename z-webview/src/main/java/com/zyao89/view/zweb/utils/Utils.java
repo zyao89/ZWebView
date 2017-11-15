@@ -157,7 +157,7 @@ public class Utils
                 line = bufferedReader.readLine();
                 if (line != null && !line.matches("^\\s*\\/\\/.*"))
                 {
-                    sb.append(line);
+                    sb.append(line).append('\n');
                 }
             } while (line != null);
 

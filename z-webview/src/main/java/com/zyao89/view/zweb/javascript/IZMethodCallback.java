@@ -10,10 +10,10 @@ import android.webkit.JavascriptInterface;
 public interface IZMethodCallback
 {
     @JavascriptInterface
-    void saveData(String frameworkID);
+    void saveData (String frameworkID, String oData);
 
     @JavascriptInterface
-    void loadData(String frameworkID);
+    void loadData (String frameworkID, String key);
 
     @JavascriptInterface
     void showLoading(String frameworkID);

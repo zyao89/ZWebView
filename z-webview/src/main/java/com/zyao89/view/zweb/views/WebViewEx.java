@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.zyao89.view.zweb.constants.JavaScriptMethodName;
+import com.zyao89.view.zweb.exceptions.ZWebException;
 import com.zyao89.view.zweb.utils.JsCallJava;
 import com.zyao89.view.zweb.utils.JsUtils;
 import com.zyao89.view.zweb.utils.ZLog;
@@ -80,42 +81,6 @@ public class WebViewEx extends WebView
         super.setWebViewClient(client);
     }
 
-    @Override
-    @Deprecated
-    public final void setWebChromeClient(WebChromeClient client)
-    {
-        throw new RuntimeException("WebChromeClient is Deprecated...");
-    }
-
-    @Override
-    @Deprecated
-    public final void setWebViewClient(WebViewClient client)
-    {
-        throw new RuntimeException("WebViewClient is Deprecated...");
-    }
-
-    @Override
-    @SuppressLint({"JavascriptInterface", "AddJavascriptInterface"})
-    public void addJavascriptInterface(Object interfaceObj, String interfaceName)
-    {
-        if (TextUtils.isEmpty(interfaceName))
-        {
-            return;
-        }
-
-        // 如果在4.2以上，直接调用基类的方法来注册
-        if (!JsUtils.notSupportInterface())
-        {
-            super.addJavascriptInterface(interfaceObj, interfaceName);
-            ZLog.with(this).z("addJavascriptInterface support...");
-            return;
-        }
-
-        mJsInterfaceMap.put(interfaceName, new JsCallJava(interfaceObj, interfaceName));
-        injectJavaScript(interfaceName);
-        ZLog.with(this).z("injectJavaScript, addJavascriptInterface.interfaceObj = " + interfaceObj + ", interfaceName = " + interfaceName);
-    }
-
     public boolean handleJsInterface(String url, String message, String defaultValue, JsPromptResult result)
     {
         if (mJsInterfaceMap != null && JsCallJava.isSafeWebViewCallMsg(message))
@@ -158,6 +123,42 @@ public class WebViewEx extends WebView
         super.destroy();
     }
 
+    @Override
+    @Deprecated
+    public final void setWebViewClient (WebViewClient client)
+    {
+        throw new ZWebException("WebViewClient is Deprecated...");
+    }
+
+    @Override
+    @Deprecated
+    public final void setWebChromeClient (WebChromeClient client)
+    {
+        throw new ZWebException("WebChromeClient is Deprecated...");
+    }
+
+    @Override
+    @SuppressLint({"JavascriptInterface", "AddJavascriptInterface"})
+    public void addJavascriptInterface (Object interfaceObj, String interfaceName)
+    {
+        if (TextUtils.isEmpty(interfaceName))
+        {
+            return;
+        }
+
+        // 如果在4.2以上，直接调用基类的方法来注册
+        if (!JsUtils.notSupportInterface())
+        {
+            super.addJavascriptInterface(interfaceObj, interfaceName);
+            ZLog.with(this).z("addJavascriptInterface support...");
+            return;
+        }
+
+        mJsInterfaceMap.put(interfaceName, new JsCallJava(interfaceObj, interfaceName));
+        injectJavaScript(interfaceName);
+        ZLog.with(this).z("injectJavaScript, addJavascriptInterface.interfaceObj = " + interfaceObj + ", interfaceName = " + interfaceName);
+    }
+
     protected void fixedAccessibilityInjectorExceptionForOnPageFinished(String url)
     {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN && getSettings().getJavaScriptEnabled() && mIsAccessibilityEnabledOriginal == null && isAccessibilityEnabled())
@@ -171,7 +172,7 @@ public class WebViewEx extends WebView
                 }
                 catch (IllegalArgumentException e)
                 {
-                    if ("bad parameter".equals(e.getMessage()))
+                    if (JavaScriptMethodName.BAD_PARAMETER.equals(e.getMessage()))
                     {
                         mIsAccessibilityEnabledOriginal = true;
                         setAccessibilityEnabled(false);

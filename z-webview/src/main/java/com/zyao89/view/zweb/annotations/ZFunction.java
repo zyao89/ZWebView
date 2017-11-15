@@ -8,6 +8,8 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * 方法名称
+ *
  * @author Zyao89
  * @date 2017/11/8.
  */
@@ -16,5 +18,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface ZFunction
 {
-    String value() default "";
+    String value ();
 }

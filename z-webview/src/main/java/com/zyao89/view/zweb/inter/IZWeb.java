@@ -40,4 +40,11 @@ public interface IZWeb
      * @return
      */
     boolean callReceiver(String method, JSONObject json);
+
+    /**
+     * 刷新
+     *
+     * @return
+     */
+    boolean refresh ();
 }

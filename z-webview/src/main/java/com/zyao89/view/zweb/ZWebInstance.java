@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 
 import com.zyao89.view.zweb.exceptions.ZWebException;
 import com.zyao89.view.zweb.inter.IZActivityStateListener;
-import com.zyao89.view.zweb.inter.IZMethodInterface;
 import com.zyao89.view.zweb.inter.IZWebHandler;
+import com.zyao89.view.zweb.inter.IZWebMethodInterface;
+import com.zyao89.view.zweb.inter.IZWebOnStateListener;
 import com.zyao89.view.zweb.javascript.ZJavaScriptEx;
 import com.zyao89.view.zweb.services.ServiceFactory;
 import com.zyao89.view.zweb.views.IZWebView;
@@ -40,16 +41,6 @@ public class ZWebInstance implements IZActivityStateListener
         sApplication = application;
     }
 
-    public IZWebHandler getZWebHandler()
-    {
-        return mZWebHandler;
-    }
-
-    public ZWebConfig getZConfig()
-    {
-        return mZWebConfig;
-    }
-
     public static ZWebInstance createInstance()
     {
         return createInstance(new ZWebConfig.Builder().build());
@@ -64,16 +55,14 @@ public class ZWebInstance implements IZActivityStateListener
         return new ZWebInstance(config);
     }
 
-    private void initWebView(ViewGroup rootView)
+    public IZWebHandler getZWebHandler ()
     {
-        if (mZWeb == null)
-        {
-            mZWeb = new ZWeb(sApplication, getZConfig());
-        }
-        mZWebHandler.setZWeb(mZWeb);
-        mZWebView = mZWeb.getZWebView();
-        mZWebView.setShowLoading(getZConfig().isShowLoading());
-        rootView.addView(mZWeb.getWebView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        return mZWebHandler;
+    }
+
+    public ZWebConfig getZConfig ()
+    {
+        return mZWebConfig;
     }
 
     public final void addJavascriptInterface(@NonNull Object interfaceObj)
@@ -85,15 +74,6 @@ public class ZWebInstance implements IZActivityStateListener
         mZWebView.addJavascriptInterface(interfaceObj, getZConfig().getExposedName());
     }
 
-    public final void setOnMethodImplement(@NonNull IZMethodInterface interfaceObj)
-    {
-        if (mZJavaScript == null)
-        {
-            throw new ZWebException("First call onActivityCreate(), Please...");
-        }
-        mZJavaScript.setOnMethodImplement(interfaceObj);
-    }
-
     public <T> T create(final Class<T> service)
     {
         return mServiceFactory.create(service);
@@ -103,14 +83,8 @@ public class ZWebInstance implements IZActivityStateListener
     public void onActivityCreate(@Nullable ViewGroup rootView, String mainHtml)
     {
         initWebView(rootView);
+        initJavaScript();
         initMainHtml(mainHtml);
-    }
-
-    private void initMainHtml(String mainHtml)
-    {
-        mZJavaScript = new ZJavaScriptEx(mZWebHandler);
-        mZWebView.addJavascriptInterface(mZJavaScript, getZConfig().getInterName());
-        mZWebView.loadUrl(mainHtml);
     }
 
     @Override
@@ -166,5 +140,48 @@ public class ZWebInstance implements IZActivityStateListener
             return mZWeb.onActivityBack();
         }
         return false;
+    }
+
+    private void initWebView (ViewGroup rootView)
+    {
+        if (mZWeb == null)
+        {
+            mZWeb = new ZWeb(sApplication, getZConfig());
+        }
+        mZWebHandler.setZWeb(mZWeb);
+        mZWebView = mZWeb.getZWebView();
+        mZWebView.setShowLoading(getZConfig().isShowLoading());
+        rootView.addView(mZWeb.getView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void initJavaScript ()
+    {
+        mZJavaScript = new ZJavaScriptEx(mZWebHandler);
+        this.setOnStateListener(mZWebConfig.getZWebOnStateListener());
+        this.setNativeMethodImplement(mZWebConfig.getZWebMethodInterface());
+    }
+
+    private void initMainHtml (String mainHtml)
+    {
+        mZWebView.addJavascriptInterface(mZJavaScript, getZConfig().getInterName());
+        mZWebView.loadUrl(mainHtml);
+    }
+
+    private void setOnStateListener (@NonNull IZWebOnStateListener interfaceObj)
+    {
+        if (mZJavaScript == null)
+        {
+            throw new ZWebException("First call onActivityCreate(), Please...");
+        }
+        mZJavaScript.setOnStateListener(interfaceObj);
+    }
+
+    private void setNativeMethodImplement (@NonNull IZWebMethodInterface interfaceObj)
+    {
+        if (mZJavaScript == null)
+        {
+            throw new ZWebException("First call onActivityCreate(), Please...");
+        }
+        mZJavaScript.setNativeMethodImplement(interfaceObj);
     }
 }

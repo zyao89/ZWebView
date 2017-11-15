@@ -65,6 +65,16 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
+    public boolean refresh ()
+    {
+        if (mZWeb == null)
+        {
+            throw new ZWebException("First call onActivityCreate(), Please...");
+        }
+        return mZWeb.refresh();
+    }
+
+    @Override
     public void quickCallJs(String method, String... params)
     {
         StringBuilder sb = new StringBuilder();

@@ -3,6 +3,7 @@ package com.zyao89.view.zweb.views;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.View;
+import android.webkit.WebResourceResponse;
 
 /**
  * @author Zyao89
@@ -52,5 +53,7 @@ public interface IZWebView
         void onPageStart(String url);
 
         void onPageFinish(String url, boolean canGoBack, boolean canGoForward);
+
+        WebResourceResponse shouldInterceptRequest (String url);
     }
 }

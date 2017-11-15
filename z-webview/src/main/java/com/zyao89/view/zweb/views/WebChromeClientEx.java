@@ -13,7 +13,7 @@ import com.zyao89.view.zweb.utils.ZLog;
  * @date 2017/11/13.
  */
 
-public class WebChromeClientEx extends WebChromeClient
+/* package */ class WebChromeClientEx extends WebChromeClient
 {
     private FixedOnReceivedTitle mFixedOnReceivedTitle;
 
@@ -24,7 +24,26 @@ public class WebChromeClientEx extends WebChromeClient
     }
 
     @Override
-    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)
+    public void onProgressChanged (WebView view, int newProgress)
+    {
+        if (JsUtils.notSupportInterface())
+        {
+            if (view instanceof WebViewEx)
+            {
+                ((WebViewEx) view).injectJavascriptInterfaces();
+            }
+        }
+        super.onProgressChanged(view, newProgress);
+    }
+
+    @Override
+    public void onReceivedTitle(WebView view, String title)
+    {
+        mFixedOnReceivedTitle.onReceivedTitle();
+    }
+
+    @Override
+    public boolean onJsPrompt (WebView view, String url, String message, String defaultValue, JsPromptResult result)
     {
         ZLog.with(this).z("onJsPrompt:" + url + "  message:" + message + "  d:" + defaultValue + "  ");
         if (JsUtils.notSupportInterface())
@@ -38,24 +57,5 @@ public class WebChromeClientEx extends WebChromeClient
             }
         }
         return super.onJsPrompt(view, url, message, defaultValue, result);
-    }
-
-    @Override
-    public void onReceivedTitle(WebView view, String title)
-    {
-        mFixedOnReceivedTitle.onReceivedTitle();
-    }
-
-    @Override
-    public void onProgressChanged(WebView view, int newProgress)
-    {
-        if (JsUtils.notSupportInterface())
-        {
-            if (view instanceof WebViewEx)
-            {
-                ((WebViewEx) view).injectJavascriptInterfaces();
-            }
-        }
-        super.onProgressChanged(view, newProgress);
     }
 }

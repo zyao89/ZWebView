@@ -1,16 +1,17 @@
 package com.zyao89.view.zweb.inter;
 
 import android.support.annotation.NonNull;
+import android.webkit.WebResourceResponse;
 
 import org.json.JSONObject;
 
 /**
- * 协议
+ * 状态协议
  *
  * @author Zyao89
  * @date 2017/11/7.
  */
-public interface IZMethodInterface
+public interface IZWebOnStateListener
 {
     /**
      * 创建成功回调
@@ -19,7 +20,7 @@ public interface IZMethodInterface
      * @param width
      * @param height
      */
-    void onZWebCreated(IZWebHandler zWebHandler, int width, int height);
+    void onZWebCreated (IZWebHandler zWebHandler, int width, int height);
 
     /**
      * 异常
@@ -28,7 +29,7 @@ public interface IZMethodInterface
      * @param errorCode
      * @param message
      */
-    void onZWebException(IZWebHandler zWebHandler, long errorCode, String message);
+    void onZWebException (IZWebHandler zWebHandler, long errorCode, String message);
 
     /**
      * 请求处理
@@ -40,7 +41,7 @@ public interface IZMethodInterface
      * @param type
      * @param controller
      */
-    void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller);
+    void onZWebRequire (IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller);
 
     /**
      * 异步消息请求
@@ -48,50 +49,30 @@ public interface IZMethodInterface
      * @param zWebHandler
      * @param data
      */
-    void onZWebMessage(IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
+    void onZWebMessage (IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
+
+    /**
+     * title changed
+     *
+     * @param title
+     */
+    void onZWebReceivedTitle (String title);
 
     /**
      * 销毁
      *
      * @param zWebHandler
      */
-    void onZWebDestroy(IZWebHandler zWebHandler);
+    void onZWebDestroy (IZWebHandler zWebHandler);
 
     /**
-     * 存数数据
+     * 内部请求拦截处理
      *
-     * @param zWebHandler
-     */
-    void saveData(IZWebHandler zWebHandler);
-
-    /**
-     * 从数据库读取数据
+     * @param url
      *
-     * @param zWebHandler
+     * @return
      */
-    void loadData(IZWebHandler zWebHandler);
-
-    /**
-     * 显示等待框
-     *
-     * @param zWebHandler
-     */
-    void showLoading(IZWebHandler zWebHandler);
-
-    /**
-     * 隐藏等待框
-     *
-     * @param zWebHandler
-     */
-    void hideLoading(IZWebHandler zWebHandler);
-
-    /**
-     * 提示
-     *
-     * @param zWebHandler
-     * @param msg
-     */
-    void tip(IZWebHandler zWebHandler, String msg);
+    WebResourceResponse onInterceptRequest (String url);
 
     /**
      * 请求结果控制协议
@@ -103,7 +84,7 @@ public interface IZMethodInterface
          *
          * @param isSuccess 成功 or 失败
          */
-        void result(boolean isSuccess);
+        void result (boolean isSuccess);
 
         /**
          * 请求结果处理
@@ -111,7 +92,7 @@ public interface IZMethodInterface
          * @param isSuccess 成功 or 失败
          * @param data      请求结果数据
          */
-        void result(boolean isSuccess, String data);
+        void result (boolean isSuccess, String data);
 
         /**
          * 请求结果处理
@@ -119,7 +100,7 @@ public interface IZMethodInterface
          * @param isSuccess 成功 or 失败
          * @param data      请求结果数据
          */
-        void result(boolean isSuccess, @NonNull JSONObject data);
+        void result (boolean isSuccess, @NonNull JSONObject data);
     }
 
     /**
@@ -132,7 +113,7 @@ public interface IZMethodInterface
          *
          * @param isSuccess 成功 or 失败
          */
-        void result(boolean isSuccess);
+        void result (boolean isSuccess);
 
         /**
          * 消息结果处理
@@ -140,7 +121,7 @@ public interface IZMethodInterface
          * @param isSuccess 成功 or 失败
          * @param data      消息结果数据
          */
-        void result(boolean isSuccess, String data);
+        void result (boolean isSuccess, String data);
 
         /**
          * 消息结果处理
@@ -148,7 +129,7 @@ public interface IZMethodInterface
          * @param isSuccess 成功 or 失败
          * @param data      消息结果数据
          */
-        void result(boolean isSuccess, @NonNull JSONObject data);
+        void result (boolean isSuccess, @NonNull JSONObject data);
 
         /**
          * 自动解析为对象中相应方法
@@ -156,6 +137,6 @@ public interface IZMethodInterface
          * @param object 对象
          * @param <T>
          */
-        <T> void parseMessage(@NonNull T object);
+        <T> void parseMessage (@NonNull T object);
     }
 }

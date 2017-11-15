@@ -1,6 +1,7 @@
 package com.zyao89.view;
 
-import com.zyao89.view.zweb.inter.IZMethodInterface;
+import com.zyao89.view.zweb.annotations.ZCmd;
+import com.zyao89.view.zweb.inter.IZWebMessageController;
 
 /**
  * Created by zyao89 on 2017/11/15.
@@ -20,7 +21,14 @@ public class ParseMessage
 //
 //    }
 
-    private void CMD(String data, IZMethodInterface.IZMessageController controller)
+    private void CMD (String data, IZWebMessageController controller)
+    {
+        System.out.println(data);
+        controller.result(true, "我是返回结果1。。。");
+    }
+
+    @ZCmd("CMD")
+    private void CMD1 (String data, IZWebMessageController controller)
     {
         System.out.println(data);
         controller.result(true, "我是返回结果2。。。");

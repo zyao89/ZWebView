@@ -14,10 +14,12 @@
 		onZWebException: "onZWebException",
 		onZWebRequire: "onZWebRequire",
 		onZWebMessage: "onZWebMessage",
-		onZWebDestroy: "onZWebDestroy", // 销毁
-		
-		saveData: "saveData", // 存储数据
-		loadData: "loadData", // 读取数据
+		onZWebDestroy: "onZWebDestroy",
+
+		// 存储数据
+		saveData: "saveData",
+		// 读取数据
+		loadData: "loadData",
 
 		showLoading: "showLoading",
 		hideLoading: "hideLoading",
@@ -26,9 +28,7 @@
 
 	// 外部暴露方法，可扩展， 使用 callOS 调用
 	var METHODS_NAME = {
-		// showLoading: "showLoading",
-		// hideLoading: "hideLoading",
-		// tip: "tip"
+
 	};
 
 	// 监听回调类型名称
@@ -70,7 +70,7 @@
 			var h = "-";
 			var tl = UUID.getIntegerBits(t, 0, 31);
 			var tm = UUID.getIntegerBits(t, 32, 47);
-			var thv = UUID.getIntegerBits(t, 48, 59) + "1"; // version 1, security version is 2
+			var thv = UUID.getIntegerBits(t, 48, 59) + "1";
 			var csar = UUID.getIntegerBits(UUID.rand(4095), 0, 7);
 			var csl = UUID.getIntegerBits(UUID.rand(4095), 0, 7);
 
@@ -79,7 +79,7 @@
 				UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
 				UUID.getIntegerBits(UUID.rand(8191), 0, 7) +
 				UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
-				UUID.getIntegerBits(UUID.rand(8191), 0, 15); // this last number is two octets long
+				UUID.getIntegerBits(UUID.rand(8191), 0, 15);
 			return tl + h + tm + h + thv + h + csar + csl + h + n;
 		};
 
@@ -193,14 +193,22 @@
 	})(ExportsMethod);
 
 	var ZWebSDK = function(szFrameworkUUID, oParams) {
-		this.mapRequireQueue = {}; // 请求队列
-		this.mapMessageQueue = {}; // 消息队列
+	    // 请求队列
+		this.mapRequireQueue = {};
+		// 消息队列
+		this.mapMessageQueue = {};
+		// 唯一UUID
 		this.szFrameworkUUID = szFrameworkUUID;
-		this.OS = oParams.OS; // 平台
-		this.Version = oParams.Version; // 版本
-		this.InternalName = oParams.InternalName; // 内部接口
-		this.ExposedName = oParams.ExposedName; // 暴露接口
-		this.__onFuncCallBackMap__ = {}; // 监听接口
+		// 平台
+		this.OS = oParams.OS;
+		// 版本
+		this.Version = oParams.Version;
+		// 内部接口
+		this.InternalName = oParams.InternalName;
+		// 暴露接口
+		this.ExposedName = oParams.ExposedName;
+		// 监听接口
+		this.__onFuncCallBackMap__ = {};
 
 		this.print("print", JSON.stringify(oParams));
 	};
@@ -208,15 +216,19 @@
 	ZWebSDK.prototype = {
 		createUUID: function() {
 			return new ExportsMethod.UUID().id;
-    },
-    
-    saveData: function () {
-			this.callInterOS(INTER_NAME.saveData);
-    },
-    
-    loadData: function () {
-			this.callInterOS(INTER_NAME.loadData);
-    },
+        },
+
+        saveData: function (szKey, szValue) {
+            var oData = {
+                Key: szKey,
+                Value: szValue
+            };
+            this.callInterOS(INTER_NAME.saveData, oData);
+        },
+
+        loadData: function (szKey) {
+            this.callInterOS(INTER_NAME.loadData, szKey);
+        },
 
 		showLoading: function() {
 			this.callInterOS(INTER_NAME.showLoading);
@@ -504,10 +516,14 @@
 		// 初始化框架
 		initFramework: function(szFrameworkUUID, oParams) {
 			this.szFrameworkUUID = szFrameworkUUID;
-			this.OS = oParams.OS; // 平台
-			this.Version = oParams.Version; // 版本
-			this.InternalName = oParams.InternalName; // 内部接口
-			this.ExposedName = oParams.ExposedName; // 暴露接口
+			// 平台
+			this.OS = oParams.OS;
+			// 版本
+			this.Version = oParams.Version;
+			// 内部接口
+			this.InternalName = oParams.InternalName;
+			// 暴露接口
+			this.ExposedName = oParams.ExposedName;
 
 			this.ZWebSDK = global.ZWebSDK = new ZWebSDK(szFrameworkUUID, oParams);
 
@@ -536,7 +552,7 @@
 					winHeight = document.documentElement.clientHeight;
 					winWidth = document.documentElement.clientWidth;
 				}
-				return { width: winWidth, height: winHeight };
+				return { Width: winWidth, Height: winHeight };
 			}
 
 			this.ZWebSDK.callInterOS(

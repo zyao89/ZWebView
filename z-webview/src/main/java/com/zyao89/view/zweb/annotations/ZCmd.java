@@ -4,19 +4,19 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 参数key
+ * 命令注释
  *
  * @author Zyao89
- * @date 2017/11/8.
+ * @date 2017/11/15.
  */
 @Documented
-@Target(PARAMETER)
+@Target(METHOD)
 @Retention(RUNTIME)
-public @interface ZKey
+public @interface ZCmd
 {
-    String value();
+    String value ();
 }

@@ -29,23 +29,23 @@ import com.zyao89.view.zweb.utils.ZLog;
  */
 public class ZWebView implements IZWebView
 {
-    private Context     mContext;
+    private Context mContext;
     private FrameLayout mRootView;
-    private WebViewEx   mWebView;
+    private WebViewEx mWebView;
     private ProgressBar mProgressBar;
 
     private boolean mShowLoading = true;
 
     private OnErrorListener mOnErrorListener;
-    private OnPageListener  mOnPageListener;
+    private OnPageListener mOnPageListener;
 
-    public ZWebView(Context context)
+    public ZWebView (Context context)
     {
         mContext = context;
     }
 
     @Override
-    public View getView()
+    public View getView ()
     {
         if (mRootView == null)
         {
@@ -72,7 +72,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void onPause()
+    public void onPause ()
     {
         if (getWebView() == null)
         {
@@ -83,7 +83,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void onResume()
+    public void onResume ()
     {
         if (getWebView() == null)
         {
@@ -94,7 +94,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void destroy()
+    public void destroy ()
     {
         if (getWebView() != null)
         {
@@ -123,7 +123,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void loadUrl(String url)
+    public void loadUrl (String url)
     {
         if (getWebView() == null)
         {
@@ -134,7 +134,7 @@ public class ZWebView implements IZWebView
 
     @Override
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public void evaluateJavascript(String script)
+    public void evaluateJavascript (String script)
     {
         if (getWebView() == null)
         {
@@ -144,7 +144,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void reload()
+    public void reload ()
     {
         if (getWebView() == null)
         {
@@ -154,7 +154,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public boolean canGoBack()
+    public boolean canGoBack ()
     {
         if (getWebView() == null)
         {
@@ -164,7 +164,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void goBack()
+    public void goBack ()
     {
         if (getWebView() == null)
         {
@@ -174,7 +174,7 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void goForward()
+    public void goForward ()
     {
         if (getWebView() == null)
         {
@@ -184,14 +184,14 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void setShowLoading(boolean shown)
+    public void setShowLoading (boolean shown)
     {
         mShowLoading = shown;
     }
 
     @Override
     @SuppressLint({"JavascriptInterface", "AddJavascriptInterface"})
-    public void addJavascriptInterface(Object object, String name)
+    public void addJavascriptInterface (Object object, String name)
     {
         if (getWebView() == null)
         {
@@ -201,18 +201,18 @@ public class ZWebView implements IZWebView
     }
 
     @Override
-    public void setOnErrorListener(OnErrorListener listener)
+    public void setOnErrorListener (OnErrorListener listener)
     {
         mOnErrorListener = listener;
     }
 
     @Override
-    public void setOnPageListener(OnPageListener listener)
+    public void setOnPageListener (OnPageListener listener)
     {
         mOnPageListener = listener;
     }
 
-    private void showProgressBar(boolean shown)
+    private void showProgressBar (boolean shown)
     {
         if (mShowLoading)
         {
@@ -220,26 +220,26 @@ public class ZWebView implements IZWebView
         }
     }
 
-    private void showWebView(boolean shown)
+    private void showWebView (boolean shown)
     {
         mWebView.setVisibility(shown ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Nullable
-    private WebViewEx getWebView()
+    private WebViewEx getWebView ()
     {
         //TODO: remove this, duplicate with getView semantically.
         return mWebView;
     }
 
     @Nullable
-    private FrameLayout getRootView()
+    private FrameLayout getRootView ()
     {
         return mRootView;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void initWebView(WebViewEx wv)
+    private void initWebView (WebViewEx wv)
     {
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -253,9 +253,8 @@ public class ZWebView implements IZWebView
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            //适配5.0不允许http和https混合使用情况
-            settings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        {//适配5.0不允许http和https混合使用情况
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             wv.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -272,18 +271,20 @@ public class ZWebView implements IZWebView
         settings.setAppCacheEnabled(true);
         settings.setLoadsImagesAutomatically(true);
         settings.setSupportMultipleWindows(false);
-        settings.setBlockNetworkImage(false);//是否阻塞加载网络图片  协议http or https
-        settings.setAllowFileAccess(true); //允许加载本地文件html  file协议
+        //是否阻塞加载网络图片  协议http or https
+        settings.setBlockNetworkImage(false);
+        //允许加载本地文件html  file协议
+        settings.setAllowFileAccess(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
-            settings.setAllowFileAccessFromFileURLs(false); //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
-            settings.setAllowUniversalAccessFromFileURLs(false);//允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
+            //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
+            settings.setAllowFileAccessFromFileURLs(true);
+            //允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
+            settings.setAllowUniversalAccessFromFileURLs(true);
         }
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
-
-            settings.setLayoutAlgorithm(android.webkit.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+            settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         }
         else
         {
@@ -291,14 +292,13 @@ public class ZWebView implements IZWebView
         }
         settings.setLoadWithOverviewMode(true);
         settings.setNeedInitialFocus(true);
-        settings.setDefaultTextEncodingName("utf-8");//设置编码格式
         settings.setGeolocationEnabled(true);
 
         wv.setWebViewClient(new WebViewClientEx()
         {
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url)
+            public boolean shouldOverrideUrlLoading (WebView view, String url)
             {
                 view.loadUrl(url);
                 ZLog.with(this).z("onPageOverride " + url);
@@ -306,7 +306,42 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            public WebResourceResponse shouldInterceptRequest (WebView view, String url)
+            {
+                if (mOnPageListener != null)
+                {
+                    return mOnPageListener.shouldInterceptRequest(url);
+                }
+                return null;
+            }
+
+            @Override
+            public void onReceivedError (WebView view, WebResourceRequest request, WebResourceError error)
+            {
+                super.onReceivedError(view, request, error);
+                if (mOnErrorListener != null)
+                {
+                    mOnErrorListener.onError("error", "page error");
+                }
+            }
+
+            @Override
+            public void onReceivedHttpError (WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
+            {
+                if (mOnErrorListener != null)
+                {
+                    mOnErrorListener.onError("error", "http error");
+                }
+            }
+
+            @Override
+            public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error)
+            {
+                handler.proceed(); // 接受网站证书
+            }
+
+            @Override
+            public void onPageStarted (WebView view, String url, Bitmap favicon)
             {
                 super.onPageStarted(view, url, favicon);
                 ZLog.with(this).z("onPageStarted " + url);
@@ -317,7 +352,7 @@ public class ZWebView implements IZWebView
             }
 
             @Override
-            public void onPageFinished(WebView view, String url)
+            public void onPageFinished (WebView view, String url)
             {
                 super.onPageFinished(view, url);
                 ZLog.with(this).z("onPageFinished " + url);
@@ -327,57 +362,27 @@ public class ZWebView implements IZWebView
                 }
             }
 
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
-            {
-                super.onReceivedError(view, request, error);
-                if (mOnErrorListener != null)
-                {
-                    mOnErrorListener.onError("error", "page error");
-                }
-            }
-
-            @Override
-            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
-            {
-                super.onReceivedHttpError(view, request, errorResponse);
-                if (mOnErrorListener != null)
-                {
-                    mOnErrorListener.onError("error", "http error");
-                }
-            }
-
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
-            {
-                super.onReceivedSslError(view, handler, error);
-                if (mOnErrorListener != null)
-                {
-                    mOnErrorListener.onError("error", "ssl error");
-                }
-            }
-
         });
 
         wv.setWebChromeClient(new WebChromeClientEx()
         {
             @Override
-            public void onProgressChanged(WebView view, int newProgress)
-            {
-                super.onProgressChanged(view, newProgress);
-                showWebView(newProgress == 100);
-                showProgressBar(newProgress != 100);
-                ZLog.with(this).z("onPageProgressChanged " + newProgress);
-            }
-
-            @Override
-            public void onReceivedTitle(WebView view, String title)
+            public void onReceivedTitle (WebView view, String title)
             {
                 super.onReceivedTitle(view, title);
                 if (mOnPageListener != null)
                 {
                     mOnPageListener.onReceivedTitle(view.getTitle());
                 }
+            }
+
+            @Override
+            public void onProgressChanged (WebView view, int newProgress)
+            {
+                super.onProgressChanged(view, newProgress);
+                showWebView(newProgress == 100);
+                showProgressBar(newProgress != 100);
+                ZLog.with(this).z("onPageProgressChanged " + newProgress);
             }
         });
     }

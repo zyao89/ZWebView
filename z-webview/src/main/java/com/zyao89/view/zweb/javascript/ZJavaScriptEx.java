@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
 import com.zyao89.view.zweb.inter.IZWebHandler;
+import com.zyao89.view.zweb.utils.Utils;
+
+import org.json.JSONObject;
 
 /**
  * 扩展暴露接口
@@ -20,36 +23,40 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
 
     @Override
     @JavascriptInterface
-    public void saveData(String frameworkID)
+    public void saveData (String frameworkID, String oData)
     {
-        getZMethodInterface().saveData(getZWebHandler());
+        JSONObject jsonObject = Utils.json2Obj(oData);
+        String key = jsonObject.optString("Key");
+        String value = jsonObject.optString("Value");
+
+        getZWebMethodInterface().saveData(getZWebHandler(), key, value);
     }
 
     @Override
     @JavascriptInterface
-    public void loadData(String frameworkID)
+    public void loadData (String frameworkID, String key)
     {
-        getZMethodInterface().loadData(getZWebHandler());
+        getZWebMethodInterface().loadData(getZWebHandler(), key);
     }
 
     @Override
     @JavascriptInterface
     public void showLoading(String frameworkID)
     {
-        getZMethodInterface().showLoading(getZWebHandler());
+        getZWebMethodInterface().showLoading(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
     public void hideLoading(String frameworkID)
     {
-        getZMethodInterface().hideLoading(getZWebHandler());
+        getZWebMethodInterface().hideLoading(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
     public void tip(String frameworkID, String msg)
     {
-        getZMethodInterface().tip(getZWebHandler(), msg);
+        getZWebMethodInterface().tip(getZWebHandler(), msg);
     }
 }
