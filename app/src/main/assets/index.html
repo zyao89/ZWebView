@@ -14,8 +14,24 @@
 </head>
 
 <body>
-<div id="print"></div>
-<div id="result"></div>
+
+<div align="center">
+    <input class="btn" id="data" type="text" value="我是测试数据...">
+    <button class="btn" id="btn1">message</button>
+    <button class="btn" id="btn2">require</button>
+    <button class="btn" onclick="btnClick('showLoading')">showLoading</button>
+    <button class="btn" onclick="btnClick('hideLoading')">hideLoading</button>
+    <button class="btn" onclick="btnClick('tip', true)">tip</button>
+    <button class="btn" id="btn3">callOS</button>
+    <button class="btn" id="btn4">exceptionOS</button>
+    <button class="btn" onclick="btnClick('print', true)">print</button>
+    <button class="btn" id="btn5">saveData</button>
+    <button class="btn" onclick="btnClick('loadData', true)">loadData</button>
+    <button class="btn" onclick="btnClick('destroy')">destroy</button>
+</div>
+
+<div id="result">结果在这里</div>
+
 <!--<script src="js/test.js"></script>-->
 </body>
 

@@ -4,3 +4,15 @@ body {
     padding: 0;
     word-wrap: break-word;
 }
+
+.btn {
+    padding: 10px;
+    margin: 10px;
+}
+
+#result{
+    padding: 10px;
+    color: #009a61;
+    background-color: black;
+    border: 1px solid #ccc;
+}

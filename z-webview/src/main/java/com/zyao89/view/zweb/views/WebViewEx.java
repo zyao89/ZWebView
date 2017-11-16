@@ -31,7 +31,6 @@ import java.util.Map;
  * @author Zyao89
  * @date 2017/11/13.
  */
-
 public class WebViewEx extends WebView
 {
     private final HashMap<String, JsCallJava> mJsInterfaceMap = new HashMap<String, JsCallJava>();
@@ -40,12 +39,14 @@ public class WebViewEx extends WebView
 
     public WebViewEx(Context context)
     {
-        this(context, null);
+        super(context);
+        init(context);
     }
 
     public WebViewEx(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context);
     }
 
     public WebViewEx(Context context, AttributeSet attrs, int defStyleAttr)
