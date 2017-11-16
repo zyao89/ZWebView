@@ -33,8 +33,6 @@ public interface IZWebView
 
     void goForward();
 
-    void setShowLoading(boolean shown);
-
     void addJavascriptInterface(Object object, String name);
 
     void setOnErrorListener(OnErrorListener listener);
@@ -53,6 +51,8 @@ public interface IZWebView
         void onPageStart(String url);
 
         void onPageFinish(String url, boolean canGoBack, boolean canGoForward);
+
+        void onProgressChanged (int newProgress);
 
         WebResourceResponse shouldInterceptRequest (String url);
     }

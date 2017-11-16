@@ -1,7 +1,5 @@
 package com.zyao89.view.zweb.impl;
 
-import android.webkit.WebResourceResponse;
-
 import com.zyao89.view.zweb.constants.InternalConstantName;
 import com.zyao89.view.zweb.constants.ZMethodName;
 import com.zyao89.view.zweb.inter.IZWebHandler;
@@ -35,7 +33,7 @@ public class DefaultZWebOnStateListener implements IZWebOnStateListener
     @Override
     public void onZWebException (IZWebHandler zWebHandler, long errorCode, String message)
     {
-
+        ZLog.with(this).d("onZWebException ==> errorCode：" + errorCode + "； message：" + message);
     }
 
     @Override
@@ -51,21 +49,14 @@ public class DefaultZWebOnStateListener implements IZWebOnStateListener
     }
 
     @Override
-    public void onZWebReceivedTitle (String title)
-    {
-
-    }
-
-    @Override
     public void onZWebDestroy (IZWebHandler zWebHandler)
     {
-
+        ZLog.with(this).d("onZWebDestroy ==> GAME OVER");
     }
 
     @Override
-    public WebResourceResponse onInterceptRequest (String url)
+    public void onZWebLog (IZWebHandler zWebHandler, String msg)
     {
-        ZLog.with(this).d("onInterceptRequest: " + url);
-        return null;
+        ZLog.with(this).d("onZWebLog: " + msg);
     }
 }

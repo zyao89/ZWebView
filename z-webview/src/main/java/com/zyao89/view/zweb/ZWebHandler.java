@@ -17,11 +17,22 @@ import org.json.JSONObject;
  */
 public class ZWebHandler implements IZWebHandler
 {
+    private final ZWebConfig mZWebConfig;
     private IZWeb mZWeb;
+
+    /*package*/ ZWebHandler (ZWebConfig config)
+    {
+        this.mZWebConfig = config;
+    }
 
     /*package*/ void setZWeb(IZWeb zWeb)
     {
-        mZWeb = zWeb;
+        this.mZWeb = zWeb;
+    }
+
+    /*package*/ ZWebConfig getZWebConfig ()
+    {
+        return mZWebConfig;
     }
 
     @Override

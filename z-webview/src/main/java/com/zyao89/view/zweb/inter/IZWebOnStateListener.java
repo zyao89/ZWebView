@@ -1,7 +1,6 @@
 package com.zyao89.view.zweb.inter;
 
 import android.support.annotation.NonNull;
-import android.webkit.WebResourceResponse;
 
 import org.json.JSONObject;
 
@@ -52,13 +51,6 @@ public interface IZWebOnStateListener
     void onZWebMessage (IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
 
     /**
-     * title changed
-     *
-     * @param title
-     */
-    void onZWebReceivedTitle (String title);
-
-    /**
      * 销毁
      *
      * @param zWebHandler
@@ -66,13 +58,12 @@ public interface IZWebOnStateListener
     void onZWebDestroy (IZWebHandler zWebHandler);
 
     /**
-     * 内部请求拦截处理
+     * 日志信息
      *
-     * @param url
-     *
-     * @return
+     * @param zWebHandler
+     * @param msg
      */
-    WebResourceResponse onInterceptRequest (String url);
+    void onZWebLog (IZWebHandler zWebHandler, String msg);
 
     /**
      * 请求结果控制协议

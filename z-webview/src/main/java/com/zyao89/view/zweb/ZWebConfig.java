@@ -1,8 +1,13 @@
 package com.zyao89.view.zweb;
 
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
+
 import com.zyao89.view.zweb.impl.DefaultZWebMethodInterface;
+import com.zyao89.view.zweb.impl.DefaultZWebOnSpecialStateListener;
 import com.zyao89.view.zweb.impl.DefaultZWebOnStateListener;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
+import com.zyao89.view.zweb.inter.IZWebOnSpecialStateListener;
 import com.zyao89.view.zweb.inter.IZWebOnStateListener;
 
 import java.util.LinkedList;
@@ -22,8 +27,11 @@ public class ZWebConfig
     private final boolean              mIsShowLoading;
     private final IZWebMethodInterface mZWebMethodInterface;
     private final IZWebOnStateListener mZWebOnStateListener;
-    private final List<String>         mInjectJSs;
+    private final IZWebOnSpecialStateListener mZWebOnSpecialStateListener;
+    private final List<String> mInjectJSFiles;
     private final boolean              mIsFileAccess;
+    @ColorInt
+    private final int mBackgroundColor;
 
     ZWebConfig(Builder builder)
     {
@@ -33,8 +41,10 @@ public class ZWebConfig
         this.mIsShowLoading = builder.mIsShowLoading;
         this.mZWebMethodInterface = builder.mZWebMethodInterface == null ? new DefaultZWebMethodInterface() : builder.mZWebMethodInterface;
         this.mZWebOnStateListener = builder.mZWebOnStateListener == null ? new DefaultZWebOnStateListener() : builder.mZWebOnStateListener;
-        this.mInjectJSs = builder.mInjectJSList;
+        this.mZWebOnSpecialStateListener = builder.mZWebOnSpecialStateListener == null ? new DefaultZWebOnSpecialStateListener() : builder.mZWebOnSpecialStateListener;
+        this.mInjectJSFiles = builder.mInjectJSFileList;
         this.mIsFileAccess = builder.mIsFileAccess;
+        this.mBackgroundColor = builder.mBackgroundColor;
     }
 
     public String url()
@@ -67,14 +77,25 @@ public class ZWebConfig
         return mZWebOnStateListener;
     }
 
-    public List<String> getInjectJSs()
+    public IZWebOnSpecialStateListener getZWebOnSpecialStateListener ()
     {
-        return mInjectJSs;
+        return mZWebOnSpecialStateListener;
+    }
+
+    public List<String> getInjectJSFiles ()
+    {
+        return mInjectJSFiles;
     }
 
     public boolean isFileAccess()
     {
         return mIsFileAccess;
+    }
+
+    @ColorInt
+    public int getBackgroundColor ()
+    {
+        return mBackgroundColor;
     }
 
     public static class Builder
@@ -104,19 +125,28 @@ public class ZWebConfig
          */
         private       IZWebOnStateListener mZWebOnStateListener = null;
         /**
+         * 特殊方法监听
+         */
+        private IZWebOnSpecialStateListener mZWebOnSpecialStateListener = null;
+        /**
          * 在加载完成后需要注入的JS
          */
-        private       List<String>         mInjectJSList        = null;
+        private List<String> mInjectJSFileList = null;
         /**
          * 是否加载的是本地文件，默认true
          */
         private       boolean              mIsFileAccess        = true;
+        /**
+         * WebView背景颜色（默认白色）
+         */
+        @ColorInt
+        private int mBackgroundColor = Color.WHITE;
 
         public Builder(String url)
         {
             if (url == null) { throw new NullPointerException("url == null"); }
             this.mUrl = url;
-            this.mInjectJSList = new LinkedList<>();
+            this.mInjectJSFileList = new LinkedList<>();
         }
 
         public Builder setExposedName(String exposedName)
@@ -143,15 +173,27 @@ public class ZWebConfig
             return this;
         }
 
-        public Builder addInjectJS(String injectJS)
+        public Builder setOnSpecialStateListener (IZWebOnSpecialStateListener webOnSpecialStateListener)
         {
-            this.mInjectJSList.add(injectJS);
+            this.mZWebOnSpecialStateListener = webOnSpecialStateListener;
+            return this;
+        }
+
+        public Builder addInjectJSFilePath (String injectJSFilePath)
+        {
+            this.mInjectJSFileList.add(injectJSFilePath);
             return this;
         }
 
         public Builder closeFileAccess()
         {
             this.mIsFileAccess = false;
+            return this;
+        }
+
+        public Builder setBackgroundColor (int backgroundColor)
+        {
+            mBackgroundColor = backgroundColor;
             return this;
         }
 

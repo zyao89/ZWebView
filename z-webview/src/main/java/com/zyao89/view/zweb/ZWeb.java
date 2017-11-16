@@ -1,11 +1,15 @@
 package com.zyao89.view.zweb;
 
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.WebResourceResponse;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.zyao89.view.zweb.constants.InternalConstantName;
 import com.zyao89.view.zweb.constants.InternalFunctionName;
@@ -33,19 +37,27 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     @NonNull
     private final IZWebView mZWebView;
     @NonNull
+    private final ZWebHandler mZWebHandler;
+    @NonNull
     private final ZWebConfig mZWebConfig;
 
-    public ZWeb (@NonNull Context context, @NonNull ZWebConfig config)
+    private FrameLayout mRootView;
+    private ProgressBar mProgressBar;
+
+    public ZWeb (@NonNull ZWebHandler webHandler)
     {
         mFrameworkUUID = UUID.randomUUID();
-        mZWebConfig = config;
+        mZWebHandler = webHandler;
+        mZWebConfig = webHandler.getZWebConfig();
 
-        final ZWebView zWebView = new ZWebView(context);
-        zWebView.setConfig(config);
+        final ZWebView zWebView = new ZWebView(ZWebInstance.sApplication);
+        zWebView.setConfig(mZWebConfig);
         mZWebView = zWebView;
 
         mZWebView.setOnPageListener(this);
         mZWebView.setOnErrorListener(this);
+
+        webHandler.setZWeb(this);
     }
 
     @Override
@@ -133,7 +145,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     @Override
     public void onReceivedTitle (String title)
     {
-        this.getZWebConfig().getZWebOnStateListener().onZWebReceivedTitle(title);
+        this.getZWebConfig().getZWebOnSpecialStateListener().onZWebReceivedTitle(mZWebHandler, title);
     }
 
     @Override
@@ -150,9 +162,24 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     @Override
+    public void onProgressChanged (int newProgress)
+    {
+        showProgressBar(newProgress != 100);
+    }
+
+    @Override
     public WebResourceResponse shouldInterceptRequest (String url)
     {
-        return this.getZWebConfig().getZWebOnStateListener().onInterceptRequest(url);
+        return this.getZWebConfig().getZWebOnSpecialStateListener().onInterceptRequest(mZWebHandler, url);
+    }
+
+    private void showProgressBar (boolean show)
+    {
+        if (!getZWebConfig().isShowLoading())
+        {
+            return;
+        }
+        mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -166,7 +193,8 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
      */
     private void injectBridgeJS ()
     {
-        final List<String> injectJSs = getZWebConfig().getInjectJSs();
+        // 注入JS信息
+        final List<String> injectJSs = getZWebConfig().getInjectJSFiles();
         for (String path : injectJSs)
         {
             ZLog.with(this).z("injectBridgeJS: path = " + path);
@@ -208,9 +236,28 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         return mZWebView;
     }
 
-    /*package*/ View getView ()
+    /*package*/ ViewGroup getView ()
     {
-        return mZWebView.getView();
+        if (mRootView == null)
+        {
+            mRootView = new FrameLayout(ZWebInstance.sApplication);
+            mRootView.addView(mZWebView.getView());
+            initProgressBar(mRootView);
+        }
+        return mRootView;
+    }
+
+    private void initProgressBar (ViewGroup rootView)
+    {
+        if (mProgressBar == null)
+        {
+            mProgressBar = new ProgressBar(ZWebInstance.sApplication);
+            mProgressBar.setVisibility(View.GONE);
+            FrameLayout.LayoutParams pLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            mProgressBar.setLayoutParams(pLayoutParams);
+            pLayoutParams.gravity = Gravity.CENTER;
+            rootView.addView(mProgressBar);
+        }
     }
 
     /*package*/ void onActivityStart ()
@@ -236,6 +283,20 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     /*package*/ void onActivityDestroy ()
     {
         mZWebView.destroy();
+
+        if (mRootView != null)
+        {
+            mRootView.removeAllViews();
+            mRootView.destroyDrawingCache();
+
+            ViewParent parent = mRootView.getParent();
+            if (parent != null && parent instanceof ViewGroup)
+            {
+                ((ViewGroup) parent).removeAllViewsInLayout();
+            }
+
+            mRootView = null;
+        }
     }
 
     /*package*/ boolean onActivityBack ()

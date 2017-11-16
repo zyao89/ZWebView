@@ -149,6 +149,15 @@ import java.lang.reflect.Method;
         getZWebStateListener().onZWebDestroy(getZWebHandler());
     }
 
+    @Override
+    @JavascriptInterface
+    public void onZWebLog (String frameworkID, String msg)
+    {
+        ZLog.with(this).d("zzzzz  onZWebLog： " + frameworkID + "， msg：" + msg);
+
+        getZWebStateListener().onZWebLog(getZWebHandler(), msg);
+    }
+
     class ZRequireController implements IZWebOnStateListener.IZRequireController
     {
         final String mFunctionName;

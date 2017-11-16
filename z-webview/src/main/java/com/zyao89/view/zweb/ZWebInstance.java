@@ -4,6 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.zyao89.view.zweb.exceptions.ZWebException;
 import com.zyao89.view.zweb.inter.IZActivityStateListener;
@@ -20,7 +21,7 @@ import com.zyao89.view.zweb.views.IZWebView;
  */
 public class ZWebInstance implements IZActivityStateListener
 {
-    private static Application    sApplication;
+    static Application sApplication;
     private final  ZWebConfig     mZWebConfig;
     private final  ZWebHandler    mZWebHandler;
     private final  ServiceFactory mServiceFactory;
@@ -29,10 +30,12 @@ public class ZWebInstance implements IZActivityStateListener
     private IZWebView     mZWebView;
     private ZJavaScriptEx mZJavaScript;
 
+    private ProgressBar mProgressBar;
+
     private ZWebInstance(ZWebConfig config)
     {
         mZWebConfig = config;
-        mZWebHandler = new ZWebHandler();
+        mZWebHandler = new ZWebHandler(config);
         mServiceFactory = new ServiceFactory(mZWebHandler);
     }
 
@@ -146,12 +149,12 @@ public class ZWebInstance implements IZActivityStateListener
     {
         if (mZWeb == null)
         {
-            mZWeb = new ZWeb(sApplication, getZConfig());
+            mZWeb = new ZWeb(this.mZWebHandler);
         }
-        mZWebHandler.setZWeb(mZWeb);
         mZWebView = mZWeb.getZWebView();
-        mZWebView.setShowLoading(getZConfig().isShowLoading());
-        rootView.addView(mZWeb.getView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        final ViewGroup webView = mZWeb.getView();
+        webView.setBackgroundColor(mZWebConfig.getBackgroundColor());
+        rootView.addView(webView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void initJavaScript ()

@@ -18,8 +18,11 @@ public interface IZRenderListener
     void onZWebRequire(String frameworkID, String oData);
 
     @JavascriptInterface
-    void onZWebMessage(String frameworkID, String msg);
+    void onZWebMessage (String frameworkID, String oJson);
 
     @JavascriptInterface
     void onZWebDestroy(String frameworkID);
+
+    @JavascriptInterface
+    void onZWebLog (String frameworkID, String msg);
 }

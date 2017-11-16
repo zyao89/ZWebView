@@ -1,20 +1,21 @@
-(function (global, factory) {
-	if ('undefined' === typeof global) {
-		throw 'not find window...'
+(function(global, factory) {
+	if ("undefined" === typeof global) {
+		throw "not find window...";
 	}
-	if ('undefined' === typeof global.__ZWeb__) {
-        var zWeb = factory(global);
-        global.__ZWeb__ = new zWeb();
+	if ("undefined" === typeof global.__ZWeb__) {
+		var Lib_Name = "ZWeb";
+		var zWeb = factory(global, Lib_Name);
+		global["__" + Lib_Name + "__"] = new zWeb();
 	}
-})(window, function (global) {
-
+})(window, function(global, Lib_Name) {
 	// 内部方法
 	var INTER_NAME = {
-		onZWebCreated: "onZWebCreated",
-		onZWebException: "onZWebException",
-		onZWebRequire: "onZWebRequire",
-		onZWebMessage: "onZWebMessage",
-		onZWebDestroy: "onZWebDestroy",
+		onZWebCreated: "on" + Lib_Name + "Created",
+		onZWebException: "on" + Lib_Name + "Exception",
+		onZWebRequire: "on" + Lib_Name + "Require",
+		onZWebMessage: "on" + Lib_Name + "Message",
+		onZWebDestroy: "on" + Lib_Name + "Destroy",
+		onZWebLog: "on" + Lib_Name + "Log",
 
 		// 存储数据
 		saveData: "saveData",
@@ -27,27 +28,25 @@
 	};
 
 	// 外部暴露方法，可扩展， 使用 callOS 调用
-	var METHODS_NAME = {
-
-	};
+	var METHODS_NAME = {};
 
 	// 监听回调类型名称
 	var DISPATCH_TYPE = {
-		On_Ready: "onReady",
+		On_Ready: "onReady"
 	};
-	
+
 	// 平台类型
 	var OS_TYPE = {
 		WEB: "WEB",
 		IOS: "IOS",
 		ANDROID: "ANDROID"
-	};	
+	};
 
-    // 内部方法
-    var ExportsMethod = {
-        UUID: undefined,
-        Promise: undefined
-    };
+	// 内部方法
+	var ExportsMethod = {
+		UUID: undefined,
+		Promise: undefined
+	};
 
 	// UUID
 	(function(root) {
@@ -63,7 +62,6 @@
 		};
 
 		UUID.prototype.createUUID = function() {
-	
 			var dg = new Date(1582, 10, 15, 0, 0, 0, 0);
 			var dc = new Date();
 			var t = dc.getTime() - dg.getTime();
@@ -99,7 +97,6 @@
 		};
 
 		UUID.returnBase = function(number, base) {
-		
 			var convert = [
 				"0",
 				"1",
@@ -193,7 +190,7 @@
 	})(ExportsMethod);
 
 	var ZWebSDK = function(szFrameworkUUID, oParams) {
-	    // 请求队列
+		// 请求队列
 		this.mapRequireQueue = {};
 		// 消息队列
 		this.mapMessageQueue = {};
@@ -210,25 +207,25 @@
 		// 监听接口
 		this.__onFuncCallBackMap__ = {};
 
-		this.print("print", JSON.stringify(oParams));
+		this.print("Info", JSON.stringify(oParams));
 	};
 
 	ZWebSDK.prototype = {
 		createUUID: function() {
 			return new ExportsMethod.UUID().id;
-        },
+		},
 
-        saveData: function (szKey, szValue) {
-            var oData = {
-                Key: szKey,
-                Value: szValue
-            };
-            this.callInterOS(INTER_NAME.saveData, oData);
-        },
+		saveData: function(szKey, szValue) {
+			var oData = {
+				Key: szKey,
+				Value: szValue
+			};
+			this.callInterOS(INTER_NAME.saveData, oData);
+		},
 
-        loadData: function (szKey) {
-            this.callInterOS(INTER_NAME.loadData, szKey);
-        },
+		loadData: function(szKey) {
+			this.callInterOS(INTER_NAME.loadData, szKey);
+		},
 
 		showLoading: function() {
 			this.callInterOS(INTER_NAME.showLoading);
@@ -290,18 +287,18 @@
          * @ oData 数据
          */
 		message: function(szCmd, oData) {
-		    var oRequireParam = {
-                Sequence: this.createUUID(),
-                Cmd: szCmd,
-                Data: oData
-            };
-            var promise = new ExportsMethod.Promise();
-            this.mapMessageQueue[oRequireParam.Sequence] = promise;
-            this.callInterOS(INTER_NAME.onZWebMessage, oRequireParam);
-            return promise;
+			var oRequireParam = {
+				Sequence: this.createUUID(),
+				Cmd: szCmd,
+				Data: oData
+			};
+			var promise = new ExportsMethod.Promise();
+			this.mapMessageQueue[oRequireParam.Sequence] = promise;
+			this.callInterOS(INTER_NAME.onZWebMessage, oRequireParam);
+			return promise;
 		},
 
-        /**
+		/**
          * 消息请求返回方法
          * {
          *  Sequence："",
@@ -325,8 +322,8 @@
 		},
 
 		// 销毁或退出
-		onZWebDestroy: function() {
-			this.callInterOS(INTER_NAME.onZWebMessage, undefined);
+		destroy: function() {
+			this.callInterOS(INTER_NAME.onZWebDestroy);
 		},
 
 		// 调用 INTER_NAME 定义的方法
@@ -339,7 +336,6 @@
 			if (typeof exposedName === "undefined") {
 				exposedName = this.ExposedName;
 			}
-			this.print(szMethodName + " : " + JSON.stringify(oData));
 			switch (this.OS) {
 				case OS_TYPE.ANDROID:
 					if (global[exposedName] && global[exposedName][szMethodName]) {
@@ -351,14 +347,14 @@
 								JSON.stringify(oData)
 							);
 						} else {
-							global[exposedName][szMethodName](
-								this.szFrameworkUUID,
-								oData
-							);
+							global[exposedName][szMethodName](this.szFrameworkUUID, oData);
 						}
 					} else {
 						this.print(
-							szMethodName + " : " + this.szFrameworkUUID + "： Android 接口调用异常..."
+							szMethodName +
+								" : " +
+								this.szFrameworkUUID +
+								"： Android 接口调用异常..."
 						);
 					}
 					break;
@@ -399,7 +395,6 @@
 
 		// 异常上报
 		exceptionOS: function(iErrCode, oMsg) {
-			this.print("exceptionOS: " + iErrCode + " : " + JSON.stringify(oMsg));
 			switch (this.OS) {
 				case OS_TYPE.ANDROID:
 					if (
@@ -409,8 +404,8 @@
 						if (typeof oMsg === "undefined") {
 							global[this.InternalName][INTER_NAME.onZWebException](
 								this.szFrameworkUUID,
-                iErrCode,
-                ""
+								iErrCode,
+								""
 							);
 						} else if (typeof oData === "object") {
 							global[this.InternalName][INTER_NAME.onZWebException](
@@ -475,32 +470,88 @@
 
 		/**
 		 * Debug 打印
-		 * @param eleId 元素ID 可为空
+		 * @param type 日志类型 可为空
 		 * @param msg
 		 */
-		print: function () {
-			var eleId = "result";
+		print: function() {
+			var type = "Debug";
 			var msg = arguments[0];
 			if (arguments.length === 2) {
+				type = arguments[0];
 				msg = arguments[1];
-				eleId = arguments[0];
 			}
-			console.info(msg);
-			document.getElementById(eleId).innerHTML = msg;
+			var oLog = {
+				Type: type,
+				Msg: msg
+			};
+			console.info(oLog);
+			switch (this.OS) {
+				case OS_TYPE.ANDROID:
+					if (
+						global[this.InternalName] &&
+						global[this.InternalName][INTER_NAME.onZWebLog]
+					) {
+						global[this.InternalName][INTER_NAME.onZWebLog](
+							this.szFrameworkUUID, JSON.stringify(oLog));
+					} else {
+						console.error(
+							INTER_NAME.onZWebLog +
+								" : " +
+								this.szFrameworkUUID +
+								"： Android 接口调用异常..."
+						);
+					}
+					break;
+
+				case OS_TYPE.IOS:
+					if (
+						global.webkit &&
+						global.webkit.messageHandlers &&
+						global.webkit.messageHandlers[this.InternalName]
+					) {
+						var msg = {
+							Method: INTER_NAME.onZWebLog,
+							FrameworkID: this.szFrameworkUUID,
+							Data: JSON.stringify(oLog)
+						};
+						global.webkit.messageHandlers[this.InternalName].postMessage(msg);
+					} else {
+						console.error(
+							INTER_NAME.onZWebException +
+								" : " +
+								this.szFrameworkUUID +
+								"： IOS 接口调用异常..."
+						);
+					}
+					break;
+
+				case OS_TYPE.WEB:
+					console.error(
+						INTER_NAME.onZWebLog +
+							" : " +
+							this.szFrameworkUUID +
+							"： Web 接口调用..."
+					);
+					break;
+
+				default:
+					console.error("Call print error...");
+					break;
+			}
 		},
 
 		// 注册监听
 		on: function(type, func) {
 			this.__onFuncCallBackMap__[type] = func;
-        },
+		},
 
-        // 分发回调
-        dispatchCall: function (type, oData) {
-            var func = this.__onFuncCallBackMap__[type];
-            if (func && typeof func === 'function') {
-                func(oData);
-            }
-        }
+		// 分发回调
+		dispatchCall: function(type, oData) {
+			var func = this.__onFuncCallBackMap__[type];
+			if (func && typeof func === "function") {
+				func(oData);
+			}
+		}
 	};
 
 	var ZWeb = function() {
@@ -524,8 +575,11 @@
 			this.InternalName = oParams.InternalName;
 			// 暴露接口
 			this.ExposedName = oParams.ExposedName;
-
-			this.ZWebSDK = global.ZWebSDK = new ZWebSDK(szFrameworkUUID, oParams);
+			// SDK
+			global[Lib_Name + "SDK"] = this.ZWebSDK = new ZWebSDK(
+				szFrameworkUUID,
+				oParams
+			);
 
 			function findDimensions() {
 				//函数：获取尺寸
@@ -555,41 +609,37 @@
 				return { Width: winWidth, Height: winHeight };
 			}
 
-			this.ZWebSDK.callInterOS(
-				INTER_NAME.onZWebCreated,
-				findDimensions()
-			);
+			this.ZWebSDK.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
 		},
 
 		// 请求回调
 		requireCallback: function(szFrameworkUUID, oResultParam) {
 			this.ZWebSDK.requireCallback(oResultParam);
-        },
+		},
 
-        // 消息回调
-        messageCallback: function(szFrameworkUUID, oResultParam) {
-            this.ZWebSDK.messageCallback(oResultParam);
-        },
+		// 消息回调
+		messageCallback: function(szFrameworkUUID, oResultParam) {
+			this.ZWebSDK.messageCallback(oResultParam);
+		},
 
-        callReceiver: function (szFrameworkUUID, szMethod, oData) {
-            this.ZWebSDK.dispatchCall(szMethod, oData);
-        },
+		callReceiver: function(szFrameworkUUID, szMethod, oData) {
+			this.ZWebSDK.dispatchCall(szMethod, oData);
+		},
 
-        goBack: function (szFrameworkUUID) {
-            console.info('goBack 被调用了...');
-            global.history.go(-1);
-        },
+		goBack: function(szFrameworkUUID) {
+			this.ZWebSDK.print("goBack 被调用了...");
+			global.history.go(-1);
+		},
 
-        goForward: function (szFrameworkUUID) {
-            console.info('goForward 被调用了...');
-            global.history.go(1);
-        },
+		goForward: function(szFrameworkUUID) {
+			this.ZWebSDK.print("goForward 被调用了...");
+			global.history.go(1);
+		},
 
-        refresh: function (szFrameworkUUID) {
-          console.info('refresh 被调用了...');
-          global.location.reload();
-        }
-
+		refresh: function(szFrameworkUUID) {
+			this.ZWebSDK.print("refresh 被调用了...");
+			global.location.reload();
+		}
 	};
 
 	return ZWeb;
