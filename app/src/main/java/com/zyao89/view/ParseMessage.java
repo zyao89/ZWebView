@@ -21,14 +21,14 @@ public class ParseMessage
 //
 //    }
 
-    private void CMD (String data, IZWebMessageController controller)
+    private void CMD(String data, IZWebMessageController controller)
     {
         System.out.println(data);
         controller.result(true, "我是返回结果1。。。");
     }
 
     @ZCmd("CMD")
-    private void CMD1 (String data, IZWebMessageController controller)
+    private void CMD1(String data, IZWebMessageController controller)
     {
         System.out.println(data);
         controller.result(true, "我是返回结果2。。。");

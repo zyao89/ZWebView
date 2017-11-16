@@ -24,7 +24,7 @@ import com.zyao89.view.zweb.utils.ZLog;
     }
 
     @Override
-    public void onProgressChanged (WebView view, int newProgress)
+    public void onProgressChanged(WebView view, int newProgress)
     {
         if (JsUtils.notSupportInterface())
         {
@@ -43,7 +43,7 @@ import com.zyao89.view.zweb.utils.ZLog;
     }
 
     @Override
-    public boolean onJsPrompt (WebView view, String url, String message, String defaultValue, JsPromptResult result)
+    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)
     {
         ZLog.with(this).z("onJsPrompt:" + url + "  message:" + message + "  d:" + defaultValue + "  ");
         if (JsUtils.notSupportInterface())

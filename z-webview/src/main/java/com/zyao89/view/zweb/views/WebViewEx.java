@@ -126,21 +126,21 @@ public class WebViewEx extends WebView
 
     @Override
     @Deprecated
-    public final void setWebViewClient (WebViewClient client)
+    public final void setWebViewClient(WebViewClient client)
     {
         throw new ZWebException("WebViewClient is Deprecated...");
     }
 
     @Override
     @Deprecated
-    public final void setWebChromeClient (WebChromeClient client)
+    public final void setWebChromeClient(WebChromeClient client)
     {
         throw new ZWebException("WebChromeClient is Deprecated...");
     }
 
     @Override
     @SuppressLint({"JavascriptInterface", "AddJavascriptInterface"})
-    public void addJavascriptInterface (Object interfaceObj, String interfaceName)
+    public void addJavascriptInterface(Object interfaceObj, String interfaceName)
     {
         if (TextUtils.isEmpty(interfaceName))
         {

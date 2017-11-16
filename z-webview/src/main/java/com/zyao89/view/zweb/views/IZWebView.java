@@ -52,8 +52,8 @@ public interface IZWebView
 
         void onPageFinish(String url, boolean canGoBack, boolean canGoForward);
 
-        void onProgressChanged (int newProgress);
+        void onProgressChanged(int newProgress);
 
-        WebResourceResponse shouldInterceptRequest (String url);
+        WebResourceResponse shouldInterceptRequest(String url);
     }
 }

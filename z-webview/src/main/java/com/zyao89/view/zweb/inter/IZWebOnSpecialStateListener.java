@@ -15,14 +15,13 @@ public interface IZWebOnSpecialStateListener
      *
      * @param title
      */
-    void onZWebReceivedTitle (IZWebHandler zWebHandler, String title);
+    void onZWebReceivedTitle(IZWebHandler zWebHandler, String title);
 
     /**
      * 内部请求拦截处理
      *
      * @param url
-     *
      * @return
      */
-    WebResourceResponse onInterceptRequest (IZWebHandler zWebHandler, String url);
+    WebResourceResponse onInterceptRequest(IZWebHandler zWebHandler, String url);
 }

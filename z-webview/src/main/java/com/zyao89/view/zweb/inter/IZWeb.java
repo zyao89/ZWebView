@@ -46,5 +46,5 @@ public interface IZWeb
      *
      * @return
      */
-    boolean refresh ();
+    boolean refresh();
 }

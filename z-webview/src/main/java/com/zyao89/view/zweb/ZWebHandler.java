@@ -18,9 +18,9 @@ import org.json.JSONObject;
 public class ZWebHandler implements IZWebHandler
 {
     private final ZWebConfig mZWebConfig;
-    private IZWeb mZWeb;
+    private       IZWeb      mZWeb;
 
-    /*package*/ ZWebHandler (ZWebConfig config)
+    /*package*/ ZWebHandler(ZWebConfig config)
     {
         this.mZWebConfig = config;
     }
@@ -30,7 +30,7 @@ public class ZWebHandler implements IZWebHandler
         this.mZWeb = zWeb;
     }
 
-    /*package*/ ZWebConfig getZWebConfig ()
+    /*package*/ ZWebConfig getZWebConfig()
     {
         return mZWebConfig;
     }
@@ -76,7 +76,7 @@ public class ZWebHandler implements IZWebHandler
     }
 
     @Override
-    public boolean refresh ()
+    public boolean refresh()
     {
         if (mZWeb == null)
         {

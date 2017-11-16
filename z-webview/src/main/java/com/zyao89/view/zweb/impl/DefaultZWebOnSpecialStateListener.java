@@ -13,13 +13,13 @@ import com.zyao89.view.zweb.utils.ZLog;
 public class DefaultZWebOnSpecialStateListener implements IZWebOnSpecialStateListener
 {
     @Override
-    public void onZWebReceivedTitle (IZWebHandler zWebHandler, String title)
+    public void onZWebReceivedTitle(IZWebHandler zWebHandler, String title)
     {
         ZLog.with(this).z("onZWebReceivedTitle ==> title：" + title);
     }
 
     @Override
-    public WebResourceResponse onInterceptRequest (IZWebHandler zWebHandler, String url)
+    public WebResourceResponse onInterceptRequest(IZWebHandler zWebHandler, String url)
     {
         ZLog.with(this).z("onInterceptRequest: " + url);
         return null;

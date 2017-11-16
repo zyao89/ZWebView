@@ -24,7 +24,7 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
 
     @Override
     @JavascriptInterface
-    public void saveData (String frameworkID, String oData)
+    public void saveData(String frameworkID, String oData)
     {
         JSONObject jsonObject = Utils.json2Obj(oData);
         String key = jsonObject.optString(InternalConstantName.PARAM_KEY);
@@ -35,7 +35,7 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
 
     @Override
     @JavascriptInterface
-    public void loadData (String frameworkID, String key)
+    public void loadData(String frameworkID, String key)
     {
         getZWebMethodInterface().loadData(getZWebHandler(), key);
     }

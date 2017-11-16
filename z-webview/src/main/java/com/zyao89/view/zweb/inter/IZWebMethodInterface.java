@@ -15,7 +15,7 @@ public interface IZWebMethodInterface
      * @param key
      * @param value
      */
-    void saveData (IZWebHandler zWebHandler, String key, String value);
+    void saveData(IZWebHandler zWebHandler, String key, String value);
 
     /**
      * 从数据库读取数据
@@ -23,7 +23,7 @@ public interface IZWebMethodInterface
      * @param zWebHandler
      * @param key
      */
-    void loadData (IZWebHandler zWebHandler, String key);
+    void loadData(IZWebHandler zWebHandler, String key);
 
     /**
      * 显示等待框

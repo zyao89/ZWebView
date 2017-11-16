@@ -21,17 +21,17 @@ import java.util.List;
  */
 public class ZWebConfig
 {
-    private final String               mInterName;
-    private final String               mExposedName;
-    private final String               mUrl;
-    private final boolean              mIsShowLoading;
-    private final IZWebMethodInterface mZWebMethodInterface;
-    private final IZWebOnStateListener mZWebOnStateListener;
+    private final String                      mInterName;
+    private final String                      mExposedName;
+    private final String                      mUrl;
+    private final boolean                     mIsShowLoading;
+    private final IZWebMethodInterface        mZWebMethodInterface;
+    private final IZWebOnStateListener        mZWebOnStateListener;
     private final IZWebOnSpecialStateListener mZWebOnSpecialStateListener;
-    private final List<String> mInjectJSFiles;
-    private final boolean              mIsFileAccess;
+    private final List<String>                mInjectJSFiles;
+    private final boolean                     mIsFileAccess;
     @ColorInt
-    private final int mBackgroundColor;
+    private final int                         mBackgroundColor;
 
     ZWebConfig(Builder builder)
     {
@@ -77,12 +77,12 @@ public class ZWebConfig
         return mZWebOnStateListener;
     }
 
-    public IZWebOnSpecialStateListener getZWebOnSpecialStateListener ()
+    public IZWebOnSpecialStateListener getZWebOnSpecialStateListener()
     {
         return mZWebOnSpecialStateListener;
     }
 
-    public List<String> getInjectJSFiles ()
+    public List<String> getInjectJSFiles()
     {
         return mInjectJSFiles;
     }
@@ -93,7 +93,7 @@ public class ZWebConfig
     }
 
     @ColorInt
-    public int getBackgroundColor ()
+    public int getBackgroundColor()
     {
         return mBackgroundColor;
     }
@@ -103,44 +103,44 @@ public class ZWebConfig
         /**
          * 对内接口名称
          */
-        private final String               mInterName           = "ZWeb";
+        private final String                      mInterName                  = "ZWeb";
         /**
          * 对外暴露接口名称
          */
-        private       String               mExposedName         = "ZWeb_Android_APP";
+        private       String                      mExposedName                = "ZWeb_Android_APP";
         /**
          * 主页URL
          */
-        private       String               mUrl                 = null;
+        private       String                      mUrl                        = null;
         /**
          * 是否显示内部加载等待
          */
-        private       boolean              mIsShowLoading       = true;
+        private       boolean                     mIsShowLoading              = true;
         /**
          * Native UI 实现
          */
-        private       IZWebMethodInterface mZWebMethodInterface = null;
+        private       IZWebMethodInterface        mZWebMethodInterface        = null;
         /**
          * 框架生命周期监听
          */
-        private       IZWebOnStateListener mZWebOnStateListener = null;
+        private       IZWebOnStateListener        mZWebOnStateListener        = null;
         /**
          * 特殊方法监听
          */
-        private IZWebOnSpecialStateListener mZWebOnSpecialStateListener = null;
+        private       IZWebOnSpecialStateListener mZWebOnSpecialStateListener = null;
         /**
          * 在加载完成后需要注入的JS
          */
-        private List<String> mInjectJSFileList = null;
+        private       List<String>                mInjectJSFileList           = null;
         /**
          * 是否加载的是本地文件，默认true
          */
-        private       boolean              mIsFileAccess        = true;
+        private       boolean                     mIsFileAccess               = true;
         /**
          * WebView背景颜色（默认白色）
          */
         @ColorInt
-        private int mBackgroundColor = Color.WHITE;
+        private       int                         mBackgroundColor            = Color.WHITE;
 
         public Builder(String url)
         {
@@ -173,13 +173,13 @@ public class ZWebConfig
             return this;
         }
 
-        public Builder setOnSpecialStateListener (IZWebOnSpecialStateListener webOnSpecialStateListener)
+        public Builder setOnSpecialStateListener(IZWebOnSpecialStateListener webOnSpecialStateListener)
         {
             this.mZWebOnSpecialStateListener = webOnSpecialStateListener;
             return this;
         }
 
-        public Builder addInjectJSFilePath (String injectJSFilePath)
+        public Builder addInjectJSFilePath(String injectJSFilePath)
         {
             this.mInjectJSFileList.add(injectJSFilePath);
             return this;
@@ -191,7 +191,7 @@ public class ZWebConfig
             return this;
         }
 
-        public Builder setBackgroundColor (int backgroundColor)
+        public Builder setBackgroundColor(int backgroundColor)
         {
             mBackgroundColor = backgroundColor;
             return this;

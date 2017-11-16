@@ -19,7 +19,7 @@ public interface IZWebOnStateListener
      * @param width
      * @param height
      */
-    void onZWebCreated (IZWebHandler zWebHandler, int width, int height);
+    void onZWebCreated(IZWebHandler zWebHandler, int width, int height);
 
     /**
      * 异常
@@ -28,19 +28,19 @@ public interface IZWebOnStateListener
      * @param errorCode
      * @param message
      */
-    void onZWebException (IZWebHandler zWebHandler, long errorCode, String message);
+    void onZWebException(IZWebHandler zWebHandler, long errorCode, String message);
 
     /**
      * 请求处理
      *
      * @param zWebHandler
-     * @param url
-     * @param method
-     * @param data
-     * @param type
+     * @param url         链接
+     * @param method      请求方法
+     * @param data        数据
+     * @param type        返回类型
      * @param controller
      */
-    void onZWebRequire (IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller);
+    void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller);
 
     /**
      * 异步消息请求
@@ -48,22 +48,23 @@ public interface IZWebOnStateListener
      * @param zWebHandler
      * @param data
      */
-    void onZWebMessage (IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
+    void onZWebMessage(IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
 
     /**
      * 销毁
      *
      * @param zWebHandler
      */
-    void onZWebDestroy (IZWebHandler zWebHandler);
+    void onZWebDestroy(IZWebHandler zWebHandler);
 
     /**
      * 日志信息
      *
      * @param zWebHandler
-     * @param msg
+     * @param type        类型
+     * @param msg         信息
      */
-    void onZWebLog (IZWebHandler zWebHandler, String msg);
+    void onZWebLog(IZWebHandler zWebHandler, String type, String msg);
 
     /**
      * 请求结果控制协议
@@ -75,7 +76,7 @@ public interface IZWebOnStateListener
          *
          * @param isSuccess 成功 or 失败
          */
-        void result (boolean isSuccess);
+        void result(boolean isSuccess);
 
         /**
          * 请求结果处理
@@ -83,7 +84,7 @@ public interface IZWebOnStateListener
          * @param isSuccess 成功 or 失败
          * @param data      请求结果数据
          */
-        void result (boolean isSuccess, String data);
+        void result(boolean isSuccess, String data);
 
         /**
          * 请求结果处理
@@ -91,7 +92,7 @@ public interface IZWebOnStateListener
          * @param isSuccess 成功 or 失败
          * @param data      请求结果数据
          */
-        void result (boolean isSuccess, @NonNull JSONObject data);
+        void result(boolean isSuccess, @NonNull JSONObject data);
     }
 
     /**
@@ -104,7 +105,7 @@ public interface IZWebOnStateListener
          *
          * @param isSuccess 成功 or 失败
          */
-        void result (boolean isSuccess);
+        void result(boolean isSuccess);
 
         /**
          * 消息结果处理
@@ -112,7 +113,7 @@ public interface IZWebOnStateListener
          * @param isSuccess 成功 or 失败
          * @param data      消息结果数据
          */
-        void result (boolean isSuccess, String data);
+        void result(boolean isSuccess, String data);
 
         /**
          * 消息结果处理
@@ -120,7 +121,7 @@ public interface IZWebOnStateListener
          * @param isSuccess 成功 or 失败
          * @param data      消息结果数据
          */
-        void result (boolean isSuccess, @NonNull JSONObject data);
+        void result(boolean isSuccess, @NonNull JSONObject data);
 
         /**
          * 自动解析为对象中相应方法
@@ -128,6 +129,6 @@ public interface IZWebOnStateListener
          * @param object 对象
          * @param <T>
          */
-        <T> void parseMessage (@NonNull T object);
+        <T> void parseMessage(@NonNull T object);
     }
 }

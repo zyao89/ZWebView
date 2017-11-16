@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class DefaultZWebOnStateListener implements IZWebOnStateListener
 {
     @Override
-    public void onZWebCreated (IZWebHandler zWebHandler, int width, int height)
+    public void onZWebCreated(IZWebHandler zWebHandler, int width, int height)
     {
         JSONObject jsonObject = new JSONObject();
         try
@@ -31,32 +31,32 @@ public class DefaultZWebOnStateListener implements IZWebOnStateListener
     }
 
     @Override
-    public void onZWebException (IZWebHandler zWebHandler, long errorCode, String message)
+    public void onZWebException(IZWebHandler zWebHandler, long errorCode, String message)
     {
         ZLog.with(this).d("onZWebException ==> errorCode：" + errorCode + "； message：" + message);
     }
 
     @Override
-    public void onZWebRequire (IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller)
+    public void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, IZRequireController controller)
     {
         controller.result(false);
     }
 
     @Override
-    public void onZWebMessage (IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
+    public void onZWebMessage(IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
     {
         controller.result(true, "No Data...");
     }
 
     @Override
-    public void onZWebDestroy (IZWebHandler zWebHandler)
+    public void onZWebDestroy(IZWebHandler zWebHandler)
     {
         ZLog.with(this).d("onZWebDestroy ==> GAME OVER");
     }
 
     @Override
-    public void onZWebLog (IZWebHandler zWebHandler, String msg)
+    public void onZWebLog(IZWebHandler zWebHandler, String type, String msg)
     {
-        ZLog.with(this).d("onZWebLog: " + msg);
+        ZLog.with(this).d("onZWebLog ==> type: " + type + ", msg: " + msg);
     }
 }

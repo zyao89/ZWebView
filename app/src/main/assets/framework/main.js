@@ -2,8 +2,8 @@
 	if ("undefined" === typeof global) {
 		throw "not find window...";
 	}
-	if ("undefined" === typeof global.__ZWeb__) {
-		var Lib_Name = "ZWeb";
+	var Lib_Name = "ZWeb";
+	if ("undefined" === typeof global["__" + Lib_Name + "__"]) {
 		var zWeb = factory(global, Lib_Name);
 		global["__" + Lib_Name + "__"] = new zWeb();
 	}

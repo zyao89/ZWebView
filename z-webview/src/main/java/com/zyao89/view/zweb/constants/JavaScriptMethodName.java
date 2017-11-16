@@ -7,5 +7,5 @@ package com.zyao89.view.zweb.constants;
 public interface JavaScriptMethodName
 {
     String SEARCH_BOX_JAVA_BRIDGE = "searchBoxJavaBridge_";
-    String BAD_PARAMETER = "bad parameter";
+    String BAD_PARAMETER          = "bad parameter";
 }

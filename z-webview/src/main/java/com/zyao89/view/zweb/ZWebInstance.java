@@ -21,10 +21,10 @@ import com.zyao89.view.zweb.views.IZWebView;
  */
 public class ZWebInstance implements IZActivityStateListener
 {
-    static Application sApplication;
-    private final  ZWebConfig     mZWebConfig;
-    private final  ZWebHandler    mZWebHandler;
-    private final  ServiceFactory mServiceFactory;
+    static        Application    sApplication;
+    private final ZWebConfig     mZWebConfig;
+    private final ZWebHandler    mZWebHandler;
+    private final ServiceFactory mServiceFactory;
 
     private ZWeb          mZWeb;
     private IZWebView     mZWebView;
@@ -58,12 +58,12 @@ public class ZWebInstance implements IZActivityStateListener
         return new ZWebInstance(config);
     }
 
-    public IZWebHandler getZWebHandler ()
+    public IZWebHandler getZWebHandler()
     {
         return mZWebHandler;
     }
 
-    public ZWebConfig getZConfig ()
+    public ZWebConfig getZConfig()
     {
         return mZWebConfig;
     }
@@ -145,7 +145,7 @@ public class ZWebInstance implements IZActivityStateListener
         return false;
     }
 
-    private void initWebView (ViewGroup rootView)
+    private void initWebView(ViewGroup rootView)
     {
         if (mZWeb == null)
         {
@@ -157,7 +157,7 @@ public class ZWebInstance implements IZActivityStateListener
         rootView.addView(webView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void initJavaScript ()
+    private void initJavaScript()
     {
         mZJavaScript = new ZJavaScriptEx(mZWebHandler);
         this.setOnStateListener(mZWebConfig.getZWebOnStateListener());
@@ -171,7 +171,7 @@ public class ZWebInstance implements IZActivityStateListener
         mZWebView.loadUrl(mainUrl);
     }
 
-    private void setOnStateListener (@NonNull IZWebOnStateListener interfaceObj)
+    private void setOnStateListener(@NonNull IZWebOnStateListener interfaceObj)
     {
         if (mZJavaScript == null)
         {
@@ -180,7 +180,7 @@ public class ZWebInstance implements IZActivityStateListener
         mZJavaScript.setOnStateListener(interfaceObj);
     }
 
-    private void setNativeMethodImplement (@NonNull IZWebMethodInterface interfaceObj)
+    private void setNativeMethodImplement(@NonNull IZWebMethodInterface interfaceObj)
     {
         if (mZJavaScript == null)
         {

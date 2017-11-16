@@ -33,27 +33,27 @@ import java.lang.reflect.Method;
 /* package */ class ZJavaScript implements IZRenderListener
 {
     @NonNull
-    private final IZWebHandler mZWebHandler;
-    private IZWebMethodInterface mZWebMethodInterface;
-    private IZWebOnStateListener mZWebStateListener;
+    private final IZWebHandler         mZWebHandler;
+    private       IZWebMethodInterface mZWebMethodInterface;
+    private       IZWebOnStateListener mZWebStateListener;
 
-    /* package */ ZJavaScript (@NonNull IZWebHandler zWeb)
+    /* package */ ZJavaScript(@NonNull IZWebHandler zWeb)
     {
         mZWebHandler = zWeb;
     }
 
-    public void setNativeMethodImplement (@NonNull IZWebMethodInterface interfaceObj)
+    public void setNativeMethodImplement(@NonNull IZWebMethodInterface interfaceObj)
     {
         mZWebMethodInterface = interfaceObj;
     }
 
-    public void setOnStateListener (@NonNull IZWebOnStateListener interfaceObj)
+    public void setOnStateListener(@NonNull IZWebOnStateListener interfaceObj)
     {
         mZWebStateListener = interfaceObj;
     }
 
     @NonNull
-    protected final IZWebMethodInterface getZWebMethodInterface ()
+    protected final IZWebMethodInterface getZWebMethodInterface()
     {
         if (mZWebMethodInterface == null)
         {
@@ -63,7 +63,7 @@ import java.lang.reflect.Method;
     }
 
     @NonNull
-    protected final IZWebOnStateListener getZWebStateListener ()
+    protected final IZWebOnStateListener getZWebStateListener()
     {
         if (mZWebStateListener == null)
         {
@@ -73,24 +73,24 @@ import java.lang.reflect.Method;
     }
 
     @NonNull
-    protected final IZWebHandler getZWebHandler ()
+    protected final IZWebHandler getZWebHandler()
     {
         return mZWebHandler;
     }
 
-    protected final String getFrameworkID ()
+    protected final String getFrameworkID()
     {
         return getZWebHandler().getFrameworkUUID();
     }
 
-    protected final boolean execJS (String function, JSONObject json)
+    protected final boolean execJS(String function, JSONObject json)
     {
         return mZWebHandler.execJS(function, json);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebCreated (String frameworkID, String size)
+    public void onZWebCreated(String frameworkID, String size)
     {
         JSONObject jsonObject = Utils.json2Obj(size);
         String width = jsonObject.optString(InternalConstantName.PARAM_WIDTH);
@@ -101,7 +101,7 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebException (String frameworkID, long errCode, String msg)
+    public void onZWebException(String frameworkID, long errCode, String msg)
     {
         ZLog.with(this).d("zzzzz  onZWebException errCode： " + errCode + "， msg： " + msg);
 
@@ -110,7 +110,7 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebRequire (String frameworkID, String oJson)
+    public void onZWebRequire(String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  onZWebRequire： " + frameworkID + "， oJson：" + oJson);
 
@@ -127,7 +127,7 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebMessage (String frameworkID, String oJson)
+    public void onZWebMessage(String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  postMessage： " + frameworkID + "， oJson：" + oJson);
 
@@ -142,7 +142,7 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebDestroy (String frameworkID)
+    public void onZWebDestroy(String frameworkID)
     {
         ZLog.with(this).d("zzzzz  onZWebDestroy： " + frameworkID);
 
@@ -151,11 +151,15 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebLog (String frameworkID, String msg)
+    public void onZWebLog(String frameworkID, String oData)
     {
-        ZLog.with(this).d("zzzzz  onZWebLog： " + frameworkID + "， msg：" + msg);
+        ZLog.with(this).d("zzzzz  onZWebLog： " + frameworkID + "， msg：" + oData);
 
-        getZWebStateListener().onZWebLog(getZWebHandler(), msg);
+        JSONObject jsonObject = Utils.json2Obj(oData);
+        String type = jsonObject.optString(InternalConstantName.PARAM_TYPE);
+        String msg = jsonObject.optString(InternalConstantName.PARAM_MSG);
+
+        getZWebStateListener().onZWebLog(getZWebHandler(), type, msg);
     }
 
     class ZRequireController implements IZWebOnStateListener.IZRequireController
@@ -163,34 +167,34 @@ import java.lang.reflect.Method;
         final String mFunctionName;
         final String mSequence;
 
-        ZRequireController (String function, String sequence)
+        ZRequireController(String function, String sequence)
         {
             this.mFunctionName = function;
             this.mSequence = sequence;
         }
 
         @Override
-        public void result (boolean isSuccess)
+        public void result(boolean isSuccess)
         {
             JSONObject json = convert(this.mSequence, isSuccess, null);
             ZJavaScript.this.execJS(this.mFunctionName, json);
         }
 
         @Override
-        public void result (boolean isSuccess, String data)
+        public void result(boolean isSuccess, String data)
         {
             JSONObject json = convert(this.mSequence, isSuccess, data);
             ZJavaScript.this.execJS(this.mFunctionName, json);
         }
 
         @Override
-        public void result (boolean isSuccess, @NonNull JSONObject data)
+        public void result(boolean isSuccess, @NonNull JSONObject data)
         {
             JSONObject json = convert(this.mSequence, isSuccess, data.toString());
             ZJavaScript.this.execJS(this.mFunctionName, json);
         }
 
-        private JSONObject convert (@NonNull String sequence, boolean isSuccess, @Nullable String data)
+        private JSONObject convert(@NonNull String sequence, boolean isSuccess, @Nullable String data)
         {
             try
             {
@@ -215,7 +219,7 @@ import java.lang.reflect.Method;
         private final String mCmd;
         private final String mData;
 
-        ZMessageController (String function, String sequence, String cmd, String data)
+        ZMessageController(String function, String sequence, String cmd, String data)
         {
             super(function, sequence);
             this.mCmd = cmd;
@@ -223,7 +227,7 @@ import java.lang.reflect.Method;
         }
 
         @Override
-        public <T> void parseMessage (@NonNull T object)
+        public <T> void parseMessage(@NonNull T object)
         {
             Method finalM = null;
             Method[] methods = object.getClass().getDeclaredMethods();
@@ -336,7 +340,7 @@ import java.lang.reflect.Method;
             }
         }
 
-        private boolean parseCmdAnnotation (Annotation annotation)
+        private boolean parseCmdAnnotation(Annotation annotation)
         {
             if (annotation instanceof ZFunction)
             {
@@ -358,7 +362,7 @@ import java.lang.reflect.Method;
             }
         }
 
-        private boolean parseCmdName (String cmdName)
+        private boolean parseCmdName(String cmdName)
         {
             if (TextUtils.isEmpty(cmdName))
             {

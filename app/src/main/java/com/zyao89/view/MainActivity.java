@@ -17,6 +17,7 @@ import com.zyao89.view.zweb.ZWebInstance;
 import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
 import com.zyao89.view.zweb.inter.IZWebOnStateListener;
+import com.zyao89.view.zweb.utils.ZLog;
 
 import java.io.IOException;
 
@@ -31,16 +32,16 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements IZWebMethodInterface, IZWebOnStateListener
 {
-    public final static String ROOT = "root";
+    public final static String ROOT      = "root";
     public final static String MAIN_HTML = "file:///android_asset/index.html";
-    private FrameLayout mRootView;
-    private ZWebInstance mZWebInstance;
-    private OkHttpClient mOkHttpClient;
+    private FrameLayout    mRootView;
+    private ZWebInstance   mZWebInstance;
+    private OkHttpClient   mOkHttpClient;
     private RequireService mRequireService;
-    private ParseMessage mParseMessage;
+    private ParseMessage   mParseMessage;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
         Refresh.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick (View v)
+            public void onClick(View v)
             {
                 mRequireService.refresh();
             }
@@ -137,45 +138,45 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     }
 
     @Override
-    protected void onStart ()
+    protected void onStart()
     {
         mZWebInstance.onActivityStart();
         super.onStart();
     }
 
     @Override
-    protected void onStop ()
+    protected void onStop()
     {
         mZWebInstance.onActivityStop();
         super.onStop();
     }
 
     @Override
-    protected void onDestroy ()
+    protected void onDestroy()
     {
         mZWebInstance.onActivityDestroy();
         super.onDestroy();
     }
 
-    private void initOkHttpClient ()
+    private void initOkHttpClient()
     {
         mOkHttpClient = new OkHttpClient.Builder().hostnameVerifier(new HostnameVerifier()
         {
             @Override
-            public boolean verify (String hostname, SSLSession session)
+            public boolean verify(String hostname, SSLSession session)
             {
                 return true;
             }
         }).build();
     }
 
-    private void initRequireService ()
+    private void initRequireService()
     {
         mRequireService = mZWebInstance.create(RequireService.class);
     }
 
     @Override
-    public void onZWebCreated (IZWebHandler zWebHandler, int width, int height)
+    public void onZWebCreated(IZWebHandler zWebHandler, int width, int height)
     {
         boolean a = mRequireService.a("2b", "9999", 66);
         System.out.println("结果打印： " + a);
@@ -183,26 +184,26 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     }
 
     @Override
-    public void onZWebException (IZWebHandler zWebHandler, long errorCode, String message)
+    public void onZWebException(IZWebHandler zWebHandler, long errorCode, String message)
     {
 
     }
 
     @Override
-    public void onZWebRequire (IZWebHandler zWebHandler, String url, String method, String data, String type, final IZRequireController controller)
+    public void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, final IZRequireController controller)
     {
         Request request = new Request.Builder().url(url).build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback()
         {
             @Override
-            public void onFailure (Call call, IOException e)
+            public void onFailure(Call call, IOException e)
             {
                 controller.result(false, "请求失败啦。。。");
             }
 
             @Override
-            public void onResponse (Call call, Response response) throws IOException
+            public void onResponse(Call call, Response response) throws IOException
             {
                 controller.result(true, response.body().string());
             }
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     }
 
     @Override
-    public void onZWebMessage (IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
+    public void onZWebMessage(IZWebHandler zWebHandler, String cmd, String oJson, IZMessageController controller)
     {
         //      controller.result(true, "我是你想要的消息");
 
@@ -218,49 +219,49 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     }
 
     @Override
-    public void onZWebDestroy (IZWebHandler zWebHandler)
+    public void onZWebDestroy(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void onZWebLog (IZWebHandler zWebHandler, String msg)
+    public void onZWebLog(IZWebHandler zWebHandler, String type, String msg)
     {
-        System.out.println(msg);
+        ZLog.with(this).d("onZWebLog ==> type: " + type + ", msg: " + msg);
     }
 
     @Override
-    public void saveData (IZWebHandler zWebHandler, String key, String value)
-    {
-
-    }
-
-    @Override
-    public void loadData (IZWebHandler zWebHandler, String key)
+    public void saveData(IZWebHandler zWebHandler, String key, String value)
     {
 
     }
 
     @Override
-    public void showLoading (IZWebHandler zWebHandler)
+    public void loadData(IZWebHandler zWebHandler, String key)
     {
 
     }
 
     @Override
-    public void hideLoading (IZWebHandler zWebHandler)
+    public void showLoading(IZWebHandler zWebHandler)
     {
 
     }
 
     @Override
-    public void tip (IZWebHandler zWebHandler, String msg)
+    public void hideLoading(IZWebHandler zWebHandler)
+    {
+
+    }
+
+    @Override
+    public void tip(IZWebHandler zWebHandler, String msg)
     {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onBackPressed ()
+    public void onBackPressed()
     {
         if (!mZWebInstance.onActivityBack())
         {
@@ -269,14 +270,14 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     }
 
     @Override
-    protected void onPause ()
+    protected void onPause()
     {
         mZWebInstance.onActivityPause();
         super.onPause();
     }
 
     @Override
-    protected void onResume ()
+    protected void onResume()
     {
         mZWebInstance.onActivityResume();
         super.onResume();

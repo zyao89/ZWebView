@@ -17,7 +17,7 @@ public interface IZWebMessageController
      *
      * @param isSuccess 成功 or 失败
      */
-    void result (boolean isSuccess);
+    void result(boolean isSuccess);
 
     /**
      * 消息结果处理
@@ -25,7 +25,7 @@ public interface IZWebMessageController
      * @param isSuccess 成功 or 失败
      * @param data      消息结果数据
      */
-    void result (boolean isSuccess, String data);
+    void result(boolean isSuccess, String data);
 
     /**
      * 消息结果处理
@@ -33,5 +33,5 @@ public interface IZWebMessageController
      * @param isSuccess 成功 or 失败
      * @param data      消息结果数据
      */
-    void result (boolean isSuccess, @NonNull JSONObject data);
+    void result(boolean isSuccess, @NonNull JSONObject data);
 }

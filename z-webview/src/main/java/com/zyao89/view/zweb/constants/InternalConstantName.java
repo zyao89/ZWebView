@@ -18,7 +18,7 @@ public interface InternalConstantName
     String URL      = "Url";
     String METHOD   = "Method";
     String DATA     = "Data";
-    String TYPE     = "type";
+    String TYPE     = "Type";
 
     String CMD = "Cmd";
 
@@ -32,4 +32,6 @@ public interface InternalConstantName
     String PARAM_VALUE  = "Value";
     String PARAM_WIDTH  = "Width";
     String PARAM_HEIGHT = "Height";
+    String PARAM_TYPE   = "Type";
+    String PARAM_MSG    = "Msg";
 }
