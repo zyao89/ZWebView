@@ -1,11 +1,20 @@
 package com.zyao89.view.zweb.utils;
 
+import android.content.Context;
 import android.os.Build;
+import android.support.annotation.RawRes;
 import android.text.TextUtils;
+
+import com.zyao89.view.zweb.exceptions.ZWebException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * @author Zyao89
@@ -77,6 +86,117 @@ public class JsUtils
             tag = false;
         }
         return tag;
+    }
+
+    public static JSONObject json2Obj (String json)
+    {
+        try
+        {
+            return new JSONObject(json);
+        }
+        catch (JSONException e)
+        {
+            throw new ZWebException("Json parse error...");
+        }
+    }
+
+    public static String assetFile2Str (Context c, String urlStr)
+    {
+        InputStream in = null;
+        try
+        {
+            in = c.getAssets().open(urlStr);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+            do
+            {
+                line = bufferedReader.readLine();
+                if (line != null && !line.matches("^\\s*\\/\\/.*"))
+                {
+                    sb.append(line).append('\n');
+                }
+            } while (line != null);
+
+            bufferedReader.close();
+            in.close();
+
+            return sb.toString();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if (in != null)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e)
+                {
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String rawFile2Str (Context c, @RawRes int rawID)
+    {
+        InputStream in = null;
+        try
+        {
+            in = c.getResources().openRawResource(rawID);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+            do
+            {
+                line = bufferedReader.readLine();
+                if (line != null && !line.matches("^\\s*\\/\\/.*"))
+                {
+                    sb.append(line).append('\n');
+                }
+            } while (line != null);
+
+            bufferedReader.close();
+            in.close();
+
+            return sb.toString();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if (in != null)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e)
+                {
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * js 文件将注入为第一个script引用
+     *
+     * @param url
+     */
+    public static String webViewLoadJs (String url)
+    {
+        String js = "var newScript = document.createElement(\"script\");";
+        js += "newScript.src=\"" + url + "\";";
+        js += "document.scripts[0].parentNode.insertBefore(newScript,document.scripts[0]);";
+        return js;
     }
 
     /**

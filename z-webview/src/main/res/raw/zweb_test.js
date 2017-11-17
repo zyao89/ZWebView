@@ -1,5 +1,5 @@
 (function() {
-	document.getElementById("btn1").onclick = function() {
+	document.getElementById("message").onclick = function() {
 
 		var prom = ZWebSDK.message(
 			"CMD",
@@ -19,7 +19,7 @@
 		);
 	};
 
-	document.getElementById("btn2").onclick = function() {
+	document.getElementById("require").onclick = function() {
 
 		var prom = ZWebSDK.require(
 			"https://zyao89.cn",
@@ -43,7 +43,7 @@
 //        ZWebSDK.saveData("**key**", "**value**");
 	};
 
-	document.getElementById("btn3").onclick = function() {
+	document.getElementById("callOS").onclick = function() {
         // szMethodName, oData
         var szMethodName = document.getElementById("data").value;
         var oData = {"Msg":"这只是测试数据而已..."};
@@ -51,17 +51,29 @@
 		ZWebSDK.callOS(szMethodName, oData);
 	};
 
-	document.getElementById("btn4").onclick = function() {
+	document.getElementById("exceptionOS").onclick = function() {
         var errorMsg = document.getElementById("data").value;
         document.getElementById("result").innerHTML = "Call: exceptionOS ==>> errCode: " + 1007 + " ==>> msg: " + errorMsg;
 		ZWebSDK.exceptionOS(1007, errorMsg);
 	};
 
-	document.getElementById("btn5").onclick = function() {
+	document.getElementById("saveData").onclick = function() {
         var key = document.getElementById("data").value;
         var value = "这是我存入的密码： 12345678";
-        document.getElementById("result").innerHTML = "Call: saveData ==>> Key: " + key + " ==>> Value: " + value;
-		ZWebSDK.saveData(key, value);
+		ZWebSDK.saveData(key, value).then(function(data){
+            document.getElementById("result").innerHTML = "Call Success: saveData ==>> Key: " + key + " ==>> Value: " + value;
+		}, function(data){
+            document.getElementById("result").innerHTML = "Call Error: saveData ==>> Key: " + key + " ==>> Value: " + value;
+		});
+	};
+
+	document.getElementById("loadData").onclick = function() {
+        var key = document.getElementById("data").value;
+		ZWebSDK.loadData(key).then(function(data){
+            document.getElementById("result").innerHTML = "Call Success: loadData ==>> Key: " + key + " ==>> Value: " + data;
+		}, function(data){
+            document.getElementById("result").innerHTML = "Call Error: loadData ==>> Key: " + key + " ==>> Value: " + data;
+		});
 	};
 
 	window.btnClick = function(method, flag){

@@ -4,22 +4,43 @@ import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
 import com.zyao89.view.zweb.utils.ZLog;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author Zyao89
  * @date 2017/11/8.
  */
 public class DefaultZWebMethodInterface implements IZWebMethodInterface
 {
+    private final Map<String, String> mDatabase = new ConcurrentHashMap<>();
+
     @Override
-    public void saveData(IZWebHandler zWebHandler, String key, String value)
+    public void saveData (IZWebHandler zWebHandler, String key, String value, IZDatabaseController zController)
     {
-        ZLog.with(this).d("saveData ==> key: " + key);
+        String result = mDatabase.put(key, value);
+        if (result == null)
+        {
+            zController.result(false);
+        }
+        else
+        {
+            zController.result(true, result);
+        }
     }
 
     @Override
-    public void loadData(IZWebHandler zWebHandler, String key)
+    public void loadData (IZWebHandler zWebHandler, String key, IZDatabaseController zController)
     {
-        ZLog.with(this).d("loadData ==> key: " + key);
+        String result = mDatabase.get(key);
+        if (result == null)
+        {
+            zController.result(false);
+        }
+        else
+        {
+            zController.result(true, result);
+        }
     }
 
     @Override

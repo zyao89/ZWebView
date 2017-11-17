@@ -2,6 +2,8 @@ package com.zyao89.view.zweb;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.annotation.RawRes;
+import android.support.annotation.VisibleForTesting;
 
 import com.zyao89.view.zweb.impl.DefaultZWebMethodInterface;
 import com.zyao89.view.zweb.impl.DefaultZWebOnSpecialStateListener;
@@ -21,19 +23,19 @@ import java.util.List;
  */
 public class ZWebConfig
 {
-    private final String                      mInterName;
-    private final String                      mExposedName;
-    private final String                      mUrl;
-    private final boolean                     mIsShowLoading;
-    private final IZWebMethodInterface        mZWebMethodInterface;
-    private final IZWebOnStateListener        mZWebOnStateListener;
+    private final String mInterName;
+    private final String mExposedName;
+    private final String mUrl;
+    private final boolean mIsShowLoading;
+    private final IZWebMethodInterface mZWebMethodInterface;
+    private final IZWebOnStateListener mZWebOnStateListener;
     private final IZWebOnSpecialStateListener mZWebOnSpecialStateListener;
-    private final List<String>                mInjectJSFiles;
-    private final boolean                     mIsFileAccess;
+    private final List<JSFile> mInjectJSFiles;
+    private final boolean mIsFileAccess;
     @ColorInt
-    private final int                         mBackgroundColor;
+    private final int mBackgroundColor;
 
-    ZWebConfig(Builder builder)
+    ZWebConfig (Builder builder)
     {
         this.mUrl = builder.mUrl;
         this.mInterName = builder.mInterName;
@@ -47,53 +49,53 @@ public class ZWebConfig
         this.mBackgroundColor = builder.mBackgroundColor;
     }
 
-    public String url()
+    public String url ()
     {
         return mUrl;
     }
 
-    public String getInterName()
+    public String getInterName ()
     {
         return mInterName;
     }
 
-    public String getExposedName()
+    public String getExposedName ()
     {
         return mExposedName;
     }
 
-    public boolean isShowLoading()
+    public boolean isShowLoading ()
     {
         return mIsShowLoading;
     }
 
-    public IZWebMethodInterface getZWebMethodInterface()
+    public IZWebMethodInterface getZWebMethodInterface ()
     {
         return mZWebMethodInterface;
     }
 
-    public IZWebOnStateListener getZWebOnStateListener()
+    public IZWebOnStateListener getZWebOnStateListener ()
     {
         return mZWebOnStateListener;
     }
 
-    public IZWebOnSpecialStateListener getZWebOnSpecialStateListener()
+    public IZWebOnSpecialStateListener getZWebOnSpecialStateListener ()
     {
         return mZWebOnSpecialStateListener;
     }
 
-    public List<String> getInjectJSFiles()
+    public List<JSFile> getInjectJSFiles ()
     {
         return mInjectJSFiles;
     }
 
-    public boolean isFileAccess()
+    public boolean isFileAccess ()
     {
         return mIsFileAccess;
     }
 
     @ColorInt
-    public int getBackgroundColor()
+    public int getBackgroundColor ()
     {
         return mBackgroundColor;
     }
@@ -103,103 +105,196 @@ public class ZWebConfig
         /**
          * 对内接口名称
          */
-        private final String                      mInterName                  = "ZWeb";
+        private final String mInterName = "ZWeb";
         /**
          * 对外暴露接口名称
          */
-        private       String                      mExposedName                = "ZWeb_Android_APP";
+        private String mExposedName = "ZWeb_Android_APP";
         /**
          * 主页URL
          */
-        private       String                      mUrl                        = null;
+        private String mUrl = null;
         /**
          * 是否显示内部加载等待
          */
-        private       boolean                     mIsShowLoading              = true;
+        private boolean mIsShowLoading = true;
         /**
          * Native UI 实现
          */
-        private       IZWebMethodInterface        mZWebMethodInterface        = null;
+        private IZWebMethodInterface mZWebMethodInterface = null;
         /**
          * 框架生命周期监听
          */
-        private       IZWebOnStateListener        mZWebOnStateListener        = null;
+        private IZWebOnStateListener mZWebOnStateListener = null;
         /**
          * 特殊方法监听
          */
-        private       IZWebOnSpecialStateListener mZWebOnSpecialStateListener = null;
+        private IZWebOnSpecialStateListener mZWebOnSpecialStateListener = null;
         /**
          * 在加载完成后需要注入的JS
          */
-        private       List<String>                mInjectJSFileList           = null;
+        private LinkedList<JSFile> mInjectJSFileList = null;
         /**
          * 是否加载的是本地文件，默认true
          */
-        private       boolean                     mIsFileAccess               = true;
+        private boolean mIsFileAccess = true;
         /**
          * WebView背景颜色（默认白色）
          */
         @ColorInt
-        private       int                         mBackgroundColor            = Color.WHITE;
+        private int mBackgroundColor = Color.WHITE;
 
-        public Builder(String url)
+        public Builder (String url)
         {
-            if (url == null) { throw new NullPointerException("url == null"); }
+            if (url == null)
+            {
+                throw new NullPointerException("url == null");
+            }
             this.mUrl = url;
             this.mInjectJSFileList = new LinkedList<>();
         }
 
-        public Builder setExposedName(String exposedName)
+        public Builder setExposedName (String exposedName)
         {
             this.mExposedName = exposedName;
             return this;
         }
 
-        public Builder setShowLoading(boolean showLoading)
+        public Builder setShowLoading (boolean showLoading)
         {
             this.mIsShowLoading = showLoading;
             return this;
         }
 
-        public Builder setNativeMethodImplement(IZWebMethodInterface webMethodInterface)
+        public Builder setNativeMethodImplement (IZWebMethodInterface webMethodInterface)
         {
             this.mZWebMethodInterface = webMethodInterface;
             return this;
         }
 
-        public Builder setOnStateListener(IZWebOnStateListener webOnStateListener)
+        public Builder setOnStateListener (IZWebOnStateListener webOnStateListener)
         {
             this.mZWebOnStateListener = webOnStateListener;
             return this;
         }
 
-        public Builder setOnSpecialStateListener(IZWebOnSpecialStateListener webOnSpecialStateListener)
+        public Builder setOnSpecialStateListener (IZWebOnSpecialStateListener webOnSpecialStateListener)
         {
             this.mZWebOnSpecialStateListener = webOnSpecialStateListener;
             return this;
         }
 
-        public Builder addInjectJSFilePath(String injectJSFilePath)
+        public Builder addInjectJSAssetsFile (String injectJSFilePath)
         {
-            this.mInjectJSFileList.add(injectJSFilePath);
+            this.mInjectJSFileList.add(JSFile.create(JSFile.ASSETS, injectJSFilePath));
             return this;
         }
 
-        public Builder closeFileAccess()
+        public Builder addInjectJSRawFile (@RawRes int injectJSRawID)
+        {
+            this.mInjectJSFileList.add(JSFile.create(JSFile.RAW, injectJSRawID));
+            return this;
+        }
+
+        /**
+         * 自动添加框架
+         *
+         * @return this
+         */
+        public Builder autoInjectFramework ()
+        {
+            this.mInjectJSFileList.addFirst(JSFile.create(JSFile.RAW, R.raw.zweb_min));
+            return this;
+        }
+
+        /**
+         * 自动添加测试代码
+         *
+         * @return this
+         */
+        @VisibleForTesting
+        public Builder autoInjectTestJS ()
+        {
+            this.mInjectJSFileList.add(JSFile.create(JSFile.RAW, R.raw.zweb_test));
+            return this;
+        }
+
+        public Builder closeFileAccess ()
         {
             this.mIsFileAccess = false;
             return this;
         }
 
-        public Builder setBackgroundColor(int backgroundColor)
+        public Builder setBackgroundColor (int backgroundColor)
         {
             mBackgroundColor = backgroundColor;
             return this;
         }
 
-        public ZWebConfig build()
+        public ZWebConfig build ()
         {
             return new ZWebConfig(this);
+        }
+    }
+
+    static class JSFile
+    {
+        final static int ASSETS = 0x01;
+        final static int RAW = 0x02;
+        private final int mType;
+
+        private JSFile (int type)
+        {
+            this.mType = type;
+        }
+
+        private static JSAssetsFile create (int type, String path)
+        {
+            return new JSAssetsFile(type, path);
+        }
+
+        private static JSRawFile create (int type, @RawRes int rawID)
+        {
+            return new JSRawFile(type, rawID);
+        }
+
+        public int getType ()
+        {
+            return mType;
+        }
+    }
+
+    static class JSAssetsFile extends JSFile
+    {
+        private final String mPath;
+
+        private JSAssetsFile (int type, String path)
+        {
+            super(type);
+            this.mPath = path;
+        }
+
+        public String getPath ()
+        {
+            return mPath;
+        }
+    }
+
+    static class JSRawFile extends JSFile
+    {
+        private final @RawRes
+        int mRawID;
+
+        private JSRawFile (int type, @RawRes int rawID)
+        {
+            super(type);
+            this.mRawID = rawID;
+        }
+
+        @RawRes
+        public int getRawID ()
+        {
+            return mRawID;
         }
     }
 }

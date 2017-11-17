@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Test ZWeb</title>
+        <meta charset="UTF-8">
+        <meta
+                name="apple-mobile-web-app-capable"
+                content="yes"
+                >
+        <meta
+                name="apple-mobile-web-app-status-bar-style"
+                content="black-translucent"
+                >
+        <meta
+                http-equiv="Cache-Control"
+                content="no-siteapp"
+                >
+        <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"
+                />
+        <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            word-wrap: break-word;
+        }
+
+        .btn {
+            padding: 10px;
+            margin: 10px;
+        }
+
+        #result{
+            padding: 10px;
+            color: #009a61;
+            background-color: black;
+            border: 1px solid #ccc;
+        }
+
+
+        </style>
+    </head>
+
+    <body>
+
+        <div align="center">
+            <input
+                    class="btn"
+                    id="data"
+                    type="text"
+                    value="我是测试数据..."
+                    >
+            <button
+                    class="btn"
+                    id="message"
+                    >message
+            </button>
+            <button
+                    class="btn"
+                    id="require"
+                    >require
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('showLoading')"
+                    >showLoading
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('hideLoading')"
+                    >hideLoading
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('tip', true)"
+                    >tip
+            </button>
+            <button
+                    class="btn"
+                    id="callOS"
+                    >callOS
+            </button>
+            <button
+                    class="btn"
+                    id="exceptionOS"
+                    >exceptionOS
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('print', true)"
+                    >print
+            </button>
+            <button
+                    class="btn"
+                    id="saveData"
+                    >saveData
+            </button>
+            <button
+                    class="btn"
+                    id="loadData"
+                    >loadData
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('destroy')"
+                    >destroy
+            </button>
+        </div>
+
+        <div id="result">结果在这里</div>
+
+    </body>
+
+</html>

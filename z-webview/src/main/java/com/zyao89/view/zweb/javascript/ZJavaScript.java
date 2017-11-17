@@ -15,7 +15,7 @@ import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.inter.IZWebMessageController;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
 import com.zyao89.view.zweb.inter.IZWebOnStateListener;
-import com.zyao89.view.zweb.utils.Utils;
+import com.zyao89.view.zweb.utils.JsUtils;
 import com.zyao89.view.zweb.utils.ZLog;
 
 import org.json.JSONException;
@@ -90,9 +90,9 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebCreated(String frameworkID, String size)
+    public void onCreated (String frameworkID, String oSize)
     {
-        JSONObject jsonObject = Utils.json2Obj(size);
+        JSONObject jsonObject = JsUtils.json2Obj(oSize);
         String width = jsonObject.optString(InternalConstantName.PARAM_WIDTH);
         String height = jsonObject.optString(InternalConstantName.PARAM_HEIGHT);
 
@@ -101,61 +101,61 @@ import java.lang.reflect.Method;
 
     @Override
     @JavascriptInterface
-    public void onZWebException(String frameworkID, long errCode, String msg)
+    public void onException (String frameworkID, long errCode, String oMsg)
     {
-        ZLog.with(this).d("zzzzz  onZWebException errCode： " + errCode + "， msg： " + msg);
+        ZLog.with(this).d("zzzzz  onException errCode： " + errCode + "， msg： " + oMsg);
 
-        getZWebStateListener().onZWebException(getZWebHandler(), errCode, msg);
+        getZWebStateListener().onZWebException(getZWebHandler(), errCode, oMsg);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebRequire(String frameworkID, String oJson)
+    public void onRequire (String frameworkID, String oJson)
     {
-        ZLog.with(this).d("zzzzz  onZWebRequire： " + frameworkID + "， oJson：" + oJson);
+        ZLog.with(this).d("zzzzz  onRequire： " + frameworkID + "， oJson：" + oJson);
 
-        JSONObject jsonObject = Utils.json2Obj(oJson);
+        JSONObject jsonObject = JsUtils.json2Obj(oJson);
         final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
         final String url = jsonObject.optString(InternalConstantName.URL);
         final String method = jsonObject.optString(InternalConstantName.METHOD);
         final String data = jsonObject.optString(InternalConstantName.DATA);
         final String type = jsonObject.optString(InternalConstantName.TYPE);
 
-        final ZRequireController zController = new ZRequireController(InternalFunctionName.REQUIRE_CALLBACK, sequence);
+        final IZWebOnStateListener.IZRequireController zController = new ZRequireController(InternalFunctionName.REQUIRE_CALLBACK, sequence);
         getZWebStateListener().onZWebRequire(getZWebHandler(), url, method, data, type, zController);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebMessage(String frameworkID, String oJson)
+    public void onMessage (String frameworkID, String oJson)
     {
         ZLog.with(this).d("zzzzz  postMessage： " + frameworkID + "， oJson：" + oJson);
 
-        JSONObject jsonObject = Utils.json2Obj(oJson);
+        JSONObject jsonObject = JsUtils.json2Obj(oJson);
         final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
         final String cmd = jsonObject.optString(InternalConstantName.CMD);
         final String data = jsonObject.optString(InternalConstantName.DATA);
 
-        final ZMessageController zController = new ZMessageController(InternalFunctionName.MESSAGE_CALLBACK, sequence, cmd, data);
+        final IZWebOnStateListener.IZMessageController zController = new ZMessageController(InternalFunctionName.MESSAGE_CALLBACK, sequence, cmd, data);
         getZWebStateListener().onZWebMessage(getZWebHandler(), cmd, data, zController);
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebDestroy(String frameworkID)
+    public void onDestroy (String frameworkID)
     {
-        ZLog.with(this).d("zzzzz  onZWebDestroy： " + frameworkID);
+        ZLog.with(this).d("zzzzz  onDestroy： " + frameworkID);
 
         getZWebStateListener().onZWebDestroy(getZWebHandler());
     }
 
     @Override
     @JavascriptInterface
-    public void onZWebLog(String frameworkID, String oData)
+    public void onLog (String frameworkID, String oData)
     {
-        ZLog.with(this).d("zzzzz  onZWebLog： " + frameworkID + "， msg：" + oData);
+        ZLog.with(this).d("zzzzz  onLog： " + frameworkID + "， msg：" + oData);
 
-        JSONObject jsonObject = Utils.json2Obj(oData);
+        JSONObject jsonObject = JsUtils.json2Obj(oData);
         String type = jsonObject.optString(InternalConstantName.PARAM_TYPE);
         String msg = jsonObject.optString(InternalConstantName.PARAM_MSG);
 

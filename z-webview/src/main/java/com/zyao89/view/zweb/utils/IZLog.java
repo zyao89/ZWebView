@@ -12,14 +12,9 @@ public interface IZLog
     int MAX_SHOW_LENGTH_NUM = 3;
 
     /**
-     * The minimum stack trace index, starts at this class after two native calls.
+     * The minimum stack trace index_test, starts at this class after two native calls.
      */
     int MIN_STACK_OFFSET = 3;
-
-    enum STATUS
-    {
-        DEBUG, WARN, ERROR, FULL, NONE;
-    }
 
     /**
      * debug
@@ -48,4 +43,9 @@ public interface IZLog
      * @param msg
      */
     void z(String msg);
+
+    enum STATUS
+    {
+        DEBUG, WARN, ERROR, FULL, NONE;
+    }
 }

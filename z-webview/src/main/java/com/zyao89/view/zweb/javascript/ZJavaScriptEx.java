@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
 import com.zyao89.view.zweb.constants.InternalConstantName;
+import com.zyao89.view.zweb.constants.InternalFunctionName;
 import com.zyao89.view.zweb.inter.IZWebHandler;
-import com.zyao89.view.zweb.utils.Utils;
+import com.zyao89.view.zweb.inter.IZWebMethodInterface;
+import com.zyao89.view.zweb.utils.JsUtils;
 
 import org.json.JSONObject;
 
@@ -24,20 +26,28 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
 
     @Override
     @JavascriptInterface
-    public void saveData(String frameworkID, String oData)
+    public void saveData (String frameworkID, String oJson)
     {
-        JSONObject jsonObject = Utils.json2Obj(oData);
-        String key = jsonObject.optString(InternalConstantName.PARAM_KEY);
-        String value = jsonObject.optString(InternalConstantName.PARAM_VALUE);
+        JSONObject jsonObject = JsUtils.json2Obj(oJson);
+        final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
+        final JSONObject oData = jsonObject.optJSONObject(InternalConstantName.DATA);
+        final String key = oData.optString(InternalConstantName.PARAM_KEY);
+        final String value = oData.optString(InternalConstantName.PARAM_VALUE);
 
-        getZWebMethodInterface().saveData(getZWebHandler(), key, value);
+        final IZWebMethodInterface.IZDatabaseController zController = new ZDatabaseController(InternalFunctionName.DATABASE_CALLBACK, sequence);
+        getZWebMethodInterface().saveData(getZWebHandler(), key, value, zController);
     }
 
     @Override
     @JavascriptInterface
-    public void loadData(String frameworkID, String key)
+    public void loadData (String frameworkID, String oJson)
     {
-        getZWebMethodInterface().loadData(getZWebHandler(), key);
+        JSONObject jsonObject = JsUtils.json2Obj(oJson);
+        final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
+        final String key = jsonObject.optString(InternalConstantName.DATA);
+
+        final IZWebMethodInterface.IZDatabaseController zController = new ZDatabaseController(InternalFunctionName.DATABASE_CALLBACK, sequence);
+        getZWebMethodInterface().loadData(getZWebHandler(), key, zController);
     }
 
     @Override
@@ -59,5 +69,13 @@ public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
     public void tip(String frameworkID, String msg)
     {
         getZWebMethodInterface().tip(getZWebHandler(), msg);
+    }
+
+    class ZDatabaseController extends ZRequireController implements IZWebMethodInterface.IZDatabaseController
+    {
+        ZDatabaseController (String function, String sequence)
+        {
+            super(function, sequence);
+        }
     }
 }

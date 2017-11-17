@@ -9,20 +9,20 @@ import android.webkit.JavascriptInterface;
 public interface IZRenderListener
 {
     @JavascriptInterface
-    void onZWebCreated(String frameworkID, String size);
+    void onCreated (String frameworkID, String oSize);
 
     @JavascriptInterface
-    void onZWebException(String frameworkID, long errCode, String msg);
+    void onException (String frameworkID, long errCode, String oMsg);
 
     @JavascriptInterface
-    void onZWebRequire(String frameworkID, String oData);
+    void onRequire (String frameworkID, String oData);
 
     @JavascriptInterface
-    void onZWebMessage(String frameworkID, String oJson);
+    void onMessage (String frameworkID, String oJson);
 
     @JavascriptInterface
-    void onZWebDestroy(String frameworkID);
+    void onDestroy (String frameworkID);
 
     @JavascriptInterface
-    void onZWebLog(String frameworkID, String msg);
+    void onLog (String frameworkID, String oData);
 }

@@ -1,27 +1,29 @@
+/*!
+ * ZWeb.js v0.0.1
+ * (c) 2017 Zyao89
+ * Released under the MIT License.
+ */
 (function(global, factory) {
 	if ("undefined" === typeof global) {
 		throw "not find window...";
 	}
-	var Lib_Name = "ZWeb";
-	if ("undefined" === typeof global["__" + Lib_Name + "__"]) {
-		var zWeb = factory(global, Lib_Name);
-		global["__" + Lib_Name + "__"] = new zWeb();
+	var LIB_NAME = "ZWeb";
+	if ("undefined" === typeof global["__" + LIB_NAME + "__"]) {
+		var zWeb = factory(global, LIB_NAME);
+		global["__" + LIB_NAME + "__"] = new zWeb();
 	}
-})(window, function(global, Lib_Name) {
+})(window, function(global, LIB_NAME) {
+    'use strict';
 	// 内部方法
 	var INTER_NAME = {
-		onZWebCreated: "on" + Lib_Name + "Created",
-		onZWebException: "on" + Lib_Name + "Exception",
-		onZWebRequire: "on" + Lib_Name + "Require",
-		onZWebMessage: "on" + Lib_Name + "Message",
-		onZWebDestroy: "on" + Lib_Name + "Destroy",
-		onZWebLog: "on" + Lib_Name + "Log",
-
-		// 存储数据
+		onZWebCreated: "onCreated",
+		onZWebException: "onException",
+		onZWebRequire: "onRequire",
+		onZWebMessage: "onMessage",
+		onZWebDestroy: "onDestroy",
+		onZWebLog: "onLog",
 		saveData: "saveData",
-		// 读取数据
 		loadData: "loadData",
-
 		showLoading: "showLoading",
 		hideLoading: "hideLoading",
 		tip: "tip"
@@ -194,6 +196,8 @@
 		this.mapRequireQueue = {};
 		// 消息队列
 		this.mapMessageQueue = {};
+		// 数据读取队列
+		this.mapDatabaseQueue = {};
 		// 唯一UUID
 		this.szFrameworkUUID = szFrameworkUUID;
 		// 平台
@@ -216,15 +220,52 @@
 		},
 
 		saveData: function(szKey, szValue) {
-			var oData = {
-				Key: szKey,
-				Value: szValue
+			var oRequireParam = {
+				Sequence: this.createUUID(),
+				Data: {
+					Key: szKey,
+					Value: szValue
+				}
 			};
-			this.callInterOS(INTER_NAME.saveData, oData);
+			var promise = new ExportsMethod.Promise();
+			this.mapDatabaseQueue[oRequireParam.Sequence] = promise;
+			this.callInterOS(INTER_NAME.saveData, oRequireParam);
+			return promise;
 		},
 
 		loadData: function(szKey) {
-			this.callInterOS(INTER_NAME.loadData, szKey);
+			var oRequireParam = {
+				Sequence: this.createUUID(),
+				Data: szKey
+			};
+			var promise = new ExportsMethod.Promise();
+			this.mapDatabaseQueue[oRequireParam.Sequence] = promise;
+			this.callInterOS(INTER_NAME.loadData, oRequireParam);
+			return promise;
+		},
+
+		/**
+		 * 数据操作返回方法
+		 * {
+		 *  Sequence："",
+		 *  Result: "success" or "error",
+		 *  Data: {}
+		 * }
+		 */
+		databaseCallback: function(oResultParam) {
+			var sequence = oResultParam.Sequence;
+			var promise = this.mapDatabaseQueue[sequence];
+			if ('undefined' === typeof promise) return;
+			delete this.mapDatabaseQueue[sequence];
+			// 请求结果回调出去
+			var result = oResultParam.Result;
+			if (result === "success") {
+				// 成功
+				promise.resolve(oResultParam.Data);
+			} else {
+				// 失败
+				promise.reject(oResultParam.Data);
+			}
 		},
 
 		showLoading: function() {
@@ -240,11 +281,11 @@
 		},
 
 		/**
-         * @ url 连接地址
-         * @ szMethod 方法类型
-         * @ oData 数据
-         * @ szType 返回类型
-         */
+		 * @ url 连接地址
+		 * @ szMethod 方法类型
+		 * @ oData 数据
+		 * @ szType 返回类型
+		 */
 		require: function(url, szMethod, oData, szType) {
 			var oRequireParam = {
 				Sequence: this.createUUID(),
@@ -260,16 +301,17 @@
 		},
 
 		/**
-         * 请求返回方法
-         * {
-         *  Sequence："",
-         *  Result: "success" or "error",
-         *  Data: {}
-         * }
-         */
+		 * 请求返回方法
+		 * {
+		 *  Sequence："",
+		 *  Result: "success" or "error",
+		 *  Data: {}
+		 * }
+		 */
 		requireCallback: function(oResultParam) {
 			var sequence = oResultParam.Sequence;
 			var promise = this.mapRequireQueue[sequence];
+			if ('undefined' === typeof promise) return;
 			delete this.mapRequireQueue[sequence];
 			// 请求结果回调出去
 			var result = oResultParam.Result;
@@ -283,9 +325,9 @@
 		},
 
 		/**
-         * @ szCmd 命令
-         * @ oData 数据
-         */
+		 * @ szCmd 命令
+		 * @ oData 数据
+		 */
 		message: function(szCmd, oData) {
 			var oRequireParam = {
 				Sequence: this.createUUID(),
@@ -299,16 +341,17 @@
 		},
 
 		/**
-         * 消息请求返回方法
-         * {
-         *  Sequence："",
-         *  Result: "success" or "error",
-         *  Data: {}
-         * }
-         */
+		 * 消息请求返回方法
+		 * {
+		 *  Sequence："",
+		 *  Result: "success" or "error",
+		 *  Data: {}
+		 * }
+		 */
 		messageCallback: function(oResultParam) {
 			var sequence = oResultParam.Sequence;
 			var promise = this.mapMessageQueue[sequence];
+			if ('undefined' === typeof promise) return;
 			delete this.mapMessageQueue[sequence];
 			// 请求结果回调出去
 			var result = oResultParam.Result;
@@ -492,7 +535,9 @@
 						global[this.InternalName][INTER_NAME.onZWebLog]
 					) {
 						global[this.InternalName][INTER_NAME.onZWebLog](
-							this.szFrameworkUUID, JSON.stringify(oLog));
+							this.szFrameworkUUID,
+							JSON.stringify(oLog)
+						);
 					} else {
 						console.error(
 							INTER_NAME.onZWebLog +
@@ -576,7 +621,7 @@
 			// 暴露接口
 			this.ExposedName = oParams.ExposedName;
 			// SDK
-			global[Lib_Name + "SDK"] = this.ZWebSDK = new ZWebSDK(
+			global[LIB_NAME + "SDK"] = this.ZWebSDK = new ZWebSDK(
 				szFrameworkUUID,
 				oParams
 			);
@@ -620,6 +665,11 @@
 		// 消息回调
 		messageCallback: function(szFrameworkUUID, oResultParam) {
 			this.ZWebSDK.messageCallback(oResultParam);
+		},
+
+		//  数据操作回调
+		databaseCallback: function(szFrameworkUUID, oResultParam) {
+			this.ZWebSDK.databaseCallback(oResultParam);
 		},
 
 		callReceiver: function(szFrameworkUUID, szMethod, oData) {

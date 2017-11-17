@@ -14,6 +14,7 @@ public interface InternalFunctionName
     String INIT_FRAMEWORK   = "initFramework";
     String REQUIRE_CALLBACK = "requireCallback";
     String MESSAGE_CALLBACK = "messageCallback";
+    String DATABASE_CALLBACK = "databaseCallback";
     /**
      * 通用方法
      */

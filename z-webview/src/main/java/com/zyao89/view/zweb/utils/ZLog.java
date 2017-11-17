@@ -144,7 +144,7 @@ public class ZLog implements IZLog
     }
 
     /**
-     * Determines the starting index of the stack trace, after method calls made by this class.
+     * Determines the starting index_test of the stack trace, after method calls made by this class.
      *
      * @param trace the stack trace
      * @return the stack offset

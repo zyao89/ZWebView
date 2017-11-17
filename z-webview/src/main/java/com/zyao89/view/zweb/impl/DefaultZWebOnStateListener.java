@@ -33,7 +33,7 @@ public class DefaultZWebOnStateListener implements IZWebOnStateListener
     @Override
     public void onZWebException(IZWebHandler zWebHandler, long errorCode, String message)
     {
-        ZLog.with(this).d("onZWebException ==> errorCode：" + errorCode + "； message：" + message);
+        ZLog.with(this).d("onException ==> errorCode：" + errorCode + "； message：" + message);
     }
 
     @Override
@@ -51,12 +51,12 @@ public class DefaultZWebOnStateListener implements IZWebOnStateListener
     @Override
     public void onZWebDestroy(IZWebHandler zWebHandler)
     {
-        ZLog.with(this).d("onZWebDestroy ==> GAME OVER");
+        ZLog.with(this).d("onDestroy ==> GAME OVER");
     }
 
     @Override
     public void onZWebLog(IZWebHandler zWebHandler, String type, String msg)
     {
-        ZLog.with(this).d("onZWebLog ==> type: " + type + ", msg: " + msg);
+        ZLog.with(this).d("onLog ==> type: " + type + ", msg: " + msg);
     }
 }

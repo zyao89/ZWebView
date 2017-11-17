@@ -1,17 +1,7 @@
 package com.zyao89.view.zweb.utils;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.zyao89.view.zweb.exceptions.ZWebException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -25,7 +15,7 @@ import java.lang.reflect.WildcardType;
  */
 public class Utils
 {
-    public static <T> void validateServiceInterface(Class<T> service)
+    public static <T> void validateServiceInterface (Class<T> service)
     {
         if (!service.isInterface())
         {
@@ -40,19 +30,7 @@ public class Utils
         }
     }
 
-    public static JSONObject json2Obj(String json)
-    {
-        try
-        {
-            return new JSONObject(json);
-        }
-        catch (JSONException e)
-        {
-            throw new ZWebException("Json parse error...");
-        }
-    }
-
-    public static Class<?> getRawType(Type type)
+    public static Class<?> getRawType (Type type)
     {
         checkNotNull(type, "type == null");
 
@@ -93,7 +71,7 @@ public class Utils
         throw new IllegalArgumentException("Expected a Class, ParameterizedType, or " + "GenericArrayType, but <" + type + "> is of type " + type.getClass().getName());
     }
 
-    public static <T> T checkNotNull(@Nullable T object, String message)
+    public static <T> T checkNotNull (@Nullable T object, String message)
     {
         if (object == null)
         {
@@ -102,7 +80,7 @@ public class Utils
         return object;
     }
 
-    public static boolean checkSupportType(Type parameterType)
+    public static boolean checkSupportType (Type parameterType)
     {
         if (parameterType.equals(Boolean.class) || parameterType.equals(boolean.class))
         {
@@ -141,48 +119,5 @@ public class Utils
             return true;
         }
         return false;
-    }
-
-    public static String assetFile2Str(Context c, String urlStr)
-    {
-        InputStream in = null;
-        try
-        {
-            in = c.getAssets().open(urlStr);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            do
-            {
-                line = bufferedReader.readLine();
-                if (line != null && !line.matches("^\\s*\\/\\/.*"))
-                {
-                    sb.append(line).append('\n');
-                }
-            } while (line != null);
-
-            bufferedReader.close();
-            in.close();
-
-            return sb.toString();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (in != null)
-            {
-                try
-                {
-                    in.close();
-                }
-                catch (IOException e)
-                {
-                }
-            }
-        }
-        return null;
     }
 }
