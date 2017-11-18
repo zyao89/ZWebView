@@ -10,7 +10,7 @@ import com.zyao89.view.zweb.R;
  * @author Zyao89
  * @date 2017/11/17.
  */
-public interface ZConstant
+public interface ZWebConstant
 {
     String MAIN_HTML      = "file:///android_asset/index.html";
     String MAIN_HTML_TEST = "file:///android_res/raw/index_test.html";

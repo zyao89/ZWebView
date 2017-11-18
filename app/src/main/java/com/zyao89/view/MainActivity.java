@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.zyao89.view.zweb.ZWebConfig;
 import com.zyao89.view.zweb.ZWebInstance;
 import com.zyao89.view.zweb.constants.InjectionMode;
-import com.zyao89.view.zweb.constants.ZConstant;
+import com.zyao89.view.zweb.constants.ZWebConstant;
 import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
 import com.zyao89.view.zweb.inter.IZWebOnStateListener;
@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     private void initZWeb()
     {
         ZWebConfig config = new ZWebConfig
-//                .Builder(ZConstant.MAIN_HTML_TEST)
-                .Builder(ZConstant.MAIN_HTML)
+//                .Builder(ZWebConstant.MAIN_HTML_TEST)
+                .Builder(ZWebConstant.MAIN_HTML)
                 .setOnStateListener(this)
                 .setNativeMethodImplement(this)
                 .setInjectionMode(InjectionMode.Protocol)

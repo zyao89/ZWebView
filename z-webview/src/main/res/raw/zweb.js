@@ -9,8 +9,12 @@
 	}
 	var LIB_NAME = "ZWeb";
 	if ("undefined" === typeof global["__" + LIB_NAME + "__"]) {
-		var zWeb = factory(global, LIB_NAME);
-		global["__" + LIB_NAME + "__"] = new zWeb();
+		var ZWebSDK = factory(global, LIB_NAME);
+		var a = new ZWebSDK();
+
+		typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = a : typeof define === 'function' && define.amd ? define('ZWebSDK', a) : (global[LIB_NAME + "SDK"] = a);
+
+		global["__" + LIB_NAME + "__"] = a.__ROOT__;
 	} else {
 		console.error(LIB_NAME + ' already loaded...')
 	}
@@ -155,13 +159,31 @@
 		root.Promise = Promise;
 	})(ExportsMethod);
 
-	var ZWebSDK = function(szFrameworkUUID, oParams) {
+	var ZWebSDK = function() {
 			// 请求队列
 			this.mapRequireQueue = {};
 			// 消息队列
 			this.mapMessageQueue = {};
 			// 数据读取队列
 			this.mapDatabaseQueue = {};
+			// 监听接口
+			this.__onFuncCallBackMap__ = {};
+			// 作者
+			this.author = _author;
+			// 版本号
+			this.version = _version;
+			// 对外开放接口
+			this.__ROOT__ = new ZWeb(this);
+		};
+
+	var _ZWebSDK_Methods_ = ['_init_', 'extends', 'createUUID', 'saveData', 'loadData', 'databaseCallback', 'showLoading', 'hideLoading', 'tip', 'require', 'requireCallback',
+
+	'message', 'messageCallback', 'destroy', 'callInterOS', 'callOS', 'exceptionOS',
+
+	'print', 'on', 'dispatchCallback', ];
+
+	ZWebSDK.prototype = {
+		_init_: function(szFrameworkUUID, oParams) {
 			// 唯一UUID
 			this.szFrameworkUUID = szFrameworkUUID;
 			// 平台
@@ -172,15 +194,20 @@
 			this.InternalName = oParams.InternalName;
 			// 暴露接口
 			this.ExposedName = oParams.ExposedName;
-			// 监听接口
-			this.__onFuncCallBackMap__ = {};
 
 			this.print("Info", JSON.stringify(oParams));
-			this.author = _author;
-			this.version = _version;
-		};
+		},
 
-	ZWebSDK.prototype = {
+		/**
+		 * 扩展方法
+		 */
+		extends: function(szName, func) {
+			if (_ZWebSDK_Methods_.indexOf(szName) >= 0) {
+				throw 'Not allowed to use name...';
+			}
+			this.__ROOT__[szName] = func;
+		},
+
 		createUUID: function() {
 			return new ExportsMethod.UUID().id;
 		},
@@ -501,7 +528,7 @@
 		},
 
 		// 分发回调
-		dispatchCall: function(type, oData) {
+		dispatchCallback: function(type, oData) {
 			var func = this.__onFuncCallBackMap__[type];
 			if (func && typeof func === "function") {
 				func(oData);
@@ -509,13 +536,14 @@
 		}
 	};
 
-	var ZWeb = function() {
+	var ZWeb = function(sdk) {
 			this.szFrameworkUUID = 0;
 			this.OS = OS_TYPE.WEB;
-			this.Version = undefined;
-			this.InternalName = undefined;
-			this.ExposedName = undefined;
-			this.ZWebSDK = undefined;
+
+			this.author = _author;
+			this.version = _version;
+			// SDK
+			this.__ZWebSDK__ = sdk;
 		};
 
 	ZWeb.prototype = {
@@ -530,9 +558,8 @@
 			this.InternalName = oParams.InternalName;
 			// 暴露接口
 			this.ExposedName = oParams.ExposedName;
-			// SDK
-			global[LIB_NAME + "SDK"] = this.ZWebSDK = new ZWebSDK(
-			szFrameworkUUID, oParams);
+
+			this.__ZWebSDK__._init_(szFrameworkUUID, oParams);
 
 			function findDimensions() {
 				//函数：获取尺寸
@@ -561,8 +588,7 @@
 					Height: winHeight
 				};
 			}
-
-			this.ZWebSDK.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
+			this.__ZWebSDK__.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
 
 			// VuePlugin 关联操作
 			var vuePlugin = undefined;
@@ -577,41 +603,38 @@
 
 		// 请求回调
 		requireCallback: function(szFrameworkUUID, oResultParam) {
-			this.ZWebSDK.requireCallback(oResultParam);
+			this.__ZWebSDK__.requireCallback(oResultParam);
 		},
 
 		// 消息回调
 		messageCallback: function(szFrameworkUUID, oResultParam) {
-			this.ZWebSDK.messageCallback(oResultParam);
+			this.__ZWebSDK__.messageCallback(oResultParam);
 		},
 
 		//  数据操作回调
 		databaseCallback: function(szFrameworkUUID, oResultParam) {
-			this.ZWebSDK.databaseCallback(oResultParam);
+			this.__ZWebSDK__.databaseCallback(oResultParam);
 		},
 
 		callReceiver: function(szFrameworkUUID, szMethod, oData) {
-			this.ZWebSDK.dispatchCall(szMethod, oData);
+			this.__ZWebSDK__.dispatchCallback(szMethod, oData);
 		},
 
 		goBack: function(szFrameworkUUID) {
-			this.ZWebSDK.print("goBack 被调用了...");
+			this.__ZWebSDK__.print("goBack 被调用了...");
 			global.history.go(-1);
 		},
 
 		goForward: function(szFrameworkUUID) {
-			this.ZWebSDK.print("goForward 被调用了...");
+			this.__ZWebSDK__.print("goForward 被调用了...");
 			global.history.go(1);
 		},
 
 		refresh: function(szFrameworkUUID) {
-			this.ZWebSDK.print("refresh 被调用了...");
+			this.__ZWebSDK__.print("refresh 被调用了...");
 			global.location.reload();
 		}
 	};
 
-	ZWeb.author = _author;
-	ZWeb.version = _version;
-
-	return ZWeb;
+	return ZWebSDK;
 });

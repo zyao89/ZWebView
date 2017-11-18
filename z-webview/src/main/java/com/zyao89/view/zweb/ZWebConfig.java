@@ -6,6 +6,7 @@ import android.support.annotation.RawRes;
 import android.support.annotation.VisibleForTesting;
 
 import com.zyao89.view.zweb.constants.InjectionMode;
+import com.zyao89.view.zweb.constants.ZWebConstant;
 import com.zyao89.view.zweb.impl.DefaultZWebMethodInterface;
 import com.zyao89.view.zweb.impl.DefaultZWebOnSpecialStateListener;
 import com.zyao89.view.zweb.impl.DefaultZWebOnStateListener;
@@ -215,7 +216,7 @@ public class ZWebConfig
          */
         public Builder autoInjectFramework ()
         {
-            this.mInjectJSFileList.addFirst(JSFile.create(JSFile.RAW, R.raw.zweb_min));
+            this.mInjectJSFileList.addFirst(JSFile.create(JSFile.RAW, ZWebConstant.MAIN_FRAMEWORK_MIN));
             return this;
         }
 
@@ -227,7 +228,7 @@ public class ZWebConfig
         @VisibleForTesting
         public Builder autoInjectExtendsJS()
         {
-            this.mInjectJSFileList.add(JSFile.create(JSFile.RAW, R.raw.zweb_extends));
+            this.mInjectJSFileList.add(JSFile.create(JSFile.RAW, ZWebConstant.MAIN_FRAMEWORK_EXTENDS));
             return this;
         }
 
