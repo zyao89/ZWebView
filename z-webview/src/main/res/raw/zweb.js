@@ -655,6 +655,16 @@
 			}
 
 			this.ZWebSDK.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
+
+			// VuePlugin 关联操作
+			var vuePlugin = undefined;
+			if (global.Vue) {
+			    vuePlugin = global.Vue['__' + LIB_NAME + '_Dispatch_Ready__'];
+			}
+			if (!vuePlugin || ('function' !== typeof vuePlugin)) {
+			    vuePlugin = global['__' + LIB_NAME + '_Dispatch_Ready__'];
+			}
+			vuePlugin && ('function' === typeof vuePlugin) && vuePlugin();
 		},
 
 		// 请求回调

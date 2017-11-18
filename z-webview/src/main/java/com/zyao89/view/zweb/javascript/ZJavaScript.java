@@ -103,8 +103,6 @@ import java.lang.reflect.Method;
     @JavascriptInterface
     public void onException (String frameworkID, long errCode, String oMsg)
     {
-        ZLog.with(this).d("zzzzz  onException errCode： " + errCode + "， msg： " + oMsg);
-
         getZWebStateListener().onZWebException(getZWebHandler(), errCode, oMsg);
     }
 
@@ -112,8 +110,6 @@ import java.lang.reflect.Method;
     @JavascriptInterface
     public void onRequire (String frameworkID, String oJson)
     {
-        ZLog.with(this).d("zzzzz  onRequire： " + frameworkID + "， oJson：" + oJson);
-
         JSONObject jsonObject = JsUtils.json2Obj(oJson);
         final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
         final String url = jsonObject.optString(InternalConstantName.URL);
@@ -129,8 +125,6 @@ import java.lang.reflect.Method;
     @JavascriptInterface
     public void onMessage (String frameworkID, String oJson)
     {
-        ZLog.with(this).d("zzzzz  postMessage： " + frameworkID + "， oJson：" + oJson);
-
         JSONObject jsonObject = JsUtils.json2Obj(oJson);
         final String sequence = jsonObject.optString(InternalConstantName.SEQUENCE);
         final String cmd = jsonObject.optString(InternalConstantName.CMD);
@@ -144,8 +138,6 @@ import java.lang.reflect.Method;
     @JavascriptInterface
     public void onDestroy (String frameworkID)
     {
-        ZLog.with(this).d("zzzzz  onDestroy： " + frameworkID);
-
         getZWebStateListener().onZWebDestroy(getZWebHandler());
     }
 
@@ -153,8 +145,6 @@ import java.lang.reflect.Method;
     @JavascriptInterface
     public void onLog (String frameworkID, String oData)
     {
-        ZLog.with(this).d("zzzzz  onLog： " + frameworkID + "， msg：" + oData);
-
         JSONObject jsonObject = JsUtils.json2Obj(oData);
         String type = jsonObject.optString(InternalConstantName.PARAM_TYPE);
         String msg = jsonObject.optString(InternalConstantName.PARAM_MSG);

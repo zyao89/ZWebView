@@ -24,7 +24,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Zyao89
@@ -33,22 +35,25 @@ import java.util.UUID;
 public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorListener
 {
     @NonNull
-    private final UUID mFrameworkUUID;
+    private final UUID                mFrameworkUUID;
     @NonNull
-    private final IZWebView mZWebView;
+    private final IZWebView           mZWebView;
     @NonNull
-    private final ZWebHandler mZWebHandler;
+    private final ZWebHandler         mZWebHandler;
     @NonNull
-    private final ZWebConfig mZWebConfig;
+    private final ZWebConfig          mZWebConfig;
+    @NonNull
+    private final Map<String, String> mInjectBridgeJSCache;
 
-    private ViewGroup mRootView;
+    private ViewGroup   mRootView;
     private ProgressBar mProgressBar;
 
-    public ZWeb (@NonNull ZWebHandler webHandler)
+    public ZWeb(@NonNull ZWebHandler webHandler)
     {
         mFrameworkUUID = UUID.randomUUID();
         mZWebHandler = webHandler;
         mZWebConfig = webHandler.getZWebConfig();
+        mInjectBridgeJSCache = new ConcurrentHashMap<>();
 
         final ZWebView zWebView = new ZWebView(ZWebInstance.sApplication);
         zWebView.setConfig(mZWebConfig);
@@ -61,38 +66,38 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     @Override
-    public String getFrameworkUUID ()
+    public String getFrameworkUUID()
     {
         return mFrameworkUUID.toString();
     }
 
     @Override
-    public boolean callJS (String js)
+    public boolean callJS(String js)
     {
         loadJS(js);
         return true;
     }
 
     @Override
-    public boolean execJS (String function, JSONObject json)
+    public boolean execJS(String function, JSONObject json)
     {
         return execJS(function, null, json);
     }
 
     @Override
-    public boolean callReceiver (String method, JSONObject json)
+    public boolean callReceiver(String method, JSONObject json)
     {
         return execJS(InternalFunctionName.CALL_RECEIVER, method, json);
     }
 
     @Override
-    public boolean refresh ()
+    public boolean refresh()
     {
         getZWebView().reload();
         return true;
     }
 
-    private boolean execJS (String function, String method, JSONObject json)
+    private boolean execJS(String function, String method, JSONObject json)
     {
         final String js;
         if (method == null && json == null)
@@ -115,7 +120,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         return true;
     }
 
-    private void loadJS (final String js)
+    private void loadJS(final String js)
     {
         if (TextUtils.isEmpty(js))
         {
@@ -126,7 +131,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
             getView().post(new Runnable()
             {
                 @Override
-                public void run ()
+                public void run()
                 {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                     {
@@ -143,37 +148,37 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     @Override
-    public void onReceivedTitle (String title)
+    public void onReceivedTitle(String title)
     {
         this.getZWebConfig().getZWebOnSpecialStateListener().onZWebReceivedTitle(mZWebHandler, title);
     }
 
     @Override
-    public void onPageStart (String url)
+    public void onPageStart(String url)
     {
 
     }
 
     @Override
-    public void onPageFinish (String url, boolean canGoBack, boolean canGoForward)
+    public void onPageFinish(String url, boolean canGoBack, boolean canGoForward)
     {
         injectBridgeJS();
         initFramework();
     }
 
     @Override
-    public void onProgressChanged (int newProgress)
+    public void onProgressChanged(int newProgress)
     {
         showProgressBar(newProgress != 100);
     }
 
     @Override
-    public WebResourceResponse shouldInterceptRequest (String url)
+    public WebResourceResponse shouldInterceptRequest(String url)
     {
         return this.getZWebConfig().getZWebOnSpecialStateListener().onInterceptRequest(mZWebHandler, url);
     }
 
-    private void showProgressBar (boolean show)
+    private void showProgressBar(boolean show)
     {
         if (!getZWebConfig().isShowLoading())
         {
@@ -183,7 +188,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     @Override
-    public void onError (String type, Object message)
+    public void onError(String type, Object message)
     {
         ZLog.with(this).w("onError: type = " + type + ", message = " + message);
     }
@@ -191,40 +196,55 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     /**
      * 加载完成后注入JS
      */
-    private void injectBridgeJS ()
+    private void injectBridgeJS()
     {
         // 注入JS信息
         final List<ZWebConfig.JSFile> injectJSs = getZWebConfig().getInjectJSFiles();
+        StringBuilder jsContent = new StringBuilder();
         for (ZWebConfig.JSFile jsFile : injectJSs)
         {
-            String jsContent = null;
+            String jsStr = null;
             switch (jsFile.getType())
             {
                 case ZWebConfig.JSFile.RAW:
                     int rawID = ((ZWebConfig.JSRawFile) jsFile).getRawID();
-                    ZLog.with(this).z("injectBridgeJS: rawID = " + rawID);
-                    jsContent = JsUtils.rawFile2Str(getView().getContext(), rawID);
+                    jsStr = mInjectBridgeJSCache.get("RAW_ID#" + String.valueOf(rawID));
+                    if (jsStr == null)
+                    {
+                        ZLog.with(this).z("injectBridgeJS: rawID = " + rawID);
+                        jsStr = JsUtils.rawFile2Str(getView().getContext(), rawID);
+                        mInjectBridgeJSCache.put("RAW_ID#" + String.valueOf(rawID), jsStr);
+                    }
                     break;
                 case ZWebConfig.JSFile.ASSETS:
                     String path = ((ZWebConfig.JSAssetsFile) jsFile).getPath();
-                    ZLog.with(this).z("injectBridgeJS: path = " + path);
-                    jsContent = JsUtils.assetFile2Str(getView().getContext(), path);
+                    jsStr = mInjectBridgeJSCache.get(path);
+                    if (jsStr == null)
+                    {
+                        ZLog.with(this).z("injectBridgeJS: path = " + path);
+                        jsStr = JsUtils.assetFile2Str(getView().getContext(), path);
+                        mInjectBridgeJSCache.put(path, jsStr);
+                    }
                     break;
                 default:
                     break;
             }
-            if (jsContent != null)
+            if (jsStr != null)
             {
-                ZLog.with(this).z("injectBridgeJS: jsContent = " + jsContent);
-                getZWebView().loadUrl("javascript:" + jsContent);
+                jsContent.append(jsStr);
             }
+        }
+        if (!TextUtils.isEmpty(jsContent.toString()))
+        {
+            ZLog.with(this).z("injectBridgeJS: jsContent = " + jsContent);
+            getZWebView().loadUrl("javascript:" + jsContent);
         }
     }
 
     /**
      * 初始化JS框架
      */
-    private void initFramework ()
+    private void initFramework()
     {
         try
         {
@@ -242,18 +262,18 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     @NonNull
-    private ZWebConfig getZWebConfig ()
+    private ZWebConfig getZWebConfig()
     {
         return mZWebConfig;
     }
 
     @NonNull
-    /*package*/ IZWebView getZWebView ()
+    /*package*/ IZWebView getZWebView()
     {
         return mZWebView;
     }
 
-    /*package*/ ViewGroup getView ()
+    /*package*/ ViewGroup getView()
     {
         if (mRootView == null)
         {
@@ -264,7 +284,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         return mRootView;
     }
 
-    private void initProgressBar (ViewGroup rootView)
+    private void initProgressBar(ViewGroup rootView)
     {
         if (mProgressBar == null)
         {
@@ -277,27 +297,27 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         }
     }
 
-    /*package*/ void onActivityStart ()
+    /*package*/ void onActivityStart()
     {
 
     }
 
-    /*package*/ void onActivityPause ()
+    /*package*/ void onActivityPause()
     {
         mZWebView.onPause();
     }
 
-    /*package*/ void onActivityResume ()
+    /*package*/ void onActivityResume()
     {
         mZWebView.onResume();
     }
 
-    /*package*/ void onActivityStop ()
+    /*package*/ void onActivityStop()
     {
 
     }
 
-    /*package*/ void onActivityDestroy ()
+    /*package*/ void onActivityDestroy()
     {
         mZWebView.destroy();
 
@@ -316,7 +336,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         }
     }
 
-    /*package*/ boolean onActivityBack ()
+    /*package*/ boolean onActivityBack()
     {
         if (mZWebView.canGoBack())
         {
