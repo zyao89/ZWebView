@@ -12,11 +12,12 @@ import com.zyao89.view.zweb.R;
  */
 public interface ZConstant
 {
+    String MAIN_HTML      = "file:///android_asset/index.html";
     String MAIN_HTML_TEST = "file:///android_res/raw/index_test.html";
     @RawRes
-    int MAIN_FRAMEWORK = R.raw.zweb;
+    int MAIN_FRAMEWORK         = R.raw.zweb;
     @RawRes
-    int MAIN_FRAMEWORK_MIN = R.raw.zweb_min;
+    int MAIN_FRAMEWORK_MIN     = R.raw.zweb_min;
     @RawRes
-    int MAIN_FRAMEWORK_TEST = R.raw.zweb_test;
+    int MAIN_FRAMEWORK_EXTENDS = R.raw.zweb_extends;
 }

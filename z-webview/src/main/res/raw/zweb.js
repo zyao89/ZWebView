@@ -11,9 +11,15 @@
 	if ("undefined" === typeof global["__" + LIB_NAME + "__"]) {
 		var zWeb = factory(global, LIB_NAME);
 		global["__" + LIB_NAME + "__"] = new zWeb();
+	} else {
+		console.error(LIB_NAME + ' already loaded...')
 	}
 })(window, function(global, LIB_NAME) {
-    'use strict';
+	'use strict';
+
+	var _author = 'Zyao89';
+	var _version = '1.0.0';
+
 	// 内部方法
 	var INTER_NAME = {
 		onZWebCreated: "onCreated",
@@ -74,12 +80,7 @@
 			var csar = UUID.getIntegerBits(UUID.rand(4095), 0, 7);
 			var csl = UUID.getIntegerBits(UUID.rand(4095), 0, 7);
 
-			var n =
-				UUID.getIntegerBits(UUID.rand(8191), 0, 7) +
-				UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
-				UUID.getIntegerBits(UUID.rand(8191), 0, 7) +
-				UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
-				UUID.getIntegerBits(UUID.rand(8191), 0, 15);
+			var n = UUID.getIntegerBits(UUID.rand(8191), 0, 7) + UUID.getIntegerBits(UUID.rand(8191), 8, 15) + UUID.getIntegerBits(UUID.rand(8191), 0, 7) + UUID.getIntegerBits(UUID.rand(8191), 8, 15) + UUID.getIntegerBits(UUID.rand(8191), 0, 15);
 			return tl + h + tm + h + thv + h + csar + csl + h + n;
 		};
 
@@ -99,44 +100,7 @@
 		};
 
 		UUID.returnBase = function(number, base) {
-			var convert = [
-				"0",
-				"1",
-				"2",
-				"3",
-				"4",
-				"5",
-				"6",
-				"7",
-				"8",
-				"9",
-				"A",
-				"B",
-				"C",
-				"D",
-				"E",
-				"F",
-				"G",
-				"H",
-				"I",
-				"J",
-				"K",
-				"L",
-				"M",
-				"N",
-				"O",
-				"P",
-				"Q",
-				"R",
-				"S",
-				"T",
-				"U",
-				"V",
-				"W",
-				"X",
-				"Y",
-				"Z"
-			];
+			var convert = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 			if (number < base) var output = convert[number];
 			else {
 				var MSD = "" + Math.floor(number / base);
@@ -158,8 +122,8 @@
 	(function(root) {
 		//constructor
 		var Promise = function() {
-			this.callbacks = [];
-		};
+				this.callbacks = [];
+			};
 
 		Promise.prototype = {
 			construct: Promise,
@@ -192,27 +156,29 @@
 	})(ExportsMethod);
 
 	var ZWebSDK = function(szFrameworkUUID, oParams) {
-		// 请求队列
-		this.mapRequireQueue = {};
-		// 消息队列
-		this.mapMessageQueue = {};
-		// 数据读取队列
-		this.mapDatabaseQueue = {};
-		// 唯一UUID
-		this.szFrameworkUUID = szFrameworkUUID;
-		// 平台
-		this.OS = oParams.OS;
-		// 版本
-		this.Version = oParams.Version;
-		// 内部接口
-		this.InternalName = oParams.InternalName;
-		// 暴露接口
-		this.ExposedName = oParams.ExposedName;
-		// 监听接口
-		this.__onFuncCallBackMap__ = {};
+			// 请求队列
+			this.mapRequireQueue = {};
+			// 消息队列
+			this.mapMessageQueue = {};
+			// 数据读取队列
+			this.mapDatabaseQueue = {};
+			// 唯一UUID
+			this.szFrameworkUUID = szFrameworkUUID;
+			// 平台
+			this.OS = oParams.OS;
+			// 版本
+			this.Version = oParams.Version;
+			// 内部接口
+			this.InternalName = oParams.InternalName;
+			// 暴露接口
+			this.ExposedName = oParams.ExposedName;
+			// 监听接口
+			this.__onFuncCallBackMap__ = {};
 
-		this.print("Info", JSON.stringify(oParams));
-	};
+			this.print("Info", JSON.stringify(oParams));
+			this.author = _author;
+			this.version = _version;
+		};
 
 	ZWebSDK.prototype = {
 		createUUID: function() {
@@ -380,134 +346,97 @@
 				exposedName = this.ExposedName;
 			}
 			switch (this.OS) {
-				case OS_TYPE.ANDROID:
-					if (global[exposedName] && global[exposedName][szMethodName]) {
-						if (typeof oData === "undefined") {
-							global[exposedName][szMethodName](this.szFrameworkUUID);
-						} else if (typeof oData === "object") {
-							global[exposedName][szMethodName](
-								this.szFrameworkUUID,
-								JSON.stringify(oData)
-							);
-						} else {
-							global[exposedName][szMethodName](this.szFrameworkUUID, oData);
-						}
+			case OS_TYPE.ANDROID:
+				if (global[exposedName] && global[exposedName][szMethodName]) {
+					if (typeof oData === "undefined") {
+						global[exposedName][szMethodName](this.szFrameworkUUID);
+					} else if (typeof oData === "object") {
+						global[exposedName][szMethodName](
+						this.szFrameworkUUID, JSON.stringify(oData));
 					} else {
-						this.print(
-							szMethodName +
-								" : " +
-								this.szFrameworkUUID +
-								"： Android 接口调用异常..."
-						);
+						global[exposedName][szMethodName](this.szFrameworkUUID, oData);
 					}
-					break;
-
-				case OS_TYPE.IOS:
-					if (
-						global.webkit &&
-						global.webkit.messageHandlers &&
-						global.webkit.messageHandlers[exposedName]
-					) {
-						var msg = {
-							Method: szMethodName,
-							FrameworkID: this.szFrameworkUUID,
-							Data: JSON.stringify(oData)
-						};
-						if (typeof oData === "undefined") {
-							delete msg.Data;
-						}
-						global.webkit.messageHandlers[exposedName].postMessage(msg);
-					} else {
-						this.print(
-							szMethodName + " : " + this.szFrameworkUUID + "： IOS 接口调用异常..."
-						);
-					}
-					break;
-
-				case OS_TYPE.WEB:
+				} else {
 					this.print(
-						szMethodName + " : " + this.szFrameworkUUID + "： Web 接口调用..."
-					);
-					break;
+					szMethodName + " : " + this.szFrameworkUUID + "： Android 接口调用异常...");
+				}
+				break;
 
-				default:
-					this.print("init callOS error, 回调失败。");
-					break;
+			case OS_TYPE.IOS:
+				if (
+				global.webkit && global.webkit.messageHandlers && global.webkit.messageHandlers[exposedName]) {
+					var msg = {
+						Method: szMethodName,
+						FrameworkID: this.szFrameworkUUID,
+						Data: JSON.stringify(oData)
+					};
+					if (typeof oData === "undefined") {
+						delete msg.Data;
+					}
+					global.webkit.messageHandlers[exposedName].postMessage(msg);
+				} else {
+					this.print(
+					szMethodName + " : " + this.szFrameworkUUID + "： IOS 接口调用异常...");
+				}
+				break;
+
+			case OS_TYPE.WEB:
+				this.print(
+				szMethodName + " : " + this.szFrameworkUUID + "： Web 接口调用...");
+				break;
+
+			default:
+				this.print("init callOS error, 回调失败。");
+				break;
 			}
 		},
 
 		// 异常上报
 		exceptionOS: function(iErrCode, oMsg) {
 			switch (this.OS) {
-				case OS_TYPE.ANDROID:
-					if (
-						global[this.InternalName] &&
-						global[this.InternalName][INTER_NAME.onZWebException]
-					) {
-						if (typeof oMsg === "undefined") {
-							global[this.InternalName][INTER_NAME.onZWebException](
-								this.szFrameworkUUID,
-								iErrCode,
-								""
-							);
-						} else if (typeof oData === "object") {
-							global[this.InternalName][INTER_NAME.onZWebException](
-								this.szFrameworkUUID,
-								iErrCode,
-								JSON.stringify(oMsg)
-							);
-						} else {
-							global[this.InternalName][INTER_NAME.onZWebException](
-								this.szFrameworkUUID,
-								iErrCode,
-								oMsg
-							);
-						}
+			case OS_TYPE.ANDROID:
+				if (
+				global[this.InternalName] && global[this.InternalName][INTER_NAME.onZWebException]) {
+					if (typeof oMsg === "undefined") {
+						global[this.InternalName][INTER_NAME.onZWebException](
+						this.szFrameworkUUID, iErrCode, "");
+					} else if (typeof oData === "object") {
+						global[this.InternalName][INTER_NAME.onZWebException](
+						this.szFrameworkUUID, iErrCode, JSON.stringify(oMsg));
 					} else {
-						this.print(
-							INTER_NAME.onZWebException +
-								" : " +
-								this.szFrameworkUUID +
-								"： Android 接口调用异常..."
-						);
+						global[this.InternalName][INTER_NAME.onZWebException](
+						this.szFrameworkUUID, iErrCode, oMsg);
 					}
-					break;
-
-				case OS_TYPE.IOS:
-					if (
-						global.webkit &&
-						global.webkit.messageHandlers &&
-						global.webkit.messageHandlers[this.InternalName]
-					) {
-						var msg = {
-							Method: INTER_NAME.onZWebException,
-							FrameworkID: this.szFrameworkUUID,
-							ErrorCode: iErrCode,
-							Data: JSON.stringify(oMsg)
-						};
-						global.webkit.messageHandlers[this.InternalName].postMessage(msg);
-					} else {
-						this.print(
-							INTER_NAME.onZWebException +
-								" : " +
-								this.szFrameworkUUID +
-								"： IOS 接口调用异常..."
-						);
-					}
-					break;
-
-				case OS_TYPE.WEB:
+				} else {
 					this.print(
-						INTER_NAME.onZWebException +
-							" : " +
-							this.szFrameworkUUID +
-							"： Web 接口调用..."
-					);
-					break;
+					INTER_NAME.onZWebException + " : " + this.szFrameworkUUID + "： Android 接口调用异常...");
+				}
+				break;
 
-				default:
-					this.print("init callOS error, 回调失败。");
-					break;
+			case OS_TYPE.IOS:
+				if (
+				global.webkit && global.webkit.messageHandlers && global.webkit.messageHandlers[this.InternalName]) {
+					var msg = {
+						Method: INTER_NAME.onZWebException,
+						FrameworkID: this.szFrameworkUUID,
+						ErrorCode: iErrCode,
+						Data: JSON.stringify(oMsg)
+					};
+					global.webkit.messageHandlers[this.InternalName].postMessage(msg);
+				} else {
+					this.print(
+					INTER_NAME.onZWebException + " : " + this.szFrameworkUUID + "： IOS 接口调用异常...");
+				}
+				break;
+
+			case OS_TYPE.WEB:
+				this.print(
+				INTER_NAME.onZWebException + " : " + this.szFrameworkUUID + "： Web 接口调用...");
+				break;
+
+			default:
+				this.print("init callOS error, 回调失败。");
+				break;
 			}
 		},
 
@@ -529,59 +458,40 @@
 			};
 			console.info(oLog);
 			switch (this.OS) {
-				case OS_TYPE.ANDROID:
-					if (
-						global[this.InternalName] &&
-						global[this.InternalName][INTER_NAME.onZWebLog]
-					) {
-						global[this.InternalName][INTER_NAME.onZWebLog](
-							this.szFrameworkUUID,
-							JSON.stringify(oLog)
-						);
-					} else {
-						console.error(
-							INTER_NAME.onZWebLog +
-								" : " +
-								this.szFrameworkUUID +
-								"： Android 接口调用异常..."
-						);
-					}
-					break;
-
-				case OS_TYPE.IOS:
-					if (
-						global.webkit &&
-						global.webkit.messageHandlers &&
-						global.webkit.messageHandlers[this.InternalName]
-					) {
-						var msg = {
-							Method: INTER_NAME.onZWebLog,
-							FrameworkID: this.szFrameworkUUID,
-							Data: JSON.stringify(oLog)
-						};
-						global.webkit.messageHandlers[this.InternalName].postMessage(msg);
-					} else {
-						console.error(
-							INTER_NAME.onZWebException +
-								" : " +
-								this.szFrameworkUUID +
-								"： IOS 接口调用异常..."
-						);
-					}
-					break;
-
-				case OS_TYPE.WEB:
+			case OS_TYPE.ANDROID:
+				if (
+				global[this.InternalName] && global[this.InternalName][INTER_NAME.onZWebLog]) {
+					global[this.InternalName][INTER_NAME.onZWebLog](
+					this.szFrameworkUUID, JSON.stringify(oLog));
+				} else {
 					console.error(
-						INTER_NAME.onZWebLog +
-							" : " +
-							this.szFrameworkUUID +
-							"： Web 接口调用..."
-					);
-					break;
+					INTER_NAME.onZWebLog + " : " + this.szFrameworkUUID + "： Android 接口调用异常...");
+				}
+				break;
 
-				default:
-					console.error("Call print error...");
-					break;
+			case OS_TYPE.IOS:
+				if (
+				global.webkit && global.webkit.messageHandlers && global.webkit.messageHandlers[this.InternalName]) {
+					var msg = {
+						Method: INTER_NAME.onZWebLog,
+						FrameworkID: this.szFrameworkUUID,
+						Data: JSON.stringify(oLog)
+					};
+					global.webkit.messageHandlers[this.InternalName].postMessage(msg);
+				} else {
+					console.error(
+					INTER_NAME.onZWebException + " : " + this.szFrameworkUUID + "： IOS 接口调用异常...");
+				}
+				break;
+
+			case OS_TYPE.WEB:
+				console.error(
+				INTER_NAME.onZWebLog + " : " + this.szFrameworkUUID + "： Web 接口调用...");
+				break;
+
+			default:
+				console.error("Call print error...");
+				break;
 			}
 		},
 
@@ -600,13 +510,13 @@
 	};
 
 	var ZWeb = function() {
-		this.szFrameworkUUID = 0;
-		this.OS = OS_TYPE.WEB;
-		this.Version = undefined;
-		this.InternalName = undefined;
-		this.ExposedName = undefined;
-		this.ZWebSDK = undefined;
-	};
+			this.szFrameworkUUID = 0;
+			this.OS = OS_TYPE.WEB;
+			this.Version = undefined;
+			this.InternalName = undefined;
+			this.ExposedName = undefined;
+			this.ZWebSDK = undefined;
+		};
 
 	ZWeb.prototype = {
 		// 初始化框架
@@ -622,9 +532,7 @@
 			this.ExposedName = oParams.ExposedName;
 			// SDK
 			global[LIB_NAME + "SDK"] = this.ZWebSDK = new ZWebSDK(
-				szFrameworkUUID,
-				oParams
-			);
+			szFrameworkUUID, oParams);
 
 			function findDimensions() {
 				//函数：获取尺寸
@@ -644,14 +552,14 @@
 				}
 				//通过深入Document内部对body进行检测，获取窗口大小
 				if (
-					document.documentElement &&
-					document.documentElement.clientHeight &&
-					document.documentElement.clientWidth
-				) {
+				document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
 					winHeight = document.documentElement.clientHeight;
 					winWidth = document.documentElement.clientWidth;
 				}
-				return { Width: winWidth, Height: winHeight };
+				return {
+					Width: winWidth,
+					Height: winHeight
+				};
 			}
 
 			this.ZWebSDK.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
@@ -659,10 +567,10 @@
 			// VuePlugin 关联操作
 			var vuePlugin = undefined;
 			if (global.Vue) {
-			    vuePlugin = global.Vue['__' + LIB_NAME + '_Dispatch_Ready__'];
+				vuePlugin = global.Vue['__' + LIB_NAME + '_Dispatch_Ready__'];
 			}
 			if (!vuePlugin || ('function' !== typeof vuePlugin)) {
-			    vuePlugin = global['__' + LIB_NAME + '_Dispatch_Ready__'];
+				vuePlugin = global['__' + LIB_NAME + '_Dispatch_Ready__'];
 			}
 			vuePlugin && ('function' === typeof vuePlugin) && vuePlugin();
 		},
@@ -701,6 +609,9 @@
 			global.location.reload();
 		}
 	};
+
+	ZWeb.author = _author;
+	ZWeb.version = _version;
 
 	return ZWeb;
 });

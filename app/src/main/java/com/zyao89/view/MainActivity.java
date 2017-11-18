@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.zyao89.view.zweb.ZWebConfig;
 import com.zyao89.view.zweb.ZWebInstance;
+import com.zyao89.view.zweb.constants.InjectionMode;
+import com.zyao89.view.zweb.constants.ZConstant;
 import com.zyao89.view.zweb.inter.IZWebHandler;
 import com.zyao89.view.zweb.inter.IZWebMethodInterface;
 import com.zyao89.view.zweb.inter.IZWebOnStateListener;
@@ -36,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
 {
     private final static String              ROOT      = "root";
     //        private final static String MAIN_HTML = "http://200.200.200.220:8080";
-    private final static String              MAIN_HTML = "file:///android_asset/index.html";
     private final        Map<String, String> mDatabase = new HashMap<>();
     private FrameLayout    mRootView;
     private ZWebInstance   mZWebInstance;
@@ -161,14 +162,16 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     private void initZWeb()
     {
         ZWebConfig config = new ZWebConfig
-                //                .Builder(ZConstant.MAIN_HTML_TEST)
-                .Builder(MAIN_HTML).setOnStateListener(this)
+//                .Builder(ZConstant.MAIN_HTML_TEST)
+                .Builder(ZConstant.MAIN_HTML)
+                .setOnStateListener(this)
                 .setNativeMethodImplement(this)
+                .setInjectionMode(InjectionMode.Protocol)
                 .autoInjectFramework()
 //                .addInjectJSAssetsFile("js/manifest.js")
 //                .addInjectJSAssetsFile("js/vendor.js")
 //                .addInjectJSAssetsFile("js/app.js")
-                //                .autoInjectTestJS()
+                //                .autoInjectExtendsJS()
                 //                .addInjectJSAssetsFile("framework/zweb.min.js")
                 //                .addInjectJSAssetsFile("js/test.js")
                 .build();
@@ -198,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     @Override
     public void onZWebCreated(IZWebHandler zWebHandler, int width, int height)
     {
-        //        boolean a = mRequireService.a("2b", "9999", 66);
-        //        System.out.println("结果打印： " + a);
+//        boolean a = mRequireService.a("2b", "9999", 66);
+//        System.out.println("结果打印： " + a);
         //        mRequireService.initParam("小明同学", 1, 0xfff);
     }
 

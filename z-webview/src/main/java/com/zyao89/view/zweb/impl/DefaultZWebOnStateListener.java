@@ -57,6 +57,6 @@ public class DefaultZWebOnStateListener implements IZWebOnStateListener
     @Override
     public void onZWebLog(IZWebHandler zWebHandler, String type, String msg)
     {
-        ZLog.with(this).d("onLog ==> type: " + type + ", msg: " + msg);
+        ZLog.with(this).z("onLog ==> type: " + type + ", msg: " + msg);
     }
 }

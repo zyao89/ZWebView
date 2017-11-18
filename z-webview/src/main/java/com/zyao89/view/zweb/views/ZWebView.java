@@ -257,8 +257,8 @@ public class ZWebView implements IZWebView
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
-                view.loadUrl(url);
                 ZLog.with(this).z("onPageOverride " + url);
+                view.loadUrl(url);
                 return true;
             }
 
@@ -270,6 +270,12 @@ public class ZWebView implements IZWebView
                     return mOnPageListener.shouldInterceptRequest(url);
                 }
                 return null;
+            }
+
+            @Override
+            public void onLoadResource(WebView view, String url)
+            {
+                ZLog.with(this).z("onLoadResource " + url);
             }
 
             @Override
@@ -344,6 +350,7 @@ public class ZWebView implements IZWebView
                     mOnPageListener.onReceivedTitle(view.getTitle());
                 }
             }
+
         });
     }
 }

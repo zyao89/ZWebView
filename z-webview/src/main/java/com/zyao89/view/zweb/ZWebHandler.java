@@ -89,7 +89,7 @@ public class ZWebHandler implements IZWebHandler
     public void quickCallJs(String method, String... params)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("javascript:").append(method);
+        sb.append(method);
         if (params == null || params.length == 0)
         {
             sb.append("()");

@@ -34,4 +34,8 @@ public interface InternalConstantName
     String PARAM_HEIGHT = "Height";
     String PARAM_TYPE   = "Type";
     String PARAM_MSG    = "Msg";
+
+    // 协议
+    String PROTOCOL_Z_WEB = "zweb://";
+    String PROTOCOL_INIT  = "__init__";
 }

@@ -11,6 +11,7 @@ import android.webkit.WebResourceResponse;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.zyao89.view.zweb.constants.InjectionMode;
 import com.zyao89.view.zweb.constants.InternalConstantName;
 import com.zyao89.view.zweb.constants.InternalFunctionName;
 import com.zyao89.view.zweb.exceptions.ZWebException;
@@ -23,6 +24,7 @@ import com.zyao89.view.zweb.views.ZWebView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -102,19 +104,19 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         final String js;
         if (method == null && json == null)
         {
-            js = String.format("javascript:%s.%s(\"%s\");", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()));
+            js = String.format("%s.%s(\"%s\");", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()));
         }
         else if (json == null)
         {
-            js = String.format("javascript:%s.%s(\"%s\",\"%s\");", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), method);
+            js = String.format("%s.%s(\"%s\",\"%s\");", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), method);
         }
         else if (method == null)
         {
-            js = String.format("javascript:%s.%s(\"%s\",%s);", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), json);
+            js = String.format("%s.%s(\"%s\",%s);", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), json);
         }
         else
         {
-            js = String.format("javascript:%s.%s(\"%s\",\"%s\",%s);", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), method, json);
+            js = String.format("%s.%s(\"%s\",\"%s\",%s);", InternalFunctionName.MAIN_CALL_OBJ, function, String.valueOf(getFrameworkUUID()), method, json);
         }
         loadJS(js);
         return true;
@@ -126,24 +128,21 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
         {
             return;
         }
-        if (getView() != null)
+        post(new Runnable()
         {
-            getView().post(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                 {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    {
-                        mZWebView.evaluateJavascript(js);
-                    }
-                    else
-                    {
-                        mZWebView.loadUrl(js);
-                    }
+                    mZWebView.evaluateJavascript("javascript:" + js);
                 }
-            });
-        }
+                else
+                {
+                    mZWebView.loadUrl("javascript:" + js);
+                }
+            }
+        });
         ZLog.with(this).z(js);
     }
 
@@ -162,8 +161,11 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     @Override
     public void onPageFinish(String url, boolean canGoBack, boolean canGoForward)
     {
-        injectBridgeJS();
-        initFramework();
+        if (getZWebConfig().getInjectionMode() == InjectionMode.Vue)
+        {
+            injectBridgeJS();
+            initFramework();
+        }
     }
 
     @Override
@@ -175,6 +177,14 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     @Override
     public WebResourceResponse shouldInterceptRequest(String url)
     {
+        // 这里可以通过协议做注入操作
+        // 比如说： zweb://  开头的协议，后面跟上命令
+        if (getZWebConfig().getInjectionMode() == InjectionMode.Protocol && url.startsWith(InternalConstantName.PROTOCOL_Z_WEB))
+        {
+            int startLen = InternalConstantName.PROTOCOL_Z_WEB.length();
+            final String protocolName = url.substring(startLen);
+            return protocolBridgeJS(protocolName);
+        }
         return this.getZWebConfig().getZWebOnSpecialStateListener().onInterceptRequest(mZWebHandler, url);
     }
 
@@ -194,11 +204,12 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     /**
-     * 加载完成后注入JS
+     * 加载JS文件
+     *
+     * @return js文本
      */
-    private void injectBridgeJS()
+    private String loadBridgeJS()
     {
-        // 注入JS信息
         final List<ZWebConfig.JSFile> injectJSs = getZWebConfig().getInjectJSFiles();
         StringBuilder jsContent = new StringBuilder();
         for (ZWebConfig.JSFile jsFile : injectJSs)
@@ -234,7 +245,17 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
                 jsContent.append(jsStr);
             }
         }
-        if (!TextUtils.isEmpty(jsContent.toString()))
+        return jsContent.toString();
+    }
+
+    /**
+     * 加载完成后注入JS
+     */
+    private void injectBridgeJS()
+    {
+        // 注入JS信息
+        final String jsContent = loadBridgeJS();
+        if (!TextUtils.isEmpty(jsContent))
         {
             ZLog.with(this).z("injectBridgeJS: jsContent = " + jsContent);
             getZWebView().loadUrl("javascript:" + jsContent);
@@ -242,9 +263,45 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
     }
 
     /**
+     * 通过协议注入
+     */
+    private WebResourceResponse protocolBridgeJS(final String protocolName)
+    {
+        if (TextUtils.isEmpty(protocolName))
+        {
+            throw new ZWebException("protocolName is null...");
+        }
+        if (InternalConstantName.PROTOCOL_INIT.equals(protocolName))
+        {
+            final String jsContent = loadBridgeJS();
+            if (!TextUtils.isEmpty(jsContent))
+            {
+                ZLog.with(this).z("protocolBridgeJS: jsContent = " + jsContent);
+                final String finalStr = jsContent + buildInitFrameworkJS();
+                return new WebResourceResponse("text/javascript", "UTF-8", new ByteArrayInputStream(finalStr.getBytes()));
+            }
+        }
+        else
+        {
+            throw new ZWebException("There is no protocol: " + protocolName + ", Only support '__init__', eg: <script type=\"text/javascript\" src=\"zweb://__init__\"></script>");
+        }
+        return null;
+    }
+
+    /**
      * 初始化JS框架
      */
     private void initFramework()
+    {
+        this.callJS(buildInitFrameworkJS());
+    }
+
+    /**
+     * 构建JS框架初始化函数
+     *
+     * @return
+     */
+    private String buildInitFrameworkJS()
     {
         try
         {
@@ -253,7 +310,7 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
             initParams.put(InternalConstantName.VERSION, Build.VERSION.SDK_INT);
             initParams.put(InternalConstantName.INTERNAL_NAME, this.getZWebConfig().getInterName());
             initParams.put(InternalConstantName.EXPOSED_NAME, this.getZWebConfig().getExposedName());
-            this.execJS(InternalFunctionName.INIT_FRAMEWORK, initParams);
+            return JsUtils.buildJsFunction(InternalFunctionName.MAIN_CALL_OBJ, InternalFunctionName.INIT_FRAMEWORK, getFrameworkUUID(), initParams.toString());
         }
         catch (JSONException e)
         {
@@ -344,5 +401,14 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
             return true;
         }
         return false;
+    }
+
+    private void post(Runnable runnable)
+    {
+        if (getView() == null)
+        {
+            return;
+        }
+        getView().post(runnable);
     }
 }

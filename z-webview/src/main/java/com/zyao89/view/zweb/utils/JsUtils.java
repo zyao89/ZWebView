@@ -61,6 +61,26 @@ public class JsUtils
         return sb.toString();
     }
 
+    /**
+     * 构建一个“带try catch”的js调用方法；
+     *
+     * @param protocolName  协议名称
+     * @param functionName  方法名称
+     * @param frameworkUUID UUID
+     * @param oJson         json对象
+     * @return 字符串
+     */
+    public static String buildJsFunction(String protocolName, String functionName, String frameworkUUID, String oJson)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(";try{");
+        sb.append("window.").append(protocolName).append(".").append(functionName);
+        sb.append("(\"").append(frameworkUUID).append("\",");
+        sb.append(oJson).append(");");
+        sb.append("}catch(e){console.warn(e)};");
+        return sb.toString();
+    }
+
     public static boolean isJson(String target)
     {
         if (TextUtils.isEmpty(target))
@@ -88,7 +108,7 @@ public class JsUtils
         return tag;
     }
 
-    public static JSONObject json2Obj (String json)
+    public static JSONObject json2Obj(String json)
     {
         try
         {
@@ -100,7 +120,7 @@ public class JsUtils
         }
     }
 
-    public static String assetFile2Str (Context c, String urlStr)
+    public static String assetFile2Str(Context c, String urlStr)
     {
         InputStream in = null;
         try
@@ -143,7 +163,7 @@ public class JsUtils
         return null;
     }
 
-    public static String rawFile2Str (Context c, @RawRes int rawID)
+    public static String rawFile2Str(Context c, @RawRes int rawID)
     {
         InputStream in = null;
         try
@@ -191,7 +211,7 @@ public class JsUtils
      *
      * @param url
      */
-    public static String webViewLoadJs (String url)
+    public static String webViewLoadJs(String url)
     {
         String js = "var newScript = document.createElement(\"script\");";
         js += "newScript.src=\"" + url + "\";";
