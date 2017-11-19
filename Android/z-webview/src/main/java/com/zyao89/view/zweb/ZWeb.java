@@ -167,6 +167,10 @@ public class ZWeb implements IZWeb, IZWebView.OnPageListener, IZWebView.OnErrorL
             injectBridgeJS();
             initFramework();
         }
+        else if (getZWebConfig().getInjectionMode() == InjectionMode.Normal)
+        {
+            initFramework();
+        }
     }
 
     @Override

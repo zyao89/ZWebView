@@ -15,6 +15,5 @@ public enum InjectionMode
     // 协议方式：zweb://  例如：<script type="text/javascript" src="zweb://__init__"></script>
     Protocol,
     // 普通人工引入 <script type="text/javascript" src="static/zweb.js"></script>
-    // 引入之后需要 初始化框架  initFramework(UUID, oParam); 才可使用 ZWebSDK
     Normal
 }

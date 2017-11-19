@@ -28,7 +28,7 @@
 	var _author = 'Zyao89';
 	var _version = '1.0.0';
 
-    //  配套VUE插件内置接口名称
+	//  配套VUE插件内置接口名称
 	var __VueZWeb_Dispatch_Ready__ = '__VueZWeb_Dispatch_Ready__';
 
 	// 内部方法
@@ -545,6 +545,34 @@
 		}
 	};
 
+	function findDimensions() {
+		//函数：获取尺寸
+		var winWidth = 0;
+		var winHeight = 0;
+		//获取窗口宽度
+		if (global.innerWidth) {
+			winWidth = global.innerWidth;
+		} else if (document.body && document.body.clientWidth) {
+			winWidth = document.body.clientWidth;
+		}
+		//获取窗口高度
+		if (global.innerHeight) {
+			winHeight = global.innerHeight;
+		} else if (document.body && document.body.clientHeight) {
+			winHeight = document.body.clientHeight;
+		}
+		//通过深入Document内部对body进行检测，获取窗口大小
+		if (
+		document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+			winHeight = document.documentElement.clientHeight;
+			winWidth = document.documentElement.clientWidth;
+		}
+		return {
+			Width: winWidth,
+			Height: winHeight
+		};
+	}
+
 	var ZWeb = function(sdk) {
 			this.FrameworkUUID = 0;
 			this.OS = OS_TYPE.WEB;
@@ -553,53 +581,33 @@
 			this.version = _version;
 			// SDK
 			this.__ZWebSDK__ = sdk;
+			// 是否初始化过
+			this._isInitFinish = false;
 		};
 
 	ZWeb.prototype = {
 		// 初始化框架
 		initFramework: function(szFrameworkUUID, oParams) {
-			this.FrameworkUUID = szFrameworkUUID;
-			// 平台
-			this.OS = oParams.OS;
-			// 版本
-			this.Version = oParams.Version;
-			// 内部接口
-			this.InternalName = oParams.InternalName;
-			// 暴露接口
-			this.ExposedName = oParams.ExposedName;
+			if (!this._isInitFinish) {
 
-			this.__ZWebSDK__._init_(szFrameworkUUID, oParams);
+				this._isInitFinish = true;
+				// UUID
+				this.FrameworkUUID = szFrameworkUUID;
+				// 平台
+				this.OS = oParams.OS;
+				// 版本
+				this.Version = oParams.Version;
+				// 内部接口
+				this.InternalName = oParams.InternalName;
+				// 暴露接口
+				this.ExposedName = oParams.ExposedName;
 
-			function findDimensions() {
-				//函数：获取尺寸
-				var winWidth = 0;
-				var winHeight = 0;
-				//获取窗口宽度
-				if (global.innerWidth) {
-					winWidth = global.innerWidth;
-				} else if (document.body && document.body.clientWidth) {
-					winWidth = document.body.clientWidth;
-				}
-				//获取窗口高度
-				if (global.innerHeight) {
-					winHeight = global.innerHeight;
-				} else if (document.body && document.body.clientHeight) {
-					winHeight = document.body.clientHeight;
-				}
-				//通过深入Document内部对body进行检测，获取窗口大小
-				if (
-				document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
-					winHeight = document.documentElement.clientHeight;
-					winWidth = document.documentElement.clientWidth;
-				}
-				return {
-					Width: winWidth,
-					Height: winHeight
-				};
+				this.__ZWebSDK__._init_(szFrameworkUUID, oParams);
+
+				this.__ZWebSDK__.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
 			}
-			this.__ZWebSDK__.callInterOS(INTER_NAME.onZWebCreated, findDimensions());
 
-			// VuePlugin 关联操作
+			// VuePlugin (vue-zweb.js) 关联操作
 			var vuePlugin = undefined;
 			if (global.Vue) {
 				vuePlugin = global.Vue[__VueZWeb_Dispatch_Ready__];
@@ -625,7 +633,7 @@
 			this.__ZWebSDK__.databaseCallback(oResultParam);
 		},
 
-        // 呼叫接受人，接受人进行方法转发
+		// 呼叫接受人，接受人进行方法转发
 		callReceiver: function(szFrameworkUUID, szMethod, oData) {
 			this.__ZWebSDK__.dispatchCallback(szMethod, oData);
 		},

@@ -167,15 +167,17 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
                 .Builder(ZWebConstant.MAIN_HTML)
                 .setOnStateListener(this)
                 .setNativeMethodImplement(this)
+//                .setOnSpecialStateListener(this)
                 .setInjectionMode(InjectionMode.VuePlugin)
                 .autoInjectFramework()
                 .autoInjectExtendsJS()
 //                .addInjectJSAssetsFile("js/manifest.js")
 //                .addInjectJSAssetsFile("js/vendor.js")
 //                .addInjectJSAssetsFile("js/app.js")
-                //                .autoInjectExtendsJS()
-                //                .addInjectJSAssetsFile("framework/zweb.min.js")
-                //                .addInjectJSAssetsFile("js/test.js")
+//                .autoInjectExtendsJS()
+//                .addInjectJSAssetsFile("framework/zweb.min.js")
+//                .addInjectJSAssetsFile("js/test.js")
+//                .addInjectJSRawFile(R.raw.index_test)
                 .build();
         mZWebInstance = ZWebInstance.createInstance(config);
         mZWebInstance.onActivityCreate(mRootView);
