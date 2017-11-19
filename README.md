@@ -8,19 +8,17 @@ ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含�
 
 1. Vue插件注入方式
 
-使用`Vue`时，可导入`vue-zweb`插件使用。
-
-具体参考 [vue-zweb](https://github.com/zyao89/vue-zweb)
+使用`Vue`时，可导入`vue-zweb`插件使用。具体参考 [vue-zweb](https://github.com/zyao89/vue-zweb)
 
 2. H5标签协议注入方式
 
 可通过在html文件中引入 `<script>` 标签，控制引入框架的位置。
 
-协议在 `src` 下，以地址方式注入，具体格式采用：`zweb://` 开头。
+协议在标签的 `src` 下，以地址方式注入，具体格式采用：`zweb://` 开头。
 
 目前支持的协议如下：
 ```
-zweb://__init__
+1. zweb://__init__
 ```
 
 具体引入方式如下：
