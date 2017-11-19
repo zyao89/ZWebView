@@ -9,6 +9,10 @@ Vue.config.productionTip = false
 // import VueZWeb from './plugins/vue-zweb.js'
 // Vue.use(VueZWeb);
 
+// 注入ZWeb 插件
+import VueZWeb from 'vue-zweb';
+Vue.use(VueZWeb);
+
 /* eslint-disable no-new */
 let vm = new Vue({
   el: '#app',

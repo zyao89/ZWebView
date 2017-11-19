@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Test ZWeb</title>
+        <meta charset="UTF-8">
+        <meta
+                name="apple-mobile-web-app-capable"
+                content="yes">
+        <meta
+                name="apple-mobile-web-app-status-bar-style"
+                content="black-translucent">
+        <meta
+                http-equiv="Cache-Control"
+                content="no-siteapp">
+        <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
+
+        <script
+                type="text/javascript"
+                src="zweb://__init__"></script>
+        <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      word-wrap: break-word;
+    }
+
+    .btn {
+      padding: 10px;
+      margin: 10px;
+    }
+
+    #result {
+      padding: 10px;
+      color: #009a61;
+      background-color: black;
+      border: 1px solid #ccc;
+    }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div align="center">
+            <input
+                    class="btn"
+                    id="data"
+                    type="text"
+                    value="我是测试数据...">
+            <button
+                    class="btn"
+                    id="message">message
+            </button>
+            <button
+                    class="btn"
+                    id="require">require
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('showLoading')">showLoading
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('hideLoading')">hideLoading
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('tip', true)">tip
+            </button>
+            <button
+                    class="btn"
+                    id="callOS">callOS
+            </button>
+            <button
+                    class="btn"
+                    id="exceptionOS">exceptionOS
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('print', true)">print
+            </button>
+            <button
+                    class="btn"
+                    id="saveData">saveData
+            </button>
+            <button
+                    class="btn"
+                    id="loadData">loadData
+            </button>
+            <button
+                    class="btn"
+                    onclick="btnClick('destroy')">destroy
+            </button>
+        </div>
+
+        <div id="result">结果在这里</div>
+
+        <script type="text/javascript">
+            (function() {
+	document.getElementById("message").onclick = function() {
+
+		var prom = ZWebSDK.message(
+			"CMD",
+			ZWebSDK
+		);
+		prom.then(
+			function(data) {
+				console.log("success..." + data);
+				document.getElementById("result").innerHTML = data;
+				ZWebSDK.tip("success...");
+			},
+			function(error) {
+				console.log("error...");
+				document.getElementById("result").innerHTML = error;
+				ZWebSDK.tip("error...");
+			}
+		);
+	};
+
+	document.getElementById("require").onclick = function() {
+
+		var prom = ZWebSDK.require(
+			"https://zyao89.cn",
+			"get",
+			"HAHA",
+			"Json"
+		);
+		prom.then(
+			function(data) {
+				console.log("success..." + data);
+				document.getElementById("result").innerHTML = data;
+				ZWebSDK.tip("success...");
+			},
+			function(error) {
+				console.log("error...");
+				document.getElementById("result").innerHTML = error;
+				ZWebSDK.tip("error...");
+			}
+		);
+
+//        ZWebSDK.saveData("**key**", "**value**");
+	};
+
+	document.getElementById("callOS").onclick = function() {
+        // szMethodName, oData
+        var szMethodName = document.getElementById("data").value;
+        var oData = {"Msg":"这只是测试数据而已..."};
+        document.getElementById("result").innerHTML = "Call: callOS ==>> MethodName: " + szMethodName + " ==>> Data: " + JSON.stringify(oData);
+		ZWebSDK.callOS(szMethodName, oData);
+	};
+
+	document.getElementById("exceptionOS").onclick = function() {
+        var errorMsg = document.getElementById("data").value;
+        document.getElementById("result").innerHTML = "Call: exceptionOS ==>> errCode: " + 1007 + " ==>> msg: " + errorMsg;
+		ZWebSDK.exceptionOS(1007, errorMsg);
+	};
+
+	document.getElementById("saveData").onclick = function() {
+        var key = document.getElementById("data").value;
+        var value = "这是我存入的密码： 12345678";
+		ZWebSDK.saveData(key, value).then(function(data){
+            document.getElementById("result").innerHTML = "Call Success: saveData ==>> Key: " + key + " ==>> Value: " + value;
+		}, function(data){
+            document.getElementById("result").innerHTML = "Call Error: saveData ==>> Key: " + key + " ==>> Value: " + value;
+		});
+	};
+
+	document.getElementById("loadData").onclick = function() {
+        var key = document.getElementById("data").value;
+		ZWebSDK.loadData(key).then(function(data){
+            document.getElementById("result").innerHTML = "Call Success: loadData ==>> Key: " + key + " ==>> Value: " + data;
+		}, function(data){
+            document.getElementById("result").innerHTML = "Call Error: loadData ==>> Key: " + key + " ==>> Value: " + data;
+		});
+	};
+
+	window.btnClick = function(method, flag){
+	    var value = undefined;
+	    if ('undefined' !== typeof flag) {
+            value = (flag === true) ? document.getElementById("data").value : flag;
+            document.getElementById("result").innerHTML = "Call: " + method + " ==>> Value: " + value;
+	    } else {
+            document.getElementById("result").innerHTML = "Call: " + method;
+	    }
+	    ZWebSDK[method](value);
+	};
+
+	//window.__ZWeb__.initFramework(0, {
+	//  OS: "WEB",
+	//  Version: "0.0.1",
+	//  InterName: "WEB",
+	//  ExposedName: ""
+	//})
+
+	ZWebSDK.on('a', function(oData){
+        console.log('我收到了 a 的消息' + JSON.stringify(oData));
+	})
+
+})();
+
+        </script>
+
+    </body>
+
+</html>

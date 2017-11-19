@@ -10,8 +10,8 @@
 // import Echarts from "echarts";
 export default {
   name: "ECharts",
-  // zWebReady() {
-  mounted() {
+  zWebReady() {
+  // mounted() {
     console.log("ECharts ready.call.......");
     // 基于准备好的dom，初始化echarts实例
     let myChart1 = echarts.init(document.getElementById("Chart1"));
