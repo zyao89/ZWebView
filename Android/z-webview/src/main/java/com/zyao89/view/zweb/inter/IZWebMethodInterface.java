@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * Native View 协议
  *
  * @author Zyao89
- * @date 2017/11/7.
+ * 2017/11/7.
  */
 public interface IZWebMethodInterface
 {

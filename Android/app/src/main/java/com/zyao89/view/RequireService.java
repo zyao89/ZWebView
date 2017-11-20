@@ -8,7 +8,7 @@ import com.zyao89.view.zweb.constants.ZMethodName;
 
 /**
  * @author Zyao89
- * @date 2017/11/8.
+ * 2017/11/8.
  */
 public interface RequireService
 {

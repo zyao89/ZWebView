@@ -2,7 +2,7 @@ package com.zyao89.view.zweb.exceptions;
 
 /**
  * @author Zyao89
- * @date 2017/11/6.
+ * 2017/11/6.
  */
 public class ZWebException extends RuntimeException
 {

@@ -4,7 +4,7 @@ import android.webkit.JavascriptInterface;
 
 /**
  * @author Zyao89
- * @date 2017/11/7.
+ * 2017/11/7.
  */
 
 public interface IZMethodCallback

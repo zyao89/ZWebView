@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * 状态协议
  *
  * @author Zyao89
- * @date 2017/11/7.
+ * 2017/11/7.
  */
 public interface IZWebOnStateListener
 {

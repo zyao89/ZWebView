@@ -21,7 +21,7 @@ import java.util.List;
  * 参数配置
  *
  * @author Zyao89
- * @date 2017/11/13.
+ * 2017/11/13.
  */
 public class ZWebConfig
 {

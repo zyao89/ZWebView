@@ -4,7 +4,7 @@ package com.zyao89.view.zweb.constants;
  * 框架层定义的协议，不许允许修改
  *
  * @author Zyao89
- * @Create 2017/11/6.
+ * 2017/11/6.
  */
 
 public interface InternalFunctionName

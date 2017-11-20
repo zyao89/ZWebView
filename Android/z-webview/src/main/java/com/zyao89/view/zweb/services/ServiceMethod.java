@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Zyao89
- * @date 2017/11/13.
+ * 2017/11/13.
  */
 class ServiceMethod<R, T>
 {

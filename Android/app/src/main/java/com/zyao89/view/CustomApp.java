@@ -6,7 +6,7 @@ import com.zyao89.view.zweb.ZWebInstance;
 
 /**
  * @author Zyao89
- * @date on 2017/11/6.
+ * 2017/11/6.
  */
 public class CustomApp extends Application
 {

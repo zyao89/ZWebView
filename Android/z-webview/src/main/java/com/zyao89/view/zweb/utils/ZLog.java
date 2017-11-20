@@ -5,7 +5,7 @@ import android.util.Log;
 
 /**
  * @author Zyao89
- * @Created on 2017/11/6.
+ * 2017/11/6.
  */
 public class ZLog implements IZLog
 {

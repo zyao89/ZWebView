@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * 对外开放接口
  *
  * @author Zyao89
- * @date 2017/11/15.
+ * 2017/11/15.
  */
 public interface IZWebMessageController
 {

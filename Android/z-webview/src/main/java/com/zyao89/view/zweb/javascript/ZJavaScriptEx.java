@@ -15,7 +15,7 @@ import org.json.JSONObject;
  * 扩展暴露接口
  *
  * @author Zyao89
- * @date 2017/11/6.
+ * 2017/11/6.
  */
 public class ZJavaScriptEx extends ZJavaScript implements IZMethodCallback
 {

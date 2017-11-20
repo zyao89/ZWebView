@@ -11,7 +11,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 命令注释
  *
  * @author Zyao89
- * @date 2017/11/15.
+ * 2017/11/15.
  */
 @Documented
 @Target(METHOD)

@@ -62,9 +62,9 @@ public void onCreate()
 ```java
 String MAIN_HTML = "file:///android_asset/index.html";
 
-// 1. 创建配置文件，并带入主页 URL
+// 1. 创建配置文件，并带入主页 URL
 ZWebConfig config = new ZWebConfig.Builder(ZWebConstant.MAIN_HTML_TEST)
-    // 注册状态监听
+    // 注册状态监听
     .setOnStateListener(this)
     // 注册原生协议UI实现
     .setNativeMethodImplement(this)
@@ -74,7 +74,7 @@ ZWebConfig config = new ZWebConfig.Builder(ZWebConstant.MAIN_HTML_TEST)
     .setInjectionMode(InjectionMode.VuePlugin)
     // 自动注入框架脚本JS（建议配置）
     .autoInjectFramework()
-    // 自动注入扩展方法
+    // 自动注入扩展方法
     .autoInjectExtendsJS()
     // 添加 assets 中js文件注入
 //  .addInjectJSAssetsFile("js/test.js")
@@ -251,14 +251,15 @@ mRequireService.callA("我是一个坚挺的消息。。。", "小A你好啊！"
 
 1. 使用现有的 `void onZWebMessage(IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);` 进行方法解析，并异步返回结果。
 
-参数 `cmd` ：定义命令名称。
+参数 `cmd` ：定义的命令名称。
+
 参数 `data `： 定义的参数。
 
 `controller` ：可进行异步的结果返回。或者利用 `controller.parseMessage(this.mParseMessage);` 此方法进行方法解析。
 
 2. 使用原生 `@JavascriptInterface` 注解的方法进行扩展。
 
-框架在 ZWebConfig 中提供了 `setExposedName (String exposedName);` 方法，可以扩展一个原生的接口协议名称。
+框架在 ZWebConfig 中提供了 `setExposedName (String exposedName);` 方法，可以扩展一个原生的接口协议名称。
 
 然后，利用 ` mZWebInstance.addJavascriptInterface(object);` 进行对象中的方法注入。
 

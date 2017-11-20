@@ -8,7 +8,7 @@ import com.zyao89.view.zweb.R;
  * 对外常量
  *
  * @author Zyao89
- * @date 2017/11/17.
+ * 2017/11/17.
  */
 public interface ZWebConstant
 {

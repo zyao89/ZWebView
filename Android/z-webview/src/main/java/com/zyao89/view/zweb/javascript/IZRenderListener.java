@@ -4,7 +4,7 @@ import android.webkit.JavascriptInterface;
 
 /**
  * @author Zyao89
- * @date 2017/11/6.
+ * 2017/11/6.
  */
 public interface IZRenderListener
 {
