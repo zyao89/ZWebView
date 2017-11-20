@@ -30,6 +30,21 @@ ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含�
 
 ## Android
 
+### 引入方式：
+
+Gradle > v3.0
+
+```gradle
+implementation 'com.zyao89.view:zweb:1.0.0'
+```
+
+
+Gradle < v3.0
+
+```gradle
+compile 'com.zyao89.view:zweb:1.0.0'
+```
+
 ### 安卓也对应采用三种交互方式
 对应的3中枚举类型如下：
 ```java
@@ -273,6 +288,16 @@ mRequireService.callA("我是一个坚挺的消息。。。", "小A你好啊！"
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT)
+    Copyright 2017 Zyao89
 
-Copyright (c) 2017 Zyao89
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
