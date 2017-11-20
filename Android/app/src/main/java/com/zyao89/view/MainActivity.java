@@ -224,12 +224,13 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     @Override
     public void onZWebException(IZWebHandler zWebHandler, long errorCode, String message)
     {
-
+        // JS如果有异常会在这里回调
     }
 
     @Override
     public void onZWebRequire(IZWebHandler zWebHandler, String url, String method, String data, String type, final IZRequireController controller)
     {
+        // 这里可以实现原生网络请求
         Request request = new Request.Builder().url(url).build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback()
@@ -253,24 +254,27 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     {
         //      controller.result(true, "我是你想要的消息");
 
+        // 消息处理可以这样做
         controller.parseMessage(this.mParseMessage);
     }
 
     @Override
     public void onZWebDestroy(IZWebHandler zWebHandler)
     {
-
+        // JS销毁
     }
 
     @Override
     public void onZWebLog(IZWebHandler zWebHandler, String type, String msg)
     {
+        // JS打印
         ZLog.with(this).d("onLog ==> type: " + type + ", msg: " + msg);
     }
 
     @Override
     public void saveData(IZWebHandler zWebHandler, String key, String value, IZDatabaseController zController)
     {
+        // 这里可以存数据库
         String result = mDatabase.put(key, value);
         if (result == null)
         {
@@ -285,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     @Override
     public void loadData(IZWebHandler zWebHandler, String key, IZDatabaseController zController)
     {
+        // 这里可以取数据
         String result = mDatabase.get(key);
         if (result == null)
         {

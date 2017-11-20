@@ -13,25 +13,25 @@ import org.json.JSONObject;
 public interface IZWebOnStateListener
 {
     /**
-     * 创建成功回调
+     * 框架初始化成功后回调
      *
      * @param zWebHandler
-     * @param width
-     * @param height
+     * @param width 宽
+     * @param height 高
      */
     void onZWebCreated(IZWebHandler zWebHandler, int width, int height);
 
     /**
-     * 异常
+     * 异常（JS如果有异常会在这里回调）
      *
      * @param zWebHandler
-     * @param errorCode
-     * @param message
+     * @param errorCode 错误码
+     * @param message 错误信息
      */
     void onZWebException(IZWebHandler zWebHandler, long errorCode, String message);
 
     /**
-     * 请求处理
+     * 网络请求处理
      *
      * @param zWebHandler
      * @param url         链接
@@ -46,19 +46,20 @@ public interface IZWebOnStateListener
      * 异步消息请求
      *
      * @param zWebHandler
-     * @param data
+     * @param cmd 命令名称
+     * @param data 数据
      */
     void onZWebMessage(IZWebHandler zWebHandler, String cmd, String data, IZMessageController controller);
 
     /**
-     * 销毁
+     * JS销毁
      *
      * @param zWebHandler
      */
     void onZWebDestroy(IZWebHandler zWebHandler);
 
     /**
-     * 日志信息
+     * JS日志信息回调，可在这里记录或打印
      *
      * @param zWebHandler
      * @param type        类型

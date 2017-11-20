@@ -21,12 +21,12 @@ public interface RequireService
     @ZMethod(ZMethodName.ON_READY)
     void initParam(@ZKey("Msg") String msg, @ZKey("Skin") int skin, @ZKey("Color") int color);
 
+    @ZFunction(ZFunctionName.REFRESH)
+    void refresh();
+
     @ZFunction(ZFunctionName.GO_BACK)
     void goBack();
 
     @ZFunction(ZFunctionName.GO_FORWARD)
     void goForward();
-
-    @ZFunction(ZFunctionName.REFRESH)
-    void refresh();
 }
