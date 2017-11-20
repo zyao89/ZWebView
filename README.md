@@ -1,4 +1,4 @@
-# ZWebView
+﻿# ZWebView
 
 ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含了多种常用协议的约束和定义。Android的WebView使用更方便。
 
@@ -66,7 +66,7 @@ String MAIN_HTML = "file:///android_asset/index.html";
 ZWebConfig config = new ZWebConfig.Builder(ZWebConstant.MAIN_HTML_TEST)
     // 注册状态监听
     .setOnStateListener(this)
-    // 注册原生协议UI实现
+    // 注册原生协议UI实现
     .setNativeMethodImplement(this)
     // 注册一些特殊的实现方法
 //  .setOnSpecialStateListener(this)

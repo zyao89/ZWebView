@@ -1,8 +1,9 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.1'
 
 
     defaultConfig {
@@ -10,6 +11,10 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     buildTypes {
@@ -23,5 +28,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-annotations:27.0.1'
+}
+
+publish {
+    userOrg = "${USER_ORG}"
+    groupId = "${GROUP_ID}"
+    artifactId = "${ARTIFACT_ID}"
+    publishVersion = "${PUBLISH_VERSION}"
+    desc = 'Oh hi, this is a nice view of ZWeb, right?'//描述，不重要
+    website = 'https://github.com/zyao89/ZWebView'//网站，不重要；
 }
