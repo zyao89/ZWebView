@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.zyao89.view.zweb.annotations.ZFunction;
+import com.zyao89.view.zweb.annotations.ZJson;
 import com.zyao89.view.zweb.annotations.ZKey;
 import com.zyao89.view.zweb.annotations.ZMethod;
 import com.zyao89.view.zweb.exceptions.ZWebException;
@@ -19,7 +20,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Zyao89
- * 2017/11/13.
+ *         2017/11/13.
  */
 class ServiceMethod<R, T>
 {
@@ -45,19 +46,35 @@ class ServiceMethod<R, T>
         JSONObject szArgs = null;
         if (args != null && args.length > 0)
         {
-            try
+            ParameterHandler parameterHandler = this.mParameterHandlers[0];
+            if (args.length == 1 && parameterHandler.getAnnotation() instanceof ZJson)
             {
-                szArgs = new JSONObject();
-                for (int i = 0; i < args.length; i++)
+                try
                 {
-                    ParameterHandler parameterHandler = this.mParameterHandlers[i];
                     String parameterName = parameterHandler.getParameterName();
-                    szArgs.put(parameterName, args[i]);
+                    szArgs = new JSONObject(parameterName);
+                }
+                catch (JSONException e)
+                {
+                    throw new ZWebException("ZJson 参数转化失败了...", e);
                 }
             }
-            catch (JSONException e)
+            else
             {
-                throw new ZWebException("参数转化失败了...", e);
+                try
+                {
+                    szArgs = new JSONObject();
+                    for (int i = 0; i < args.length; i++)
+                    {
+                        parameterHandler = this.mParameterHandlers[i];
+                        String parameterName = parameterHandler.getParameterName();
+                        szArgs.put(parameterName, args[i]);
+                    }
+                }
+                catch (JSONException e)
+                {
+                    throw new ZWebException("ZKey 参数转化失败了...", e);
+                }
             }
         }
         switch (this.type)
@@ -173,6 +190,11 @@ class ServiceMethod<R, T>
                         throw new ZWebException("ZKey annotation Value is null");
                     }
 
+                    result = new ParameterHandler(annotation, parameterType, parameterName);
+                }
+                else if (annotation instanceof ZJson)
+                {
+                    String parameterName = "Body";
                     result = new ParameterHandler(annotation, parameterType, parameterName);
                 }
             }
