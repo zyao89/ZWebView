@@ -6,7 +6,7 @@ ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含�
 
 ### 分为三种方式
 
-1. Vue插件注入方式
+1. Vue插件注入方式（有些问题）
 
 使用`Vue`时，可导入`vue-zweb`插件使用。具体参考 [vue-zweb](https://github.com/zyao89/vue-zweb)
 
@@ -239,6 +239,9 @@ public interface RequireService
 
     @ZFunction(ZFunctionName.REFRESH)
     void refresh();
+
+    @ZFunction("newInit")
+    boolean newInit(@ZJson String oJson);
 }
 ```
 
