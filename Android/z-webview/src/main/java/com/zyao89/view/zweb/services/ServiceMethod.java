@@ -52,7 +52,7 @@ class ServiceMethod<R, T>
                 try
                 {
                     String parameterName = parameterHandler.getParameterName();
-                    szArgs = new JSONObject(parameterName);
+                    szArgs = new JSONObject(args);
                 }
                 catch (JSONException e)
                 {

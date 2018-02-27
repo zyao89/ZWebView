@@ -35,14 +35,14 @@ ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含�
 Gradle > v3.0
 
 ```gradle
-implementation 'com.zyao89.view:zweb:1.0.0'
+implementation 'com.zyao89.view:zweb:1.0.2'
 ```
 
 
 Gradle < v3.0
 
 ```gradle
-compile 'com.zyao89.view:zweb:1.0.0'
+compile 'com.zyao89.view:zweb:1.0.2'
 ```
 
 ### 安卓也对应采用三种交互方式
