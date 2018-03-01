@@ -7,10 +7,10 @@ this is a nice WebView.
 ```gradle
 
 Gradle > v3.0
-implementation 'com.zyao89.view:zweb:1.0.2'
+implementation 'com.zyao89.view:zweb:1.0.3'
 
 
 Gradle < v3.0
-compile 'com.zyao89.view:zweb:1.0.2'
+compile 'com.zyao89.view:zweb:1.0.3'
 
 ```

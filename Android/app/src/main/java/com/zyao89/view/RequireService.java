@@ -1,8 +1,10 @@
 package com.zyao89.view;
 
 import com.zyao89.view.zweb.annotations.ZFunction;
+import com.zyao89.view.zweb.annotations.ZJson;
 import com.zyao89.view.zweb.annotations.ZKey;
 import com.zyao89.view.zweb.annotations.ZMethod;
+import com.zyao89.view.zweb.annotations.ZData;
 import com.zyao89.view.zweb.constants.ZFunctionName;
 import com.zyao89.view.zweb.constants.ZMethodName;
 
@@ -17,6 +19,12 @@ public interface RequireService
 
     @ZFunction("init")
     boolean init(@ZKey("A") String a, @ZKey("B") String b, @ZKey("C") int c);
+
+    @ZFunction("init")
+    boolean init2(@ZJson String json);
+
+    @ZFunction("init")
+    boolean init3(@ZData String json);
 
     @ZMethod(ZMethodName.ON_READY)
     void initParam(@ZKey("Msg") String msg, @ZKey("Skin") int skin, @ZKey("Color") int color);

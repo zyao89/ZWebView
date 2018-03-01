@@ -153,7 +153,7 @@ public class ZWebConfig
         @ColorInt
         private       int                         mBackgroundColor            = Color.WHITE;
         /**
-         * 依赖VueZWeb注入调用（默认使用Vue作为依赖）
+         * 依赖VueZWeb注入调用（默认使用普通人工写入依赖）
          */
         private       InjectionMode               mInjectionMode              = InjectionMode.Normal;
 

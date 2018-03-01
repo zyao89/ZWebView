@@ -1,12 +1,22 @@
-﻿# ZWebView
+﻿ # ZWebView
 
 ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含了多种常用协议的约束和定义。Android的WebView使用更方便。
+
+# 最新介绍
+> https://www.zyao89.cn/blog/article/5a97fa8b632e353ffd14d44a
+> 可在此网站进行留言。
+
+# 更新说明
+- 1.0.0 创建Android库zweb
+- 1.0.1 更新一些简单问题
+- 1.0.2 添加新注解`@ZJson`，修复IOC实现方式无法传json参数
+- 1.0.3 添加新注解`@ZData`，传入字符串，web端接收到的参数格式为 { 'ZData', String }
 
 ## Web
 
 ### 分为三种方式
 
-1. Vue插件注入方式（有些问题）
+1. Vue插件注入方式（有些问题，不建议使用）
 
 使用`Vue`时，可导入`vue-zweb`插件使用。具体参考 [vue-zweb](https://github.com/zyao89/vue-zweb)
 
@@ -242,6 +252,9 @@ public interface RequireService
 
     @ZFunction("newInit")
     boolean newInit(@ZJson String oJson);
+
+    @ZFunction("newInit2")
+    boolean newInit2(@ZData String str);
 }
 ```
 
@@ -253,6 +266,10 @@ public interface RequireService
 > @ZKey("参数名称")：JS中Object参数键值名称。
 
 > @ZCmd("cmd名称")：用于 `onZWebMessage` 方法回调中，cmd参数的映射。具体使用方法可以参考Demo。（针对Message做映射解析时使用）。
+
+> @ZJson：JS中Object参数的字符串（json）。
+
+> @ZData：参数为字符串。
 
 2. 创建接口服务对象实例，并进行调用
 ```java
@@ -283,7 +300,7 @@ mRequireService.callA("我是一个坚挺的消息。。。", "小A你好啊！"
 
 ## iOS
 
-正在筹划中...
+暂无
 
 ## Author Blog
 

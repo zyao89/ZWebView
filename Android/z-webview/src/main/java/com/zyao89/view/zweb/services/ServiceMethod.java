@@ -7,6 +7,7 @@ import com.zyao89.view.zweb.annotations.ZFunction;
 import com.zyao89.view.zweb.annotations.ZJson;
 import com.zyao89.view.zweb.annotations.ZKey;
 import com.zyao89.view.zweb.annotations.ZMethod;
+import com.zyao89.view.zweb.annotations.ZData;
 import com.zyao89.view.zweb.exceptions.ZWebException;
 import com.zyao89.view.zweb.inter.IZWeb;
 import com.zyao89.view.zweb.utils.Utils;
@@ -57,6 +58,20 @@ class ServiceMethod<R, T>
                 catch (JSONException e)
                 {
                     throw new ZWebException("ZJson 参数转化失败了...", e);
+                }
+            }
+            else if (args.length == 1 && parameterHandler.getAnnotation() instanceof ZData)
+            {
+                try
+                {
+                    szArgs = new JSONObject();
+                    String parameterName = parameterHandler.getParameterName();
+                    // { "ZData" : String }
+                    szArgs.put(parameterName, args[0]);
+                }
+                catch (JSONException e)
+                {
+                    throw new ZWebException("ZData 参数转化失败了...", e);
                 }
             }
             else
@@ -194,7 +209,12 @@ class ServiceMethod<R, T>
                 }
                 else if (annotation instanceof ZJson)
                 {
-                    String parameterName = "Body";
+                    String parameterName = "ZJson";
+                    result = new ParameterHandler(annotation, parameterType, parameterName);
+                }
+                else if (annotation instanceof ZData)
+                {
+                    String parameterName = "ZData";
                     result = new ParameterHandler(annotation, parameterType, parameterName);
                 }
             }

@@ -205,7 +205,8 @@ public class MainActivity extends AppCompatActivity implements IZWebMethodInterf
     @Override
     public void onZWebCreated(IZWebHandler zWebHandler, int width, int height)
     {
-        boolean result = mRequireService.init("2b", "9999", 66);
+//        boolean result = mRequireService.init("2b", "9999", 66);
+        boolean result = mRequireService.init3("{\"type\": \"application\", \"page\": \"1\"}");
         System.out.println("init 结果打印： " + result);
         //        mRequireService.initParam("小明同学", 1, 0xfff);
 
