@@ -37,6 +37,9 @@ ZWebView for Hybird App，建立移动端和Web的JS桥接框架，主要包含�
 ```
 
 3. 普通手动注入方式 
+```html
+<script type="text/javascript" src="https://raw.githubusercontent.com/zyao89/ZWebView/master/HybirdApp/static/libs/vue-zweb.min.js"></script>
+```
 
 ## Android
 
